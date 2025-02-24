@@ -1,0 +1,18 @@
+{
+	"classname": "ppg_beats",
+	"superclasses":  [ "base", "epochid", "epochclocktimes" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1}
+	],
+	"file": [ "name": "beats.vhsb" ],
+	"ppg_beats": [
+		{
+			"name": "detection_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Parameters used to detect the beats."
+		}
+	]
+}

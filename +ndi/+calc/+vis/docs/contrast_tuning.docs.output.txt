@@ -1,0 +1,60 @@
+This calculation object produces a document of type 'ndi_calculation_contrasttuning'.
+
+Superclasses: ndi_document, ndi_document_app, contrast_tuning
+
+The primary purpose of the ndi_calculation_contrasttuning document is to hold the results of a contrast_tuning fit. The contrast tuning fit document has the following fields:
+
+properties: 
+			response_units:                         The units of response		
+			response_type:                          The category of the response (e.g. mean)           
+		
+tuning_curve: 
+			contrast:                               The set of contrast values (vector, 1 x number of contrasts shown) 			
+			mean:                                   The mean response at each contrast (vector, 1 x number of contrasts shown)
+			stddev:                                 The standard deviation of response at each contrast (vector)
+			stderr:                                 The standard error of response at each contrast	(vector)
+			individual:                             The individual generated response values (cell array, one array per contrast)
+			control_stddev:                         The standard deviation on the set of generated response values of the control group
+			control_stderr:                         The standard error on the set of generated response values of the control group		
+significance: 
+			visual_response_anova_p:                The p-value of ANOVA test across visual stimuli and blank stimulus; indicates if there is any evidence of visual responsiveness
+			across_stimuli_anova_p:                 The p-value of ANOVA test across the visual stimuli; indicates if there is any evidence of differences in mean responses across the stimuli		
+fitless: 
+			interpolated_c50:                       The contrast that produces 1/2 the maximum response value, as determined by linear interpolation of the responses		
+fit: 
+			naka_rushton_RB_parameters:             The fit parameters [Rm C50] used in the 2-parameter Naka-Rushton function
+			naka_rushton_RB_contrast:               The range of contrast values in the 2-parameter fit line
+			naka_rushton_RB_values:                 The range of response values in the 2-parameter fit line
+			naka_rushton_RB_pref:                   The contrast with the maximum response in the fit
+			naka_rushton_RB_empirical_c50:          The empirical fit contrast that gives 50% of response to 100% contrast (max differs from 								 C50 of the fit because max response is not usually at 100% contrast) 
+			naka_rushton_RB_r2:                     The fit r^2 value 
+			naka_rushton_RB_relative_max_gain:      The relative max gain (maximum slope of fit if maximum response is normalized to 1)
+			naka_rushton_RB_saturation_index:       The saturation index (R(Cmax) - R(1))/(R(Cmax)-R(0)). Always 0 for 2-parameter version.
+			naka_rushton_RB_sensitivity:		The 1x10 vector of contrast sensitivity 
+			naka_rushton_RBN_parameters:            The fit parameters [Rm C50 N] used in the 3-parameter Naka-Rushton function
+			naka_rushton_RBN_contrast:              The range of contrast values in the 3-parameter fit line     
+			naka_rushton_RBN_values:                The range of response values in the 3-parameter fit line
+			naka_rushton_RBN_pref:                  The contrast with the maximum response in the fit
+			naka_rushton_RBN_empirical_c50:		The empirical fit contrast that gives 50% of response to 100% contrast (max differs from 								 C50 of the fit because max response is not usually at 100% contrast) 
+			naka_rushton_RBN_r2:			The fit r^2 value 
+			naka_rushton_RBN_relative_max_gain:	The relative max gain (maximum slope of fit if maximum response is normalized to 1)
+			naka_rushton_RBN_saturation_index:	The saturation index (R(Cmax) - R(1))/(R(Cmax)-R(0)). Always 0 for 3-parameter version.
+			naka_rushton_RBN_sensitivity:		Contrast sensitivity, or 1/Cthreshold, where R(Cthreshold) is the first response value
+                                                                    greater than a threshold. The vector is a 1x10 vector, assuming different thresholds
+								    of [1..10] standard deviations of the control response. If the standard deviation of
+								    the control response is 0, then it is recalculated assuming the response is 1 unit
+								    per trial.
+			naka_rushton_RBNS_parameters:		The fit parameters [Rm C50 N S] used in the 4-parameter Naka-Rushton function with 
+                                                                    saturation	
+			naka_rushton_RBNS_contrast:             The range of contrast values in the 2-parameter fit line   
+			naka_rushton_RBNS_values:               The range of response values in the 4-parameter fit line 
+			naka_rushton_RBNS_pref:                 The contrast with the maximum response
+			naka_rushton_RBNS_empirical_c50:        The empirical fit contrast that gives 50% of response to 100% contrast (max differs from 								 C50 of the fit because max response is not usually at 100% contrast)     	
+			naka_rushton_RBNS_r2:                   The fit r^2 value 
+			naka_rushton_RBNS_relative_max_gain:	The relative max gain (maximum slope of fit if maximum response is normalized to 1)	
+			naka_rushton_RBNS_saturation_index:	The saturation index (R(Cmax) - R(1))/(R(Cmax)-R(0)). 
+			naka_rushton_RBNS_sensitivity:		Contrast sensitivity, or 1/Cthreshold, where R(Cthreshold) is the first response value
+                                                                    greater than a threshold. The vector is a 1x10 vector, assuming different thresholds
+								    of [1..10] standard deviations of the control response. If the standard deviation of
+								    the control response is 0, then it is recalculated assuming the response is 1 unit
+								    per trial.

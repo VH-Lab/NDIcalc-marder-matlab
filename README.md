@@ -1,2 +1,3 @@
-# NDIcalc-marder-matlab
-NDI calculator code for Marder lab projects
+# NDIcalc-vis-matlab
+NDI calculator objects and documents for vision research
+

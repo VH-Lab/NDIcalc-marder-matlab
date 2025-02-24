@@ -1,0 +1,26 @@
+site_name: NDIcalc-vis-matlab
+repo_url: https://github.com/VH-Lab/NDIcalc-vis-matlab
+site_author: Van Hooser lab and others
+docs_dir: 'docs'
+google_analytics:
+  - UA-91714905-9
+  - auto
+theme:
+  name: 'material'
+  palette:
+    - scheme: default
+      primary: 'indigo'
+      secondary: 'indigo'
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  features:
+    - navigation
+nav:
+  - Home: index.md
+  - Installation: 'installation.md'
+  - Document reference:

@@ -1,0 +1,9 @@
+This calculator object computes three fits of contrast tuning given a set of stimulus responses at a range of contrast values as described in Naka and Rushton 1966, Albrecht and Hamilton 1982, and Peirce 2007. 
+
+The three fit functions are modified Naka-Rushtan functions of the form 
+
+R(c) = Rm*c/(C50+c)
+R(c) = Rm*c^n/(C50+c^n)
+R(c) = Rm*c^n/(C50^(s*n)+c^(s*n))
+
+This calculator also returns an estimate of the C50 point by linear interpolation. 

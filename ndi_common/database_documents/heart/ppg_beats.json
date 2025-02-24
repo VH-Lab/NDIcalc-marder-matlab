@@ -1,0 +1,34 @@
+{
+	"document_class": {
+		"definition":		"$NDICALCDOCUMENTPATH\/heart\/ppg_beats.json",
+		"validation":		"$NDICALCSCHEMAPATH\/heart\/ppg_beats.json",
+		"class_name":						"ppg_beats",
+        "property_list_name":                                   "ppg_beats",
+		"class_version":					1,
+		"superclasses": [
+			{ "definition":  "$NDIDOCUMENTPATH\/base.json"}
+		]
+	},
+	"depends_on": [
+	        {	"name":     "element_id",
+			"value":    ""
+		}
+	],
+	"files": {
+		"file_list": [
+			"beats.vhsb"
+		]
+	}
+	"ppg_beats":  {
+		"detection_parameters": {
+			"threshold_low": 0,
+			"threshold_high": 0,
+			"refractory_period": 0,
+			"ampitude_low_min": 0,
+			"amplitude_high_min": 0,
+			"amplitude_min": 0,
+			"duration_min": 0
+		}
+	}
+}
+

@@ -1,0 +1,26 @@
+{
+	"classname": "ppg_beats_calc",
+	"superclasses":  [ "base", "ppg_beats"],
+	"depends_on": [ ],
+	"file": [ ],
+	"ppg_beats_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input parameters."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The dependent-inputs for ppg_beats_calc."
+		}
+	]
+}
+
+
