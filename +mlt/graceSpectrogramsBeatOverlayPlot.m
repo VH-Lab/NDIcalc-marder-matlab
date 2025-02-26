@@ -1,7 +1,7 @@
-function ax = graceSpectrogramsPlot(S)
-% GRACESPECTROGRAMSPLOT - plot all the spectrograms from an experiment
+function ax = graceSpectrogramsBeatOverlayPlot(S)
+% GRACESPECTROGRAMSBEATOVERLAYPLOT - plot all the spectrograms from an experiment with heart beat overlayed
 %
-% AX = GRACESPECTROGRAMSPLOT(S)
+% AX = GRACESPECTROGRAMSBEATOVERLAYPLOT(S)
 %
 % Plot spectrograms for ppg elements for an ndi.session or ndi.dataset S.
 % The plots are made in a new figure.
@@ -22,13 +22,18 @@ for i=1:numel(p),
     if isempty(e),
         error(['No ''_lp'' version of ' p{i}.elementstring]);
     end
-    filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat'])
-    load(filename,'-mat');
+    filenameSG = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat'])
+    load(filenameSG,'-mat');
     ax(end+1,1) = subplot(4,1,i);
+    filenameB = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '_beats.mat'])
+    load(filenameB,'-mat');
     mlt.gracePlotSpectrogram(spec,f,ts);
+    hold on;
+    good = find(~isnan([beats.instant_freq]));    
+    plot([beats(good).onset]/(60*60),[beats(good).instant_freq],'k','linewidth',2);
     title([e{1}.elementstring],'interp','none');
     if i==4,
-        xlabel('Time from start (s)');
+        xlabel('Time from start (hr)');
     end;
 end
 

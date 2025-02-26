@@ -1,9 +1,11 @@
-function [beats] = wholeDayHeartBeat(S, options)
+function [beats, d, t] = wholeDayHeartBeat(S, options)
 % WHOLEDAYHEARTBEAT - generate heartbeat record for a whole day's recording from ppg_heart_lp
 % 
-% [BEATS] = WHOLEDAYHEARTBEAT(S, ...)
+% [BEATS, D, T] = WHOLEDAYHEARTBEAT(S, ...)
 %
 % Computes heart beat analysis for an entire ndi.element's worth of data.
+%
+% D is the data stream and t the time values.
 %
 % Inputs:
 %   S - an ndi.session or ndi.dataset object
@@ -41,9 +43,9 @@ nextTime = 0;
 wb = waitbar(0,"Working on whole day heart beat");
 
 for i=1:numel(et)
-    [d_here,t_here] = e.readTimeSeries(i,-inf,inf);
+    [d_here,t_here] = e.readtimeseries(i,-inf,inf);
     waitbar(i/numel(et),wb,['Working on whole day heart beat: ' int2str(i) ' of ' int2str(numel(et))]);
-    d = cat(1,d,d_here);
+    d = cat(1,d,zscore(d_here));
     t = cat(1,t,nextTime+t_here(:));
     nextTime = t_here(end) + (t_here(2)-t_here(1)); 
 end
@@ -51,8 +53,6 @@ end
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)")
 
 beats = mlt.detectHeartBeats(t,d);
-filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '_beats.mat'])
-save(filename,'beats','-mat');
 
 close(wb);
 

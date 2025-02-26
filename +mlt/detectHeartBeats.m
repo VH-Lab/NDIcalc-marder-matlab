@@ -4,8 +4,8 @@ function beats = detectHeartBeats(t, d, options)
     arguments
         t (1,:) double {mustBeReal, mustBeFinite}
         d (1,:) double {mustBeReal, mustBeFinite, mustBeSameLength(t,d)}
-        options.THRESHOLD_HIGH (1,1) double {mustBeReal} = 0.3
-        options.THRESHOLD_LOW (1,1) double {mustBeReal} = -0.5
+        options.THRESHOLD_HIGH (1,1) double {mustBeReal} = 0.75
+        options.THRESHOLD_LOW (1,1) double {mustBeReal} = -0.75
         options.REFRACT (1,1) double {mustBePositive, mustBeReal} = 0.2
         options.amplitude_high_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
         options.amplitude_low_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
