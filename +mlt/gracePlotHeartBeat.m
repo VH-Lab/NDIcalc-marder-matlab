@@ -3,7 +3,8 @@ function ax = gracePlotHeartBeat(beats, d, t)
 %
 % AX = GRACEPLOTHEARTBEAT(BEATS, D, T)
 %
-% Plot heart beat stats in a new figure.
+% Plot heart beat stats in a new figure. T can be a numeric vector
+% in seconds or a datetime vector.
 % 
 % AX are the axes created.
 %
@@ -11,34 +12,43 @@ function ax = gracePlotHeartBeat(beats, d, t)
 %   mlt.gracePlotHeartBeats(beats,d,t);
 % 
 
-figure
+arguments
+    beats (:,:) struct
+    d (:,1) double
+    t (:,1) {mustBeA(t,{'double','datetime'})}
+end
 
-sec2hr = 1/(60*60);
+figure;
+
+% Time handling for plotting
+if isa(t, 'datetime')
+    t_plot = t; % Use datetime values directly
+    time_unit = 'Time'; % X-axis label for datetime
+else
+    t_plot = t * 1/(60*60); % Convert seconds to hours
+    time_unit = 'Time (hr)'; % X-axis label for hours
+end
 
 ax1 = subplot(3,1,1);
-plot(t*sec2hr, d);
+plot(t_plot, d);
 hold on;
-plot([beats.onset]*sec2hr,0,'ko');
-plot([beats.offset]*sec2hr,0,'kx');
-%plot([beats.onset],[beats.amplitude],'ro');
-%plot([beats.onset],[beats.amplitude_high],'go');
-%plot([beats.onset],[beats.amplitude_low],'mo');
+plot([beats.onset], 0, 'ko');
+plot([beats.offset], 0, 'kx');
 box off;
-
 ylabel('PPG');
 
 ax2 = subplot(3,1,2);
-plot([beats.onset]*sec2hr,[beats.instant_freq]);
+plot([beats.onset], [beats.instant_freq]);
 ylabel('Beat frequency (Hz)');
 box off;
 
 ax3 = subplot(3,1,3);
-plot([beats.onset]*sec2hr,[beats.duty_cycle]);
-xlabel('Time(hr)');
+plot([beats.onset], [beats.duty_cycle]);
+xlabel(time_unit);
 ylabel('Duty cycle');
 box off;
 
 linkaxes([ax1 ax2 ax3],'x');
-
 ax = cat(1,ax1,ax2,ax3);
 
+end

@@ -37,7 +37,7 @@ end
 
 e = e{1};
 
-et = e.epochtable();
+et = e.epochtable()
 
 spec = [];
 ts = [];
@@ -60,15 +60,8 @@ else
     t0t1 = et(1).t0_t1{idx};
     tr = ndi.time.timereference(e,ndi.time.clocktype('exp_global_time'),[],0)
     [d,t] = e.readtimeseries(tr,t0t1(1),t0t1(2));
-    t_ = datetime(t,'convertfrom','datenum');
-    sr = 1/seconds(t_(2)-t_(1));
-    windowSizeSamples = round(options.windowTime * sr);
-    d_ = zscore(d);
-    [sd, f, t_s] = spectrogram(d_, windowSizeSamples, 0, options.f, sr);
-    tr2 = ndi.time.timereference(e,ndi.time.clocktype('dev_local_time'),1,0);
-    ts = S.syncgraph.time_convert(tr2,t_s,e,ndi.time.clocktype('exp_global_time'));
-    % convert to decibles
-    spec = 10 * log10(abs(sd).^2);
+    d = zscore(d);
+    [spec,f,ts] = mlt.spectrogram(d,t,'frequencies',options.f, 'windowSizeTime', options.windowTime,'timeIsDatenum',true);
 end
 
 

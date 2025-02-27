@@ -1,5 +1,4 @@
 function [spectrogram_data, f, t_s] = makeSpectrogam(ndi_element_obj, epoch_id, frequencies, windowSizeTime)
-
 % MAKESPECTROGRAM - Calculate the spectrogram of an ndi.element
 %
 % [spectrogram_data, f, t_s] = MAKESPECTROGRAM(ndi_element_obj, epoch_id, frequencies, windowSizeTime)
@@ -32,13 +31,10 @@ end
 % Z-score the data
 data = zscore(data);
 
-sr = 1/(t(2)-t(1));
+% Call the mlt.spectrogram function with desired options using name/value pairs
+[spectrogram_data, f, t_s] = mlt.spectrogram(data, t, ...
+    'frequencies', frequencies, ...
+    'windowSizeTime', windowSizeTime, ...
+    'useDecibels', true, ...
+    'timeIsDatenum', false); % Assumes time is not datenum
 
-% Calculate the window size in samples
-windowSizeSamples = round(windowSizeTime * sr);
-
-[spectrogram_data, f, t_s] = spectrogram(data, windowSizeSamples, 0, frequencies, sr);
-
-% convert to decibles
-
-spectrogram_data = 10 * log10(abs(spectrogram_data).^2);

@@ -1,8 +1,59 @@
 function beats = detectHeartBeats(t, d, options)
-    %DETECTHEARTBEATS Detects heartbeats in PPG data.
+%DETECTHEARTBEATS Detect heartbeats in a pulsatile signal.
+%
+%   BEATS = DETECTHEARTBEATS(T, D, OPTIONS) detects heartbeats in a 
+%   pulsatile signal, such as a photoplethysmography (PPG) signal. 
+%   The function uses a threshold-based approach to identify 
+%   individual beats and their characteristics.
+%
+%   Inputs:
+%       T: A vector of timestamps corresponding to the signal. Can be either:
+%           - Numeric vector in seconds.
+%           - Datetime vector.
+%       D: A vector of signal values (e.g., PPG signal).
+%       OPTIONS: (Optional) A structure specifying detection parameters:
+%           THRESHOLD_HIGH: Upper threshold for beat detection (default: 0.75).
+%           THRESHOLD_LOW: Lower threshold for beat detection (default: -0.75).
+%           REFRACT: Minimum time between consecutive beats (refractory period, default: 0.2).
+%           amplitude_high_min: Minimum amplitude above THRESHOLD_HIGH (default: 0).
+%           amplitude_low_min: Minimum amplitude below THRESHOLD_LOW (default: 0).
+%           amplitude_min: Minimum peak-to-peak amplitude (default: 0).
+%           duration_min: Minimum beat duration (default: 0).
+%
+%   Outputs:
+%       BEATS: A structure array where each element represents a detected beat.
+%           Fields include:
+%               onset: Beat onset time (datetime if T is datetime, double in seconds otherwise).
+%               offset: Beat offset time (datetime if T is datetime, double in seconds otherwise).
+%               duty_cycle: Ratio of beat duration to the period between beats (double).
+%               period: Time between consecutive beats (double in seconds).
+%               instant_freq: Instantaneous heart rate (double in beats per second).
+%               amplitude: Peak-to-peak amplitude (double).
+%               amplitude_high: Amplitude above THRESHOLD_HIGH (double).
+%               amplitude_low: Amplitude below THRESHOLD_LOW (double).
+%               valid: Boolean indicating if the beat meets validity criteria.
+%               up_duration: Duration of the upward slope of the beat (double in seconds).
+%
+%   Notes:
+%   - The input signal D is assumed to be preprocessed and normalized.
+%   - The algorithm detects beats by identifying upward and downward 
+%     crossings of the specified thresholds.
+%   - The validity of each beat is assessed based on amplitude and duration criteria.
+%   - The function handles edge cases, such as incomplete beats at the end of the signal.
+%   - If T is a datetime vector, the output onset and offset times will be datetime values,
+%     while durations, period, and instant_freq will be double values in seconds.
+%
+%   Example:
+%       % Load PPG data with time in seconds
+%       %%%%[t_sec, d] = load_ppg_data_seconds somehow; 
+%       beats_sec = detectHeartBeats(t_sec, d);
+%
+%       % Load PPG data with datetime values
+%       %%%%%[t_datetime, d] = load_ppg_data_datetime somehow
+%       beats_datetime = detectHeartBeats(t_datetime, d);
 
     arguments
-        t (1,:) double {mustBeReal, mustBeFinite}
+        t (1,:) {mustBeA(t,{'double','datetime'})}
         d (1,:) double {mustBeReal, mustBeFinite, mustBeSameLength(t,d)}
         options.THRESHOLD_HIGH (1,1) double {mustBeReal} = 0.75
         options.THRESHOLD_LOW (1,1) double {mustBeReal} = -0.75
@@ -11,6 +62,14 @@ function beats = detectHeartBeats(t, d, options)
         options.amplitude_low_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
         options.amplitude_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
         options.duration_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
+    end
+
+    isDateTime = false;
+
+    if isa(t,'datetime'),
+        isDateTime = true;
+       datetime_t = t;
+       t = seconds(datetime_t - datetime_t(1));
     end
 
     % Ensure time is monotonically increasing
@@ -31,7 +90,9 @@ function beats = detectHeartBeats(t, d, options)
     AMPLITUDE_MIN = options.amplitude_min;
     DURATION_MIN = options.duration_min;
 
-    beats = struct('onset', {}, 'offset', {}, 'duty_cycle', {}, 'period', {}, 'instant_freq', {}, 'amplitude', {}, 'amplitude_high', {}, 'amplitude_low', {}, 'valid', {}, 'up_duration', {});
+    beats = struct('onset', {}, 'offset', {}, 'duty_cycle', {}, 'period', {}, ...
+        'instant_freq', {}, 'amplitude', {}, 'amplitude_high', {}, ...
+         'amplitude_low', {}, 'valid', {}, 'up_duration', {});
     beat_count = 0;
     last_onset = -Inf;
     last_offset = -Inf;
@@ -189,6 +250,13 @@ function beats = detectHeartBeats(t, d, options)
         end
 
         last_offset = beats(beat_count).offset;
+    end
+
+    if isDateTime,
+        for i=1:numel(beats),
+           beats(i).onset = datetime_t(1) + seconds(beats(i).onset);
+           beats(i).offset = datetime_t(1) + seconds(beats(i).offset);
+        end
     end
 end
 
