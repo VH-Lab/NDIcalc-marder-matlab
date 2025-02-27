@@ -15,7 +15,8 @@ for i=1:numel(p),
     e = S.getelements('element.name',[p{i}.name '_lp'],'element.reference',p{i}.reference);
     if isempty(e),
         disp(['Creating downsampled element...will take several minutes. Check out log file to see progress.']);
-        ndi.element.downsample(S,p{i},100,[p{i}.name '_lp'],p{i}.reference);
+        elem_out_ds = ndi.element.downsample(S,p{i},100,[p{i}.name '_lp'],p{i}.reference);
+        elem_out_o = ndi.element.oneepoch(S,elem_out_ds,[p{i}.name '_lp_whole'],p{i}.reference);
     end
 end
 
