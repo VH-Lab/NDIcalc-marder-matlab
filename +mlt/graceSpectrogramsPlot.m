@@ -33,7 +33,7 @@ ax = [];
 
 for i=1:numel(p)
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
-    e = S.getelements('element.name',[p{i}.name '_lp'],'element.reference',p{i}.reference);
+    e = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
     if isempty(e)
         error(['No ''_lp'' version of ' p{i}.elementstring]);
     end

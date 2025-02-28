@@ -37,7 +37,7 @@ end
 
 e = e{1};
 
-et = e.epochtable()
+et = e.epochtable();
 
 spec = [];
 ts = [];
@@ -58,12 +58,11 @@ if isempty(idx), % no global time
     end
 else
     t0t1 = et(1).t0_t1{idx};
-    tr = ndi.time.timereference(e,ndi.time.clocktype('exp_global_time'),[],0)
+    tr = ndi.time.timereference(e,ndi.time.clocktype('exp_global_time'),[],0);
     [d,t] = e.readtimeseries(tr,t0t1(1),t0t1(2));
     d = zscore(d);
     [spec,f,ts] = mlt.spectrogram(d,t,'frequencies',options.f, 'windowSizeTime', options.windowTime,'timeIsDatenum',true);
 end
-
 
 waitbar(1,wb,"Working on whole day spectrogram")
 

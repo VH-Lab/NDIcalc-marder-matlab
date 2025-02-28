@@ -11,12 +11,9 @@ function gracePlotAll(S)
 % 
 
 
-axS = mlt.graceSpectrogramsPlot(S)
-
+axS = mlt.graceSpectrogramsPlot(S);
 axHB = mlt.graceHeartBeatPlot(S);
-
 axS2 = mlt.graceSpectrogramsBeatOverlayPlot(S)
-
 linkaxes(cat(1,axS,axHB,axS2),'x');
 
 

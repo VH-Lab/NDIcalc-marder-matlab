@@ -18,7 +18,7 @@ ax = [];
 
 for i=1:numel(p),
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
-    e = S.getelements('element.name',[p{i}.name '_lp'],'element.reference',p{i}.reference);
+    e = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
     if isempty(e),
         error(['No ''_lp'' version of ' p{i}.elementstring]);
     end
@@ -29,12 +29,19 @@ for i=1:numel(p),
     load(filenameB,'-mat');
     mlt.gracePlotSpectrogram(spec,f,ts);
     hold on;
-    good = find(~isnan([beats.instant_freq]));    
-    plot([beats(good).onset]/(60*60),[beats(good).instant_freq],'k','linewidth',2);
+    good = find(~isnan([beats.instant_freq]));
+    if isa(beats(1).onset,'datetime')
+        plot([beats(good).onset],[beats(good).instant_freq],'k','linewidth',2);
+        if i==4,
+            xlabel('Time');
+        end;                
+    else    
+        plot([beats(good).onset]/(60*60),[beats(good).instant_freq],'k','linewidth',2);
+        if i==4,
+            xlabel('Time from start (hr)');
+        end;        
+    end
     title([e{1}.elementstring],'interp','none');
-    if i==4,
-        xlabel('Time from start (hr)');
-    end;
 end
 
 linkaxes(ax,'x');
