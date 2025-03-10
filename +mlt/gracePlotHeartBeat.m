@@ -29,21 +29,23 @@ else
     time_unit = 'Time (hr)'; % X-axis label for hours
 end
 
+good = ([beats.valid]);
+
 ax1 = subplot(3,1,1);
 plot(t_plot, d);
 hold on;
-plot([beats.onset], 0, 'ko');
-plot([beats.offset], 0, 'kx');
+plot([beats(good).onset], zeros(size(good)), 'ko');
+plot([beats(good).offset], zeros(size(good)), 'kx');
 box off;
 ylabel('PPG');
 
 ax2 = subplot(3,1,2);
-plot([beats.onset], [beats.instant_freq]);
+plot([beats(good).onset], [beats(good).instant_freq]);
 ylabel('Beat frequency (Hz)');
 box off;
 
 ax3 = subplot(3,1,3);
-plot([beats.onset], [beats.duty_cycle]);
+plot([beats(good).onset], [beats(good).duty_cycle]);
 xlabel(time_unit);
 ylabel('Duty cycle');
 box off;
