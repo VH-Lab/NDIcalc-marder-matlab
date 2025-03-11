@@ -31,12 +31,14 @@ for i=1:numel(p),
     hold on;
     good = find(~isnan([beats.instant_freq]));
     if isa(beats(1).onset,'datetime')
-        plot([beats(good).onset],[beats(good).instant_freq],'k','linewidth',2);
+        plot3([beats(good).onset],[beats(good).instant_freq],2e15*ones(size(good)),...
+            'k-','linewidth',2);
         if i==4,
             xlabel('Time');
         end;                
     else    
-        plot([beats(good).onset]/(60*60),[beats(good).instant_freq],'k','linewidth',2);
+        plot3([beats(good).onset]/(60*60),[beats(good).instant_freq],2e15*ones(size(good)),...
+            'k-','linewidth',2);
         if i==4,
             xlabel('Time from start (hr)');
         end;        
