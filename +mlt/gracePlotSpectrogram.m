@@ -15,6 +15,13 @@ function gracePlotSpectrogram(spec, f, ts, options)
 %           OPTIONS.convertLinearToDB: Logical, convert linear to dB (default false).
 %           OPTIONS.shading: Shading style ('faceted', 'flat', or 'interp', default 'flat').
 %           OPTIONS.drawLabels: Logical, whether to draw axis labels (default true).
+%           OPTIONS.colorbar: Logical, whether to draw a colorbar (default false).
+%           OPTIONS.maxColorPercentile:  The percentile of data to use as
+%                                       the maximum value for the color scale. (default 99).
+%           OPTIONS.colormapName: Name of the colormap to use (default 'parula').
+
+
+
 
 arguments
     spec (:,:) double; % Spectrogram data (matrix)
@@ -24,6 +31,9 @@ arguments
     options.convertLinearToDB (1,1) logical = false;
     options.shading (1,:) char {mustBeMember(options.shading,{'faceted','flat','interp'})} = 'flat';
     options.drawLabels (1,1) logical = true;
+    options.colorbar (1,1) logical = false;
+    options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99;
+    options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula';
 end
 
 % Apply dB/linear conversions
@@ -38,6 +48,9 @@ else
     zlabelString = 'Power'; % Default z-label
 end
 
+% --- Calculate the color scale maximum ---
+max_color_value = prctile(plottedSpec(:), options.maxColorPercentile);
+
 % Plot the spectrogram
 if isa(ts, 'datetime')
     surf(ts, f, plottedSpec);
@@ -48,6 +61,12 @@ end
 % Set plot appearance
 view(0, 90); % Top-down view
 shading(options.shading); % Apply shading style
+
+% --- Set the color axis limit ---
+caxis([min(plottedSpec(:)), max_color_value]);
+
+% --- Apply the specified colormap ---
+colormap(options.colormapName);
 
 % Add labels if requested
 if options.drawLabels
@@ -60,4 +79,9 @@ if options.drawLabels
     zlabel(zlabelString); % Set the appropriate z-label
     title('Spectrogram');
 end
+
+if options.colorbar
+    colorbar;
+end
+
 

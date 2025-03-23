@@ -1,4 +1,4 @@
-function ax = graceSpectrogramsPlot(S)
+function ax = graceSpectrogramsPlot(S, options)
 %GRACESPECTROGRAMSPLOT Plot spectrograms for PPG elements.
 %
 %   AX = GRACESPECTROGRAMSPLOT(S) plots spectrograms for all PPG elements 
@@ -14,6 +14,10 @@ function ax = graceSpectrogramsPlot(S)
 %
 %   Input Arguments:
 %       S: An ndi.session or ndi.dataset object.
+%   Options:
+%       options.colorbar (1,1) logical = false;  Whether to draw the color bar.
+%       options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99; The percentile of data to use as the max value for the color scale.
+%       options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula'; Name of the colormap to use.
 %
 %   Output Arguments:
 %       AX: An array of axes handles for the generated subplots.
@@ -21,6 +25,9 @@ function ax = graceSpectrogramsPlot(S)
 % Verify input type
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
+    options.colorbar (1,1) logical = false;    
+    options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99;
+    options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula';
 end
 
 p = S.getprobes('type','ppg');
@@ -40,10 +47,13 @@ for i=1:numel(p)
     filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat']);
     load(filename,'-mat');
     ax(end+1,1) = subplot(4,1,i);
-    mlt.gracePlotSpectrogram(spec,f,ts);
+    mlt.gracePlotSpectrogram(spec, f, ts, ...
+        'colorbar', options.colorbar, ...
+        'maxColorPercentile', options.maxColorPercentile, ...
+        'colormapName', options.colormapName);  % Pass as name-value pairs
     title([e{1}.elementstring],'interp','none');
 end
 
-linkaxes(ax,'x');
+linkaxes(ax,'xy');
 
 end
