@@ -60,7 +60,7 @@ end
 
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
-beats = mlt.detectHeartBeats(t,d);
+beats = mlt.detectHeartBeatsImproved(t,d);
 
 close(wb);
 
