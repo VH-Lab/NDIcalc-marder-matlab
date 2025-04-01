@@ -1,4 +1,4 @@
-function z = movzscore(x, k, options)
+function z = movzscore(x, k, dim, options)
 %MOVZSCORE - Moving z-score
 %
 %   Returns the local k-point centered z-score, where each z-score is
@@ -39,7 +39,7 @@ function z = movzscore(x, k, options)
         x
         k
         options.Endpoints {mustBeMember(options.Endpoints,{'shrink','discard','fill'})} = 'shrink'
-        options.Dimension {mustBePositiveIntegerScalar} = []
+        options.Dimension {mustBeInteger, mustBeScalarOrEmpty, mustBePositive} = []
         options.NaNFlag {mustBeMember(options.NaNFlag,{'omitmissing','omitnan','includemissing','includenan'})} = 'omitmissing'
         options.SamplePoints = []
         options.DataVariables = []
