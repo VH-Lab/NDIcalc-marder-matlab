@@ -1,4 +1,4 @@
-function z = movzscore(x, k, dim, options)
+function z = movzscore(x, k, options)
 %MOVZSCORE - Moving z-score
 %
 %   Returns the local k-point centered z-score, where each z-score is
@@ -18,13 +18,15 @@ function z = movzscore(x, k, dim, options)
 %       [kb kf] - Directional window length
 %         numeric or duration row vector containing two elements
 %       Options - Optional arguments specified as name-value pairs
-%         Endpoints - Method to treat leading and trailing windows
-%           "shrink" (default) | "discard" | "fill" | numeric or logical scalar
+%         Weight - Weight indicator for the standard deviation
+%           0 (default) | 1
 %         Dimension - Dimension to operate along
 %           positive integer scalar
 %         NaNFlag - Missing value condition
-%           "omitmissing" (default) | "omitnan" | "includemissing" |
-%           "includenan"
+%           "includemissing" (default) | "includenan" | "omitmissing" |
+%           "omitnan"
+%         Endpoints - Method to treat leading and trailing windows
+%           "shrink" (default) | "discard" | "fill" | numeric or logical scalar
 %         SamplePoints - Sample points for computing minimums
 %           vector
 %         DataVariables - Table or timetable variables to operate on
@@ -37,34 +39,46 @@ function z = movzscore(x, k, dim, options)
 
     arguments
         x
-        k
-        options.Endpoints {mustBeMember(options.Endpoints,{'shrink','discard','fill'})} = 'shrink'
+        k {mustBeA(k,{'datetime','duration','double'}),mustBeNonempty}
+        options.Weight {mustBeMember(options.Weight,[0 1])} = 0
         options.Dimension {mustBeInteger, mustBeScalarOrEmpty, mustBePositive} = []
-        options.NaNFlag {mustBeMember(options.NaNFlag,{'omitmissing','omitnan','includemissing','includenan'})} = 'omitmissing'
+        options.NaNFlag {mustBeMember(options.NaNFlag,{'includemissing','includenan','omitmissing','omitnan'})} = 'includemissing'
+        options.Endpoints {mustBeMember(options.Endpoints,{'shrink','discard','fill'})} = 'shrink'
         options.SamplePoints = []
         options.DataVariables = []
         options.ReplaceValues (1,1) logical = true
+        
     end
 
+    % Compile arguments to pass to movmean and movstd
     tabular = istable(x);
-    discard = strcmp(options.Endpoints, 'discard');
-    replace = options.ReplaceValues;
+    discard = false;
     otherArgs = {};
-
     if ~isempty(options.Dimension)
-        otherArgs = [otherArgs, {'Dimension', options.Dimension}];
+        otherArgs = [otherArgs, {options.Dimension}];
     end
     if ~isempty(options.NaNFlag)
-        otherArgs = [otherArgs, {'NaNFlag', options.NaNFlag}];
+        otherArgs = [otherArgs, {options.NaNFlag}];
     end
+    if strcmp(options.Endpoints,'discard')
+        options.Endpoints = 'fill';
+        if tabular
+            warning('"Endpoints" value must be "shrink", "fill", or a numeric or logical value when the data is tabular. Using "fill" instead.')
+        else
+            discard = true;
+        end
+    end
+    otherArgs = [otherArgs, {'Endpoints', options.Endpoints}];
     if ~isempty(options.SamplePoints)
         otherArgs = [otherArgs, {'SamplePoints', options.SamplePoints}];
     end
-    if ~isempty(options.Endpoints) && ~strcmp(options.Endpoints, 'discard') % 'discard' is handled separately
-        otherArgs = [otherArgs, {'Endpoints', options.Endpoints}];
-    end
-
-    if tabular && ~isempty(options.DataVariables)
+    if tabular
+        if isempty(options.DataVariables)
+            options.DataVariables = @isnumeric;
+            warning(['No "DataVariables" specified. Calculating z-score on the numeric variable(s): ',...
+                strjoin(x(:,vartype('numeric')).Properties.VariableNames,','),'.'])
+        end
+        otherArgs = [otherArgs, {'DataVariables', options.DataVariables}];
         if isa(options.DataVariables,'vartype')
             varNames = x(:,options.DataVariables).Properties.VariableNames;
         elseif isstring(options.DataVariables) || ischar(options.DataVariables)
@@ -77,10 +91,8 @@ function z = movzscore(x, k, dim, options)
         elseif iscell(options.DataVariables)
             varNames = options.DataVariables;
         else
-            error('Unsupported data type for ''DataVariables''.');
+            error('Unsupported data type for "DataVariables".');
         end
-    elseif tabular
-        varNames = x.Properties.VariableNames(vartype('numeric'));
     else
         varNames = [];
     end
@@ -89,63 +101,29 @@ function z = movzscore(x, k, dim, options)
     mu = movmean(x, k, otherArgs{:});
 
     % Compute moving standard deviation
-    w = 0;
-    sigma = movstd(x, k, w, otherArgs{:});
+    sigma = movstd(x, k, options.Weight, otherArgs{:});
 
     % Compute moving z-score
     if tabular
         z = x;
-        if ~isempty(varNames)
-            for i = 1:numel(varNames)
-                z.(varNames{i}) = (x.(varNames{i}) - mu.(varNames{i})) ./ sigma.(varNames{i});
-            end
-        end
+        z(:,varNames) = (x(:,varNames)-mu(:,varNames))./sigma(:,varNames);
     else
-        z = (x - mu) ./ sigma;
+        z = (x - mu)./sigma;
     end
 
     % Discard endpoint values (if applicable)
     if discard
-        if tabular && ~isempty(varNames)
-            % Need to handle table case for discard
-            sz = size(z);
-            if ~isempty(options.Dimension) && options.Dimension <= ndims(z)
-                idx = cell(1,ndims(z));
-                for iDim = 1:ndims(z)
-                    if iDim == options.Dimension
-                        idx{iDim} = k(1)+1:sz(iDim)-k(end);
-                    else
-                        idx{iDim} = 1:sz(iDim);
-                    end
-                end
-                z = z(idx{:});
-            elseif isvector(z)
-                z = z(k(1)+1:end-k(end));
-            else
-                warning('Discarding endpoints for tables without a specified dimension might not behave as expected.');
-                % For a general table without dimension, it's hard to define what "endpoints" mean.
-                % A simple approach would be to convert to array, discard, and convert back,
-                % but this might lose table structure. For now, we might skip or issue a more specific warning.
-            end
-        else
-            if isvector(z)
-                z = z(k(1)+1:end-k(end));
-            else
-                % For multidimensional arrays, discarding without dimension is not well-defined.
-                warning('Discarding endpoints for multidimensional arrays without a specified dimension might not behave as expected.');
-            end
-        end
+        z = z(~isnan(z));
     end
 
-    % Append z-score to table if 'ReplaceValues' is false
-    if tabular && ~replace && ~isempty(varNames)
-        renameVars = @(v, f) cellfun(@(vv) [vv, '_', f], cellstr(v), 'UniformOutput', false);
-        newVarNames = renameVars(varNames, 'movzscore');
-        for i = 1:numel(varNames)
-            z.(newVarNames{i}) = (x.(varNames{i}) - mu.(varNames{i})) ./ sigma.(varNames{i});
+    % Append z-score to table if "ReplaceValues" is false
+    if ~options.ReplaceValues
+        if iscell(varNames)
+            renameVars = @(v,f) cellfun(@(v) [v,'_',f],v,'UniformOutput',false);
+        else
+            renameVars = @(v,f) [v,'_',f];
         end
-    elseif tabular && ~replace && isempty(varNames)
-        warning('No numeric variables found to create moving z-score columns.');
+        z(:,renameVars(varNames,'movzscore')) = z(:,varNames);
+        z(:,varNames) = x(:,varNames);
     end
 end
-
