@@ -11,6 +11,7 @@ function [beats, d, t] = wholeDayHeartBeat(S, options)
 %       OPTIONS: A structure containing optional parameters.
 %           e_name: The name of the ndi.element to analyze (default: 'ppg_heart_lp').
 %           e_reference: The reference number of the ndi.element (default: 1).
+%           zscoreWindowTime: The z-score time window in seconds (default: 3600).
 %
 %   Outputs:
 %       BEATS: A vector of heart beat timestamps.
@@ -22,6 +23,7 @@ arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     options.e_name (1,:) char {mustBeTextScalar} = 'ppg_heart_lp'
     options.e_reference (1,1) double {mustBePositive, mustBeInteger} = 1
+    options.zscoreWindowTime (1,1) double {mustBeNonnegative} = 3600
 end
 
 % Get the specified ndi.element
@@ -55,7 +57,11 @@ else % 'exp_global_time' exists, read a single epoch
     tr = ndi.time.timereference(e,ndi.time.clocktype('exp_global_time'),[],0);
     [d,t] = e.readtimeseries(tr,t0t1(1),t0t1(2));
     t = datetime(t,'convertFrom','datenum');
-    d = zscore(d);
+    if options.zscoreWindowTime == 0
+        d = zscore(d);
+    else
+        d = mlt.movzscore(d,seconds(options.zscoreWindowTime),'SamplePoints',t);
+    end
 end
 
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
