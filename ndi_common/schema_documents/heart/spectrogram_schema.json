@@ -1,6 +1,6 @@
 {
 	"classname": "spectrogram",
-	"superclasses":  [ "base", "ngrid", "epoch_id" ],
+	"superclasses":  [ "base", "ngrid", "epochid" ],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1}
 	],

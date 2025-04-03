@@ -8,7 +8,7 @@
 		"superclasses": [
 			{ "definition":                 "$NDIDOCUMENTPATH\/base.json"},
 			{ "definition":                 "$NDIDOCUMENTPATH\/data\/ngrid.json"},
-			{ "definition":                 "$NDIDOCUMENTPATH\/epoch_id.json"}
+			{ "definition":                 "$NDIDOCUMENTPATH\/epochid.json"}
 		]
 	},
 	"depends_on": [
@@ -16,6 +16,9 @@
 			"value":	"" 
 		}
 	],
+	"files": {
+		"file_list": [ "spectrogram_results.ngrid" ]
+    },
 	"spectrogram":  {
 		"frequency_ngrid_dim":		"",
 		"timestamp_ngrid_dim":		"",

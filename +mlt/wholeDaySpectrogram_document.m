@@ -71,19 +71,23 @@ else
         'windowSizeTime', options.windowTime,'timeIsDatenum',false);
 end
 
-% Write spectrogram data to binary file
+% Collect metadata
 ngrid = mlt.mat2ngrid(spec,f,ts);
 spect = struct('frequency_ngrid_dim',1,'timestamp_ngrid_dim',2,'decibels',true);
 epoch_id = struct('epochid',et(1).epoch_id);
-filePath = fullfile(S.path,[e(1).name '_' int2str(e(1).reference) '.ngrid']);
+
+% Make ndi document
+doc = ndi.document('spectrogram','spectrogram',spect,'epochid',epoch_id,...
+    'ngrid',ngrid) + S.newdocument(); % takes info from S and adds to the new ndi document
+doc = doc.set_dependency_value('element_id',e.id());
+
+% Write spectrogram data to binary file
+filePath = fullfile(S.path,[doc.id() '.ngrid']);
 mlt.writengrid(spec,filePath,ngrid.data_type);
 % spec2 = mlt.readngrid(filePath,ngrid.data_dim,ngrid.data_type);
 
-% Save spectrogram to ndi document
-doc = ndi.document('spectrogram','spectrogram',spect,'epoch_id',epoch_id,...
-    'ngrid',ngrid) + S.newdocument(); % takes info from S and adds to the new ndi document
-doc = doc.set_dependency_value('element_id',e.id());
-doc = doc.add_file(options.e_name,filePath);
+% Add file to ndi document
+doc = doc.add_file('spectrogram_results.ngrid',filePath);
 % Do we need to add epoch_clocktimes as a superclass?
 
 waitbar(1,wb,"Working on whole day spectrogram")
