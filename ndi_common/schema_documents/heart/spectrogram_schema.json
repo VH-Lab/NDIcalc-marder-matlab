@@ -1,0 +1,34 @@
+{
+	"classname": "spectrogram",
+	"superclasses":  [ "base", "ngrid", "epoch_id" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"spectrogram": [
+		{
+			"name": "frequency_ngrid_dim",
+			"type": "integer",
+			"default_value": "1",
+			"parameters": [1,NaN,0],
+			"queryable": 1,
+			"documentation": "The ngrid dimension corresponding to frequency."
+		},
+		{
+			"name": "timestamp_ngrid_dim",
+			"type": "integer",
+			"default_value": "2",
+			"parameters": [1,NaN,0],
+			"queryable": 1,
+			"documentation": "The ngrid dimension corresponding to time."
+		},
+		{
+			"name": "decibels",
+			"type": "integer",
+			"default_value": "1",
+			"parameters": [0,1,0],
+			"queryable": 1,
+			"documentation": "Defines if data is in decibels."
+		}
+	]
+}
