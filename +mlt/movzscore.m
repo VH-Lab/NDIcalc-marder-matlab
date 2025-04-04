@@ -1,41 +1,88 @@
 function z = movzscore(x, k, options)
-%MOVZSCORE - Moving z-score
+%MOVZSCORE - Moving z-score calculation.
 %
-%   Returns the local k-point centered z-score, where each z-score is
-%   calculated over a sliding window of length k across neighboring
-%   elements of X.
+%   Computes the moving z-score of the input data X using a sliding window.
+%   The z-score is calculated for each element by centering and scaling
+%   the element with the mean and standard deviation of its k neighbors.
 %
-%   Syntax
-%       Z = MOVZSCORE(X,k)
-%       Z = MOVZSCORE(X,[kb kf])
-%       Z = MOVZSCORE(___,Options)
+%   Syntax:
+%       Z = MOVZSCORE(X, k)
+%           Calculates the moving z-score using a window of length k.
 %
-%   Input Arguments
-%       X - Input data
-%         vector | matrix | multidimensional array | table | timetable
-%       k - Window length
-%         numeric or duration scalar
-%       [kb kf] - Directional window length
-%         numeric or duration row vector containing two elements
-%       Options - Optional arguments specified as name-value pairs
-%         Weight - Weight indicator for the standard deviation
-%           0 (default) | 1
-%         Dimension - Dimension to operate along
-%           positive integer scalar
-%         NaNFlag - Missing value condition
-%           "includemissing" (default) | "includenan" | "omitmissing" |
-%           "omitnan"
-%         Endpoints - Method to treat leading and trailing windows
-%           "shrink" (default) | "discard" | "fill" | numeric or logical scalar
-%         SamplePoints - Sample points for computing minimums
-%           vector
-%         DataVariables - Table or timetable variables to operate on
-%           table or timetable variable name | scalar | vector | cell array |
-%           pattern | function handle | table vartype subscript
-%         ReplaceValues - Replace values indicator
-%           true or 1 (default) | false or 0
+%       Z = MOVZSCORE(X, [kb kf])
+%           Calculates the moving z-score using a directional window, where
+%           kb is the number of elements before and kf is the number of
+%           elements after the current element.
 %
-%   See also MOVMEAN, MOVSTD
+%       Z = MOVZSCORE(..., Options)
+%           Specifies additional options using name-value pairs.
+%
+%   Input Arguments:
+%       X - Input data.
+%           Vector, matrix, multidimensional array, table, or timetable.
+%
+%       k - Window length.
+%           Numeric or duration scalar.
+%
+%       [kb kf] - Directional window length.
+%           Numeric or duration row vector containing two elements.
+%           kb: Number of elements before the current element.
+%           kf: Number of elements after the current element.
+%
+%       Options - Optional parameters specified as name-value pairs.
+%           'Weight'        - Weight indicator for standard deviation.
+%                             0 (default): Normalization by N-1.
+%                             1: Normalization by N.
+%
+%           'Dimension'     - Dimension to operate along.
+%                             Positive integer scalar.
+%
+%           'NaNFlag'       - Missing value handling.
+%                             'includemissing' (default) or 'includenan': Include NaN/missing values.
+%                             'omitmissing' or 'omitnan': Exclude NaN/missing values.
+%
+%           'Endpoints'     - Method to treat leading and trailing windows.
+%                             'shrink' (default): Window shrinks at edges.
+%                             'discard': Discard edge values (not supported for tables).
+%                             'fill': Fill edge values with NaN.
+%                             Numeric or logical scalar: Fill edge values with scalar.
+%
+%           'SamplePoints'  - Sample points for computation.
+%                             Vector.
+%
+%           'DataVariables' - Table or timetable variables to operate on.
+%                             Table variable name, scalar, vector, cell array,
+%                             pattern, function handle, or table vartype subscript.
+%                             Default: Numeric variables.
+%
+%           'ReplaceValues' - Replace original values with z-scores.
+%                             true (default) or 1: Replace original values.
+%                             false or 0: Append z-scores as new variables.
+%
+%   Output Arguments:
+%       Z - Moving z-score.
+%           Same type and size as X, or table/timetable with appended z-score
+%           variables depending on the 'ReplaceValues' option.
+%
+%   Example:
+%       x = randn(100, 1);
+%       z = movzscore(x, 10); % Moving z-score with window length 10.
+%
+%       x = table(randn(10, 2), randn(10, 2), 'VariableNames', {'A', 'B', 'C', 'D'});
+%       z = movzscore(x, 3, 'DataVariables', {'A', 'C'}, 'ReplaceValues', false);
+%
+%   See also: MOVMEAN, MOVSTD.
+%
+%   Notes:
+%       - When 'Endpoints' is 'discard' and X is a table, 'Endpoints' is
+%         automatically set to 'fill' with a warning.
+%       - If 'DataVariables' is not specified for tables, numeric variables
+%         are used by default.
+%
+%   Error Handling:
+%       - 'MOVZSCORE:endpointsDiscardTabular' : When 'Endpoints' is 'discard' and X is a table.
+%       - 'MOVZSCORE:defaultDataVariables' : When DataVariables is not specified for tables.
+%       - 'MOVZSCORE:invalidDataVariables' : When DataVariables is an unsupported datatype.
 
     arguments
         x
@@ -63,7 +110,8 @@ function z = movzscore(x, k, options)
     if strcmp(options.Endpoints,'discard')
         options.Endpoints = 'fill';
         if tabular
-            warning('"Endpoints" value must be "shrink", "fill", or a numeric or logical value when the data is tabular. Using "fill" instead.')
+            warning('MOVZSCORE:endpointsDiscardTabular', ...
+                'The ''Endpoints'' value must be ''shrink'', ''fill'', or a numeric or logical value when the data is tabular. Using ''fill'' instead.');
         else
             discard = true;
         end
@@ -75,7 +123,8 @@ function z = movzscore(x, k, options)
     if tabular
         if isempty(options.DataVariables)
             options.DataVariables = @isnumeric;
-            warning(['No "DataVariables" specified. Calculating z-score on the numeric variable(s): ',...
+            warning('MOVZSCORE:defaultDataVariables', ...
+                ['No "DataVariables" specified. Calculating z-score on the numeric variable(s): ',...
                 strjoin(x(:,vartype('numeric')).Properties.VariableNames,','),'.'])
         end
         otherArgs = [otherArgs, {'DataVariables', options.DataVariables}];
@@ -91,7 +140,7 @@ function z = movzscore(x, k, options)
         elseif iscell(options.DataVariables)
             varNames = options.DataVariables;
         else
-            error('Unsupported data type for "DataVariables".');
+            error('MOVZSCORE:invalidDataVariables', 'Unsupported data type for ''DataVariables''.');
         end
     else
         varNames = [];
