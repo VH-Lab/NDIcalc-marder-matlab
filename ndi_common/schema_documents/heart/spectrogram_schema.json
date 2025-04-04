@@ -10,7 +10,7 @@
 			"name": "frequency_ngrid_dim",
 			"type": "integer",
 			"default_value": "1",
-			"parameters": [1,NaN,0],
+			"parameters": [1,1000000,0],
 			"queryable": 1,
 			"documentation": "The ngrid dimension corresponding to frequency."
 		},
@@ -18,7 +18,7 @@
 			"name": "timestamp_ngrid_dim",
 			"type": "integer",
 			"default_value": "2",
-			"parameters": [1,NaN,0],
+			"parameters": [1,1000000,0],
 			"queryable": 1,
 			"documentation": "The ngrid dimension corresponding to time."
 		},
