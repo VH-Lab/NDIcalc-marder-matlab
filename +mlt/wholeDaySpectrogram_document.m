@@ -1,7 +1,8 @@
 function [doc] = wholeDaySpectrogram_document(S, options)
-% WHOLEDAYSPECTROGRAM - generate a spectrogram for a whole day's recording from ppg_heart_lp
+% WHOLEDAYSPECTROGRAM - generate a spectrogram for a whole day's recording 
+%   from ppg_heart_lp and save document to database.
 % 
-% [SPEC, F, TS] = WHOLEDAYSPECTROGRAM(S, ...)
+% [DOC] = WHOLEDAYSPECTROGRAM(S, ...)
 %
 % Computes a spectrogram for an entire ndi.element's worth of data.
 %
@@ -76,6 +77,15 @@ ngrid = mlt.mat2ngrid(spec,f,ts);
 spect = struct('frequency_ngrid_dim',1,'timestamp_ngrid_dim',2,'decibels',true);
 epoch_id = struct('epochid',et(1).epoch_id);
 
+% Check if document already exists, if so, remove from database
+q1 = ndi.query('','isa','spectrogram');
+q2 = ndi.query('','depends_on','element_id',e.id());
+q3 = ndi.query('epochid.epochid','exact_string',et(1).epoch_id);
+doc_old = S.database_search(q1&q2&q3);
+if ~isempty(doc_old)
+    S.database_rm(doc_old);
+end
+
 % Make ndi document
 doc = ndi.document('spectrogram','spectrogram',spect,'epochid',epoch_id,...
     'ngrid',ngrid) + S.newdocument(); % takes info from S and adds to the new ndi document
@@ -88,7 +98,14 @@ mlt.writengrid(spec,filePath,ngrid.data_type);
 
 % Add file to ndi document
 doc = doc.add_file('spectrogram_results.ngrid',filePath);
-% Do we need to add epoch_clocktimes as a superclass?
+
+% Add document to database
+S.database_add(doc);
+if ~isempty(doc_old)
+    disp('Replaced "spectrogram" document in database.')
+else
+    disp('Added "spectrogram" document to database.')
+end
 
 waitbar(1,wb,"Working on whole day spectrogram")
 

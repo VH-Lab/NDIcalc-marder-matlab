@@ -4,7 +4,9 @@
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1}
 	],
-	"file": [ ],
+	"file": [ 
+		{"name": "spectrogram_results.ngrid", "mustbenotempty": 1}
+	],
 	"spectrogram": [
 		{
 			"name": "frequency_ngrid_dim",
