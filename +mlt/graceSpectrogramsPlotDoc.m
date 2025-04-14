@@ -71,6 +71,7 @@ for i=1:numel(p)
     ts = ngrid.coordinates(freqCoords + (1:timeCoords));
 
     % Plot spectrogram
+    figure(f);
     ax(end+1,1) = subplot(4,1,i);
     mlt.gracePlotSpectrogram(spec, f, ts, ...
         'colorbar', options.colorbar, ...

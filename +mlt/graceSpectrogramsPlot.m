@@ -46,6 +46,7 @@ for i=1:numel(p)
     end
     filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat']);
     load(filename,'-mat');
+    figure(f);
     ax(end+1,1) = subplot(4,1,i);
     mlt.gracePlotSpectrogram(spec, f, ts, ...
         'colorbar', options.colorbar, ...

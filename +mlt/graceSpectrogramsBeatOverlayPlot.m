@@ -74,6 +74,7 @@ for i=1:numel(p),
     end
     filenameSG = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat'])
     load(filenameSG,'-mat');
+    figure(f);
     ax(end+1,1) = subplot(4,1,i);
     filenameB = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '_beats.mat'])
     load(filenameB,'-mat');
