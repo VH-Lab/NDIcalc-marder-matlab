@@ -16,7 +16,7 @@ for i=1:numel(p),
     if isempty(e),
         error(['No ''_lp'' version of ' p{i}.elementstring]);
     end
-    [doc]=mlt.wholeDaySpectrogram_document(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
+    [doc]=mlt.wholeDaySpectrogramDoc(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
 end
 
 

@@ -1,4 +1,4 @@
-function [doc] = wholeDaySpectrogram_document(S, options)
+function [doc] = wholeDaySpectrogramDoc(S, options)
 % WHOLEDAYSPECTROGRAM - generate a spectrogram for a whole day's recording 
 %   from ppg_heart_lp and save document to database.
 % 
@@ -92,12 +92,11 @@ doc = ndi.document('spectrogram','spectrogram',spect,'epochid',epoch_id,...
 doc = doc.set_dependency_value('element_id',e.id());
 
 % Write spectrogram data to binary file
-filePath = fullfile(S.path,[doc.id() '.ngrid']);
+filePath = fullfile(S.path,[options.e_name '_' int2str(options.e_reference) '.ngrid']);
 mlt.writengrid(spec,filePath,ngrid.data_type);
-% spec2 = mlt.readngrid(filePath,ngrid.data_dim,ngrid.data_type);
 
 % Add file to ndi document
-doc = doc.add_file('spectrogram_results.ngrid',filePath);
+doc = doc.add_file('spectrogram_results.ngrid',filePath,'delete_original',0);
 
 % Add document to database
 S.database_add(doc);
