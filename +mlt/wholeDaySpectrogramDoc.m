@@ -96,7 +96,7 @@ filePath = fullfile(S.path,[options.e_name '_' int2str(options.e_reference) '.ng
 mlt.writengrid(spec,filePath,ngrid.data_type);
 
 % Add file to ndi document
-doc = doc.add_file('spectrogram_results.ngrid',filePath,'delete_original',0);
+doc = doc.add_file('spectrogram_results.ngrid',filePath);
 
 % Add document to database
 S.database_add(doc);

@@ -34,7 +34,7 @@ p = S.getprobes('type','ppg');
 
 path = S.path();
 
-f = figure;
+fig = figure;
 
 ax = [];
 
@@ -55,28 +55,32 @@ for i=1:numel(p)
     if isempty(doc)
         error(['Spectrogram document needs to be created for this session ' ...
             'prior to plotting.'])
-    elseif length(doc) > 1
+    elseif length(doc) == 1
+        doc = doc{1};
+    else
         error(['More than one spectrogram document found matching the ' ...
             'element and epoch id.'])
     end
-    filePath = doc{1}.document_properties.files.file_info.locations.location;
+    
     
     % Load spectrogram, timestamps, and frequencies
-    ngrid = doc{1}.document_properties.ngrid;
-    spec = mlt.readngrid(filePath,ngrid.data_dim,ngrid.data_type);
-    specProp = doc{1}.document_properties.spectrogram;
+    ngrid = doc.document_properties.ngrid;
+    specProp = doc.document_properties.spectrogram;
+    specDoc = database_openbinarydoc(S, doc, 'spectrogram_results.ngrid');
+    spec = mlt.readngrid(specDoc,ngrid.data_dim,ngrid.data_type);
+    database_closebinarydoc(S, specDoc);
     freqCoords = ngrid.data_dim(specProp.frequency_ngrid_dim);
     timeCoords = ngrid.data_dim(specProp.timestamp_ngrid_dim);
     f = ngrid.coordinates(1:freqCoords);
     ts = ngrid.coordinates(freqCoords + (1:timeCoords));
 
     % Plot spectrogram
-    figure(f);
+    figure(fig);
     ax(end+1,1) = subplot(4,1,i);
     mlt.gracePlotSpectrogram(spec, f, ts, ...
         'colorbar', options.colorbar, ...
         'maxColorPercentile', options.maxColorPercentile, ...
-        'colormapName', options.colormapName);  % Pass as name-value pairs
+        'colormapName', options.colormapName);
     title([e.elementstring],'interp','none');
 end
 

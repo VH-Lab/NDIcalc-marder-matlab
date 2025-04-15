@@ -1,16 +1,17 @@
-function x = readngrid(filePath, dataSize, dataType)
+function x = readngrid(fileName_or_fileObj, dataSize, dataType)
 %READNGRID - Read an n-dimensional matrix from a binary file.
 %
 %   Reads an n-dimensional matrix from a binary file, given the file path,
 %   the size of the matrix, and the data type of its elements.
 %
 %   Syntax:
-%       x = READNGRID(filePath, dataSize)
-%       x = READNGRID(filePath, dataSize, dataType)
+%       x = READNGRID(fileName_or_fileObj, dataSize)
+%       x = READNGRID(fileName_or_fileObj, dataSize, dataType)
 %
 %   Input Arguments:
-%       filePath - Character vector specifying the full path and filename
-%                  of the input binary file.
+%       fileName_or_fileObj - Character vector specifying the full path and
+%                  filename of the input binary file OR an object of type
+%                  vlt.file.fileobj.
 %       dataSize - Numeric vector specifying the dimensions of the 
 %                  n-dimensional matrix to be read (e.g., [100, 100, 5]).
 %       dataType - (Optional) Character vector specifying the data type of 
@@ -34,7 +35,7 @@ function x = readngrid(filePath, dataSize, dataType)
 %   See also: WRITENGRID.
 
     arguments
-        filePath (1,:) char {mustBeTextScalar}
+        fileName_or_fileObj (1,:) {mustBeFileNameOrFileObject}
         dataSize (1,:) double {mustBePositive, mustBeInteger}
         dataType (1,:) char {mustBeTextScalar} = 'double'
     end
@@ -50,12 +51,12 @@ function x = readngrid(filePath, dataSize, dataType)
     end
 
     % Attempt to open the file for reading.
-    fid = fopen(filePath, 'r', 'ieee-le'); % Force little-endian
+    fid = fopen(fileName_or_fileObj, 'r', 'ieee-le'); % Force little-endian
 
     % Check if the file was opened successfully.
     if fid < 0
         error('READNGRID:invalidFilePath',...
-            ['Could not open file ''' filePath ''' for reading. ' ...
+            ['Could not open file ''' fileName_or_fileObj ''' for reading. ' ...
             'Ensure the path is correct and the file exists.']);
     end
 
@@ -79,4 +80,19 @@ function x = readngrid(filePath, dataSize, dataType)
 
     % Close the file.
     fclose(fid);
+
+end
+
+function mustBeFileNameOrFileObject(fileName_or_fileObj)
+if ischar(fileName_or_fileObj)
+    if isfile(fileName_or_fileObj)
+        eid = 'FileName:notValid';
+        msg = 'File name is not valid. Check that the filename includes the full path';
+        throwAsCaller(MException(eid,msg))
+    end
+elseif ~isobject(fileName_or_fileObj)
+    eid = 'FileNameOrObject:notValid';
+    msg = 'File name or file object is not valid.';
+    throwAsCaller(MException(eid,msg))
+end
 end
