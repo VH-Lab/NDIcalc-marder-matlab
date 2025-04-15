@@ -48,14 +48,11 @@ for i=1:numel(p)
     et = e.epochtable();
 
     % Find spectrogram document
-    q1 = ndi.query('','isa','spectrogram');
-    q2 = ndi.query('','depends_on','element_id',e.id());
-    q3 = ndi.query('epochid.epochid','exact_string',et(1).epoch_id);
-    doc = S.database_search(q1&q2&q3);
+    doc = mlt.findDocs(S,e.id(),et(1).epoch_id,'spectrogram');
     if isempty(doc)
         error(['Spectrogram document needs to be created for this session ' ...
             'prior to plotting.'])
-    elseif length(doc) == 1
+    elseif isscalar(doc)
         doc = doc{1};
     else
         error(['More than one spectrogram document found matching the ' ...

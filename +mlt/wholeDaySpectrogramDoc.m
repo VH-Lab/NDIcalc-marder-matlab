@@ -78,10 +78,7 @@ spect = struct('frequency_ngrid_dim',1,'timestamp_ngrid_dim',2,'decibels',true);
 epoch_id = struct('epochid',et(1).epoch_id);
 
 % Check if document already exists, if so, remove from database
-q1 = ndi.query('','isa','spectrogram');
-q2 = ndi.query('','depends_on','element_id',e.id());
-q3 = ndi.query('epochid.epochid','exact_string',et(1).epoch_id);
-doc_old = S.database_search(q1&q2&q3);
+doc_old = mlt.findDocs(S,e.id(),et(1).epoch_id,'spectrogram');
 if ~isempty(doc_old)
     S.database_rm(doc_old);
 end
