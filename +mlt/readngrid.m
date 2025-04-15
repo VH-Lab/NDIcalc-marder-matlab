@@ -35,7 +35,7 @@ function x = readngrid(fileName_or_fileObj, dataSize, dataType)
 %   See also: WRITENGRID.
 
     arguments
-        fileName_or_fileObj (1,:) {mustBeFileNameOrFileObject}
+        fileName_or_fileObj (1,:) {mustBeA(fileName_or_fileObj,{'char', 'did.file.readonly_fileobj'})}
         dataSize (1,:) double {mustBePositive, mustBeInteger}
         dataType (1,:) char {mustBeTextScalar} = 'double'
     end
@@ -81,18 +81,4 @@ function x = readngrid(fileName_or_fileObj, dataSize, dataType)
     % Close the file.
     fclose(fid);
 
-end
-
-function mustBeFileNameOrFileObject(fileName_or_fileObj)
-if ischar(fileName_or_fileObj)
-    if isfile(fileName_or_fileObj)
-        eid = 'FileName:notValid';
-        msg = 'File name is not valid. Check that the filename includes the full path';
-        throwAsCaller(MException(eid,msg))
-    end
-elseif ~isobject(fileName_or_fileObj)
-    eid = 'FileNameOrObject:notValid';
-    msg = 'File name or file object is not valid.';
-    throwAsCaller(MException(eid,msg))
-end
 end
