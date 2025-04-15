@@ -4,10 +4,8 @@ function ax = graceSpectrogramsPlotDoc(S, options)
 %   AX = GRACESPECTROGRAMSPLOTDOC(S) plots spectrograms for all PPG elements 
 %   found in the ndi.session or ndi.dataset object S.
 %
-%   The spectrograms are generated from pre-calculated data files 
-%   (assumed to be named 'ppg_[element_name]_[element_reference].mat')
-%   located in the session/dataset path. Each file is expected to 
-%   contain variables 'spec', 'f', and 'ts'.
+%   The spectrograms are generated from pre-calculated document files using
+%   GRACESPECTROGRAMDOC.
 %
 %   The plots are arranged in a new figure with 4 rows and 1 column,
 %   with each row displaying the spectrogram of one PPG element.
