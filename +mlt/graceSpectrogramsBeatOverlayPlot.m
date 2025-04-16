@@ -65,7 +65,6 @@ path = S.path();
 f = figure;
 
 ax = [];
-
 for i=1:numel(p),
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
     e = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
@@ -74,7 +73,6 @@ for i=1:numel(p),
     end
     filenameSG = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat'])
     load(filenameSG,'-mat');
-    figure(f);
     ax(end+1,1) = subplot(4,1,i);
     filenameB = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '_beats.mat'])
     load(filenameB,'-mat');
