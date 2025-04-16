@@ -40,7 +40,7 @@ for i=1:numel(p)
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
     e = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
     if isempty(e)
-        error(['No ''_lp'' version of ' p{i}.elementstring]);        
+        error(['No ''_lp'' version of ' p{i}.elementstring]);  
     end
     e = e{1};
     et = e.epochtable();
