@@ -65,7 +65,6 @@ path = S.path();
 f = figure;
 
 ax = [];
-
 for i=1:numel(p),
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
     e = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);

@@ -1,13 +1,11 @@
-function ax = graceSpectrogramsPlot(S, options)
-%GRACESPECTROGRAMSPLOT Plot spectrograms for PPG elements.
+function ax = graceSpectrogramsPlotDoc(S, options)
+%GRACESPECTROGRAMSPLOTDOC Plot spectrograms for PPG elements.
 %
-%   AX = GRACESPECTROGRAMSPLOT(S) plots spectrograms for all PPG elements 
+%   AX = GRACESPECTROGRAMSPLOTDOC(S) plots spectrograms for all PPG elements 
 %   found in the ndi.session or ndi.dataset object S.
 %
-%   The spectrograms are generated from pre-calculated data files 
-%   (assumed to be named 'ppg_[element_name]_[element_reference].mat')
-%   located in the session/dataset path. Each file is expected to 
-%   contain variables 'spec', 'f', and 'ts'.
+%   The spectrograms are generated from pre-calculated document files using
+%   GRACESPECTROGRAMDOC.
 %
 %   The plots are arranged in a new figure with 4 rows and 1 column,
 %   with each row displaying the spectrogram of one PPG element.
@@ -42,17 +40,43 @@ for i=1:numel(p)
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
     e = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
     if isempty(e)
-        error(['No ''_lp'' version of ' p{i}.elementstring]);
+        error(['No ''_lp'' version of ' p{i}.elementstring]);  
     end
-    filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat']);
-    load(filename,'-mat');
+    e = e{1};
+    et = e.epochtable();
+
+    % Find spectrogram document
+    doc = mlt.findDocs(S,e.id(),et(1).epoch_id,'spectrogram');
+    if isempty(doc)
+        error(['Spectrogram document needs to be created for this session ' ...
+            'prior to plotting.'])
+    elseif isscalar(doc)
+        doc = doc{1};
+    else
+        error(['More than one spectrogram document found matching the ' ...
+            'element and epoch id.'])
+    end
+    
+    
+    % Load spectrogram, timestamps, and frequencies
+    ngrid = doc.document_properties.ngrid;
+    specProp = doc.document_properties.spectrogram;
+    specDoc = database_openbinarydoc(S, doc, 'spectrogram_results.ngrid');
+    spec = mlt.readngrid(specDoc,ngrid.data_dim,ngrid.data_type);
+    database_closebinarydoc(S, specDoc);
+    freqCoords = ngrid.data_dim(specProp.frequency_ngrid_dim);
+    timeCoords = ngrid.data_dim(specProp.timestamp_ngrid_dim);
+    f = ngrid.coordinates(1:freqCoords);
+    ts = ngrid.coordinates(freqCoords + (1:timeCoords));
+
+    % Plot spectrogram
     figure(fig);
     ax(end+1,1) = subplot(4,1,i);
     mlt.gracePlotSpectrogram(spec, f, ts, ...
         'colorbar', options.colorbar, ...
         'maxColorPercentile', options.maxColorPercentile, ...
-        'colormapName', options.colormapName);  % Pass as name-value pairs
-    title([e{1}.elementstring],'interp','none');
+        'colormapName', options.colormapName);
+    title([e.elementstring],'interp','none');
 end
 
 linkaxes(ax,'xy');
