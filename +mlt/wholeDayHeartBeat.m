@@ -23,7 +23,7 @@ arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     options.e_name (1,:) char {mustBeTextScalar} = 'ppg_heart_lp'
     options.e_reference (1,1) double {mustBePositive, mustBeInteger} = 1
-    options.zscoreWindowTime (1,1) double {mustBeNonnegative} = 3600
+    options.zscoreWindowTime (1,1) double {mustBeNonnegative} = 60
 end
 
 % Get the specified ndi.element
@@ -67,6 +67,8 @@ end
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
 beats = mlt.detectHeartBeatsImproved(t,d);
+beats2 = mlt.detectBeats(t,d,'CrossingThreshold',-0.5);
+beats3 = mlt.filterBeats(beats2,'MinBeatAmplitude',1);
 
 close(wb);
 

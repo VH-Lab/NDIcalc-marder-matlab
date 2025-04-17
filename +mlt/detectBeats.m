@@ -1,4 +1,4 @@
-function beats = detectBeats(t, d, options)
+function [beats] = detectBeats(t, d, options)
 %DETECTBEATS Detect heartbeats in a pulsatile signal.
 %
 %   BEATS = DETECTBEATS(T, D, OPTIONS) detects heartbeats in a 
@@ -12,13 +12,9 @@ function beats = detectBeats(t, d, options)
 %           - Datetime vector.
 %       D: A vector of signal values (e.g., PPG signal).
 %       OPTIONS: (Optional) A structure specifying detection parameters:
-%           THRESHOLD_HIGH: Upper threshold for beat detection (default: 0.75).
-%           THRESHOLD_LOW: Lower threshold for beat detection (default: -0.75).
-%           REFRACT: Minimum time between consecutive beats (refractory period, default: 0.2).
-%           amplitude_high_min: Minimum amplitude above THRESHOLD_HIGH (default: 0).
-%           amplitude_low_min: Minimum amplitude below THRESHOLD_LOW (default: 0).
-%           amplitude_min: Minimum peak-to-peak amplitude (default: 0).
-%           duration_min: Minimum beat duration (default: 0).
+%           SmoothingParameter: Smoothing parameter for cubic smoothing
+%               spline (default: 0.9995)
+%           CrossingThreshold: Threshold for beat detection (default: 0)
 %
 %   Outputs:
 %       BEATS: A structure array where each element represents a detected beat.
@@ -29,9 +25,8 @@ function beats = detectBeats(t, d, options)
 %               period: Time between consecutive beats (double in seconds).
 %               instant_freq: Instantaneous heart rate (double in beats per second).
 %               amplitude: Peak-to-peak amplitude (double).
-%               amplitude_high: Amplitude above THRESHOLD_HIGH (double).
-%               amplitude_low: Amplitude below THRESHOLD_LOW (double).
-%               valid: Boolean indicating if the beat meets validity criteria.
+%               beat_max: Maximum beat amplitude (double).
+%               beat_min: Minimum beat amplitude (double).
 %               up_duration: Duration of the upward slope of the beat (double in seconds).
 %
 %   Notes:
@@ -55,13 +50,8 @@ function beats = detectBeats(t, d, options)
     arguments
         t (:,1) {mustBeA(t,{'double','datetime'})}
         d (:,1) double {mustBeReal, mustBeFinite, mustBeSameLength(t,d)}
-        options.THRESHOLD_HIGH (1,1) double {mustBeReal} = 0.75
-        options.THRESHOLD_LOW (1,1) double {mustBeReal} = -0.75
-        options.REFRACT (1,1) double {mustBePositive, mustBeReal} = 0.2
-        options.amplitude_high_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
-        options.amplitude_low_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
-        options.amplitude_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
-        options.duration_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
+        options.SmoothingParameter (1,1) double {mustBeReal, mustBeFinite} = 1-5e-4
+        options.CrossingThreshold (1,1) double {mustBeReal, mustBeFinite} = 0
     end
 
     % Convert from datetime to seconds (if applicable)
@@ -78,35 +68,22 @@ function beats = detectBeats(t, d, options)
         error('Timestamp vector ''t'' must be monotonically increasing.');
     end
 
-    if options.THRESHOLD_LOW >= options.THRESHOLD_HIGH
-       error('THRESHOLD_LOW must be strictly less than THRESHOLD_HIGH.');
-    end
-
     % Ensure that d is normalized
     if mean(d) > 1e-3
         warning('Data vector does not appear to be normalized.')
     end
 
     % d = mlt.movzscore(d,2*0.675,'SamplePoints',t);
-
-    THRESHOLD_HIGH = options.THRESHOLD_HIGH;
-    THRESHOLD_LOW = options.THRESHOLD_LOW;
-    REFRACT = options.REFRACT;
-    MEAN_THRESHOLD = (THRESHOLD_HIGH + THRESHOLD_LOW) / 2;
-    AMPLITUDE_HIGH_MIN = options.amplitude_high_min;
-    AMPLITUDE_LOW_MIN = options.amplitude_low_min;
-    AMPLITUDE_MIN = options.amplitude_min;
-    DURATION_MIN = options.duration_min;
     
     % Get smoothed signal via cubic spline interpolation
-    y = csaps(t,d,1-5e-4,t); % faster ways of smoothing?
+    y = csaps(t,d,options.SmoothingParameter,t); % faster ways of smoothing?
 
     % Calculate first derivative
     dy = gradient(y,t);
 
-    % Get peaks (above 0) and troughs (below 0)
-    peaks = [dy(1:end-1) > 0 & dy(2:end) < 0; false] & y > 0;
-    troughs = [dy(1:end-1) < 0 & dy(2:end) > 0; false] & y < 0;    
+    % Get peaks (above threshold) and troughs (below threshold)
+    peaks = [dy(1:end-1) > 0 & dy(2:end) < 0; false] & y > options.CrossingThreshold;
+    troughs = [dy(1:end-1) < 0 & dy(2:end) > 0; false] & y < options.CrossingThreshold;    
 
     % Get only peaks that immediately preceed troughs
     [C,ind] = unique([peaks,cumsum(troughs)],'rows','last');
@@ -118,24 +95,23 @@ function beats = detectBeats(t, d, options)
     ind = ind(C(:,1) == 1);
     troughs_valid = false(size(y)); troughs_valid(ind) = true;
     
-    % Get indices where y crosses 0
-    cross_up = [y(1:end-1) < 0 & y(2:end) > 0; false];
-    cross_down = [y(1:end-1) > 0 & y(2:end) < 0; false];
+    % Get indices where y crosses threshold
+    cross_up = [y(1:end-1) < options.CrossingThreshold & ...
+        y(2:end) > options.CrossingThreshold; false];
+    cross_down = [y(1:end-1) > options.CrossingThreshold & ...
+        y(2:end) < options.CrossingThreshold; false];
 
     % Make sure all onsets and offsets can be detected
     if find(peaks_valid,1) < find(troughs_valid,1)
         troughs_valid(1) = true;
     end
-    % if find(peaks_valid,1,'last') > find(troughs_valid,1,'last')
-    %     troughs_valid(end) = true;
-    % end
 
-    % Calculate onset index (based on crossing above 0)
+    % Calculate onset index (based on crossing above threshold)
     [C,ind] = unique([cross_up,cumsum(troughs_valid)],'rows','last');
     ind = ind(C(:,1) == 1);
     onset = false(size(y)); onset(ind) = true;
 
-    % Calculate offset index (based on crossing below 0)
+    % Calculate offset index (based on crossing below threshold)
     [C,ind] = unique([cross_down,cumsum(peaks_valid)],'rows','last');
     ind = ind(C(:,1) == 1);
     offset = false(size(y)); offset(ind) = true;
@@ -150,7 +126,7 @@ function beats = detectBeats(t, d, options)
     if sum(onset) ~= sum(offset)
         error('# of onsets does not match # of offsets')
     end
-%%
+
     % Amplitude calculations
     onset_index = find(onset);
     offset_index = find(offset);
@@ -164,19 +140,12 @@ function beats = detectBeats(t, d, options)
         beat_min(i) = min(beat_data);
         prebeat_min(i) = min(d(last_off(i):onset_index(i)));
     end
-
     amplitude = beat_max - prebeat_min;
-%%
+
     % Calculate up_duration
     onset_time = t(onset);
     offset_time = t(offset);
     up_duration = offset_time - onset_time;
-
-    % Check if valid beat
-    % valid = up_duration >= DURATION_MIN;
-    % onset_valid = onset; onset_valid(~valid) = NaN;
-    % onset_valid = fillmissing(onset_valid,'previous');
-    valid = true(size(onset_time));
 
     % Calculate duty cycle, period, and frequency
     duty_cycle = up_duration./diff([NaN;offset_time]);
@@ -191,7 +160,7 @@ function beats = detectBeats(t, d, options)
 
     % Compile variables and convert to structure
     beats = table(onset,offset,duty_cycle,period,instant_freq,...
-        amplitude,beat_max,beat_min,up_duration,valid);
+        amplitude,beat_max,beat_min,up_duration);
     beats = table2struct(beats).';
 
 end
