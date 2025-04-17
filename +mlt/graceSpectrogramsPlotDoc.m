@@ -46,7 +46,7 @@ for i=1:numel(p)
     et = e.epochtable();
 
     % Find spectrogram document
-    doc = mlt.findDocs(S,e.id(),et(1).epoch_id,'spectrogram');
+    doc = ndi.database.fun.finddocs(S,e.id(),et(1).epoch_id,'spectrogram');
     if isempty(doc)
         error(['Spectrogram document needs to be created for this session ' ...
             'prior to plotting.'])
