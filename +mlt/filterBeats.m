@@ -1,16 +1,7 @@
 function [validBeats] = filterBeats(beats,options)
-%UNTITLED Summary of this function goes here
-%       OPTIONS: (Optional) A structure specifying detection parameters:
-%           MinBeatMax: Minimum value for beat amplitude (default: -Inf).
-%           MaxBeatMax: Maximum value for beat amplitude
-%           BeatMin: Lower threshold for beat amplitude (def
-%           MinPeakProminence: Lower threshold for beat detection (default: -0.75).
-%           MinPeakDistance: Minimum time between consecutive beats (refractory period, default: 0.2).
-%           amplitude_high_min: Minimum amplitude above THRESHOLD_HIGH (default: 0).
-%           amplitude_low_min: Minimum amplitude below THRESHOLD_LOW (default: 0).
-%           amplitude_min: Minimum peak-to-peak amplitude (default: 0).
-%           MinPeakDuration: Minimum beat duration (default: 0).
-%           MaxPeakDuration: Maximum beat duration
+%FILTERBEATS detects valid beats based on user inputs and removes invalid events.
+%
+% See also MLT.DETECTBEATS
 
 % Validate input type
 arguments
