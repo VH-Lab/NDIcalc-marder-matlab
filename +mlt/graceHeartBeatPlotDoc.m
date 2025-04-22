@@ -1,4 +1,4 @@
-function ax = graceHeartBeatPlot(S, options)
+function ax = graceHeartBeatPlotDoc(S, options)
 % GRACEHEARTBEATPLOT - Plot heart beat statistics for PPG elements in an NDI session/dataset.
 %
 %   AX = GRACEHEARTBEATPLOT(S) plots heart beat statistics (raw PPG signal,
@@ -63,6 +63,13 @@ for i=1:numel(p),
     
     ppgDoc = database_openbinarydoc(S, doc, 'beats.vhsb');
     [Y,X] = vlt.file.custom_file_formats.vhsb_read(ppgDoc,-Inf,Inf,0);
+
+    [struct] = beatsdoc2struct(doc)
+    % open
+    % read
+    % close
+    % pass output as beats struct matching detectHeatBeats
+    [doc] = beatsstruct2doc(struct)
 
     % Load spectrogram, timestamps, and frequencies
     ngrid = doc.document_properties.ngrid;

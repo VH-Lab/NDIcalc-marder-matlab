@@ -1,4 +1,4 @@
-function graceHeartBeats(S)
+function graceHeartBeatsDoc(S)
 % GRACEHEARTBEATS - detect heart beats for Grace's experiments
 %
 % GRACEHEARTBEATS(S)
@@ -16,9 +16,7 @@ for i=1:numel(p),
     if isempty(e),
         error(['No ''_lp'' version of ' p{i}.elementstring]);
     end
-    [beats,d,t]=mlt.wholeDayHeartBeatDoc(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
-    filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '_beats.mat']);
-    save(filename,'beats','d','t','-mat');
+    [doc,d,t]=mlt.wholeDayHeartBeatDoc(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
 end
 
 

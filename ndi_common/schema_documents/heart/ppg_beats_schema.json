@@ -1,6 +1,6 @@
 {
 	"classname": "ppg_beats",
-	"superclasses":  [ "base", "epochid" ],
+	"superclasses":  [ "base", "epochid","epochclocktimes"],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1}
 	],

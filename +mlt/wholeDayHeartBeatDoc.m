@@ -1,4 +1,4 @@
-function [beats, d, t] = wholeDayHeartBeat(S, options)
+function [beats, d, t] = wholeDayHeartBeatDoc(S, options)
 %WHOLEDAYHEARTBEAT Generate heartbeat record for a whole day's recording.
 %
 %   [BEATS, D, T] = WHOLEDAYHEARTBEAT(S, OPTIONS) computes heart beat 
@@ -71,6 +71,7 @@ waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 % Collect metadata
 ppg_beats = struct('detection_parameters',detection_parameters);
 epoch_id = struct('epochid',et(1).epoch_id);
+% epochclocktimes = struct('clocktype',,'t0','t1')
 
 % Check if document already exists, if so, remove from database
 doc_old = mlt.findDocs(S,e.id(),et(1).epoch_id,'ppg_beats');
@@ -98,6 +99,10 @@ end
 filePath = fullfile(S.path,[options.e_name '_' int2str(options.e_reference) '_beats.vhsb']);           
 vlt.file.custom_file_formats.vhsb_write(filePath,beats_array(:,1),...
     beats_array(:,2:end),'use_filelock',0);
+
+doc = ndi.document('ppg_beats','ppg_beats',ppg_beats,'epochid',epoch_id,...
+    'epochclocktimes',epochclocktimes) + S.newdocument();
+doc = doc.set_dependency_value('element_id',e.id());
 
 % Add file to ndi document
 doc = doc.add_file('beats.vhsb',filePath);
