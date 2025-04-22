@@ -15,10 +15,10 @@ for i=1:numel(p)
     e = S.getelements('element.name',[p{i}.name '_lp'],'element.reference',p{i}.reference);
     if isempty(e)
         disp('Downsampling all elements...will take several minutes. Check out log file to see progress.');
-        elem_out_ds = ndi.element.downsample(S,p{i},100,[p{i}.name '_lp'],p{i}.reference);
+        elem_out_ds = ndi.element.downsample(S,p{i},50,[p{i}.name '_lp'],p{i}.reference);
     elseif ndi.element.missingepochs(p{i},e{1})
         disp('Downsampling new elements only. Check out log file to see progress.');
-        elem_out_ds = ndi.element.downsample(S,p{i},100,[p{i}.name '_lp'],p{i}.reference);
+        elem_out_ds = ndi.element.downsample(S,p{i},50,[p{i}.name '_lp'],p{i}.reference);
     else
         disp('Elements have already been downsampled.');
         elem_out_ds = e{1};
