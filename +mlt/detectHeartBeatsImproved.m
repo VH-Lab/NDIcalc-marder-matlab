@@ -1,4 +1,4 @@
-function beats = detectHeartBeatsImproved(t, d, options)
+function [beats,options] = detectHeartBeatsImproved(t, d, options)
 %DETECTHEARTBEATSIMPROVED Detect heartbeats in a pulsatile signal.
 %
 %   BEATS = DETECTHEARTBEATSIMPROVED(T, D, OPTIONS) detects heartbeats in a 
@@ -12,9 +12,9 @@ function beats = detectHeartBeatsImproved(t, d, options)
 %           - Datetime vector.
 %       D: A vector of signal values (e.g., PPG signal).
 %       OPTIONS: (Optional) A structure specifying detection parameters:
-%           THRESHOLD_HIGH: Upper threshold for beat detection (default: 0.75).
-%           THRESHOLD_LOW: Lower threshold for beat detection (default: -0.75).
-%           REFRACT: Minimum time between consecutive beats (refractory period, default: 0.2).
+%           threshold_high: Upper threshold for beat detection (default: 0.75).
+%           threshold_low: Lower threshold for beat detection (default: -0.75).
+%           refractory_period: Minimum time between consecutive beats (refractory period, default: 0.2).
 %           amplitude_high_min: Minimum amplitude above THRESHOLD_HIGH (default: 0).
 %           amplitude_low_min: Minimum amplitude below THRESHOLD_LOW (default: 0).
 %           amplitude_min: Minimum peak-to-peak amplitude (default: 0).
@@ -33,6 +33,7 @@ function beats = detectHeartBeatsImproved(t, d, options)
 %               amplitude_low: Amplitude below THRESHOLD_LOW (double).
 %               valid: Boolean indicating if the beat meets validity criteria.
 %               up_duration: Duration of the upward slope of the beat (double in seconds).
+%       OPTIONS: A structure specifying the detection parameters used.
 %
 %   Notes:
 %   - The input signal D is assumed to be preprocessed and normalized.
@@ -55,9 +56,9 @@ function beats = detectHeartBeatsImproved(t, d, options)
     arguments
         t (:,1) {mustBeA(t,{'double','datetime'})}
         d (:,1) double {mustBeReal, mustBeFinite, mustBeSameLength(t,d)}
-        options.THRESHOLD_HIGH (1,1) double {mustBeReal} = 0.75
-        options.THRESHOLD_LOW (1,1) double {mustBeReal} = -0.75
-        options.REFRACT (1,1) double {mustBePositive, mustBeReal} = 0.2
+        options.threshold_high (1,1) double {mustBeReal} = 0.75
+        options.threshold_low (1,1) double {mustBeReal} = -0.75
+        options.refactory_period (1,1) double {mustBePositive, mustBeReal} = 0.2
         options.amplitude_high_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
         options.amplitude_low_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
         options.amplitude_min (1,1) double {mustBeNonnegative, mustBeReal} = 0
@@ -78,13 +79,13 @@ function beats = detectHeartBeatsImproved(t, d, options)
         error('Timestamp vector ''t'' must be monotonically increasing.');
     end
 
-    if options.THRESHOLD_LOW >= options.THRESHOLD_HIGH
+    if options.threshold_low >= options.threshold_high
        error('THRESHOLD_LOW must be strictly less than THRESHOLD_HIGH.');
     end
 
-    THRESHOLD_HIGH = options.THRESHOLD_HIGH;
-    THRESHOLD_LOW = options.THRESHOLD_LOW;
-    REFRACT = options.REFRACT;
+    THRESHOLD_HIGH = options.threshold_high;
+    THRESHOLD_LOW = options.threshold_low;
+    REFRACT = options.refactory_period;
     MEAN_THRESHOLD = (THRESHOLD_HIGH + THRESHOLD_LOW) / 2;
     AMPLITUDE_HIGH_MIN = options.amplitude_high_min;
     AMPLITUDE_LOW_MIN = options.amplitude_low_min;
