@@ -15,6 +15,14 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "Parameters used to detect the beats."
-		}
+		},
+        {
+            "name": "fields",
+            "type": "string",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The names of the fields in the beats structure."
+        }
 	]
 }

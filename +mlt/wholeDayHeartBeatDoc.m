@@ -29,49 +29,59 @@ end
 % Get the specified ndi.element
 e = S.getelements('element.name',options.e_name,'element.reference',options.e_reference);
 
+% Check that there is only one element containing only one epoch
 if numel(e)~=1
-    error(['Could not find a single element.name ' options.e_name ' with reference ' int2str(options.e_reference) '.']);
+    error(['Could not find a single element.name ' options.e_name ...
+        ' with reference ' int2str(options.e_reference) '.']);
+elseif numel(e{1}.epochtable)~=1
+    error(['Combine all epochs from a single element.name ' options.e_name ...
+        ' with reference ' int2str(options.e_reference) ' prior to beat detection.'])
 end
 
 e = e{1};
 et = e.epochtable();
 
-d = [];
-t = [];
-nextTime = 0;
-
 wb = waitbar(0,"Working on whole day heart beat");
 
-% Check for 'exp_global_time'
-idx = cellfun(@(x) eq(x,ndi.time.clocktype('exp_global_time')),et(1).epoch_clock);
+% Check if there is a global clock, if not, use dev_local_time
+epoch_clocks = et(1).epoch_clock;
+ecs = cellfun(@(c) c.type,epoch_clocks,'UniformOutput',false);
+clock_ind = find(cellfun(@(x) ndi.time.clocktype.isGlobal(x),epoch_clocks),1);
+if isempty(clock_ind)
+    clock_ind = find(contains(ecs,'dev_local_time'));
+    clock_global = false;
+    if isempty(clock_ind)
+        error('No global or local clock found in this elements epochtable.')
+    end
+else
+    clock_global = true;
+end
 
-if isempty(idx) % No global time, process epochs individually
-    for i=1:numel(et)
-        [d_here,t_here] = e.readtimeseries(et(i).epoch_id,-inf,inf);
-        d = cat(1,d,zscore(d_here));
-        t = cat(1,t,nextTime+t_here(:));
-        nextTime = max(t) + (t_here(2)-t_here(1)); % Update nextTime based on concatenated t
-    end
-else % 'exp_global_time' exists, read a single epoch
-    t0t1 = et(1).t0_t1{idx};
-    tr = ndi.time.timereference(e,ndi.time.clocktype('exp_global_time'),[],0);
-    [d,t] = e.readtimeseries(tr,t0t1(1),t0t1(2));
+% Get relevant time series
+t0_t1 = et(1).t0_t1{clock_ind};
+tr = ndi.time.timereference(e,epoch_clocks{clock_ind},[],0);
+[d,t] = e.readtimeseries(tr,t0_t1(1),t0_t1(2));
+if clock_global
     t = datetime(t,'convertFrom','datenum');
-    if options.zscoreWindowTime == 0
-        d = zscore(d);
-    else
-        d = mlt.movzscore(d,seconds(options.zscoreWindowTime),'SamplePoints',t);
-    end
+end
+
+% Z-Score data
+if options.zscoreWindowTime == 0
+    d = zscore(d);
+else
+    d = mlt.movzscore(d,seconds(options.zscoreWindowTime),'SamplePoints',t);
 end
 
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
+% Detect beats
 [beats,detection_parameters] = mlt.detectHeartBeatsImproved(t,d);
 
 % Collect metadata
-ppg_beats = struct('detection_parameters',detection_parameters);
+beats_fields = strjoin(fieldnames(beats),',');
+ppg_beats = struct('detection_parameters',detection_parameters,'fields',beats_fields);
 epoch_id = struct('epochid',et(1).epoch_id);
-% epochclocktimes = struct('clocktype',,'t0','t1')
+epochclocktimes = struct('clocktype',epoch_clocks{clock_ind}.type,'t0_t1',t0_t1);
 
 % Check if document already exists, if so, remove from database
 doc_old = mlt.findDocs(S,e.id(),et(1).epoch_id,'ppg_beats');
@@ -79,33 +89,11 @@ if ~isempty(doc_old)
     S.database_rm(doc_old);
 end
 
-% Make ndi document
-doc = ndi.document('ppg_beats','ppg_beats',ppg_beats,'epochid',epoch_id) + ...
-    S.newdocument(); % takes info from S and adds to the new ndi document
-doc = doc.set_dependency_value('element_id',e.id());
-
-% Convert beats structure to double array
-beats_fields = fieldnames(beats);
-beats_array = nan(numel(beats),numel(beats_fields));
-for i = 1:numel(beats_fields)
-    beats_data = vertcat(beats(:).(beats_fields{i}));
-    if strcmp(beats_fields{i},'onset') | strcmp(beats_fields{i},'offset')
-        beats_data = convertTo(beats_data,'datenum');
-    end
-    beats_array(:,i) = beats_data;
-end
-
-% Write spectrogram data to binary file
-filePath = fullfile(S.path,[options.e_name '_' int2str(options.e_reference) '_beats.vhsb']);           
-vlt.file.custom_file_formats.vhsb_write(filePath,beats_array(:,1),...
-    beats_array(:,2:end),'use_filelock',0);
-
+% Make ndi document and add beats
 doc = ndi.document('ppg_beats','ppg_beats',ppg_beats,'epochid',epoch_id,...
     'epochclocktimes',epochclocktimes) + S.newdocument();
 doc = doc.set_dependency_value('element_id',e.id());
-
-% Add file to ndi document
-doc = doc.add_file('beats.vhsb',filePath);
+doc = mlt.addbeats2doc(doc,beats);
 
 % Add document to database
 S.database_add(doc);
@@ -118,5 +106,3 @@ end
 close(wb);
 
 end
-
-
