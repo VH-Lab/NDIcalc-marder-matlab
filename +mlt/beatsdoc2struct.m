@@ -1,6 +1,36 @@
 function [beats] = beatsdoc2struct(S,doc)
-%UNTITLED8 Summary of this function goes here
-%   Detailed explanation goes here
+%BEATSDOC2STRUCT Reads PPG beat data from an NDI document into a structure.
+%
+%   BEATS = BEATSDOC2STRUCT(S, DOC) reads photoplethysmogram (PPG) beat
+%   information associated with a specific NDI document DOC within the
+%   context of an NDI session or dataset S. It retrieves the beat data
+%   from a binary file ('beats.vhsb'), formats it into a table based on
+%   metadata in DOC, adjusts time fields based on the document's clocktype,
+%   and returns the result as a structure array.
+%
+%   Inputs:
+%       S       - An NDI session object (`ndi.session`) or NDI dataset
+%                 object (`ndi.dataset`).
+%       DOC     - An NDI document object (`ndi.document`) that references
+%                 the PPG beat data. This document must contain the
+%                 properties `ppg_beats.fields` (a comma-separated string
+%                 of field names) and `epochclocktimes.clocktype`.
+%
+%   Outputs:
+%       BEATS   - A structure array where each element represents a single
+%                 PPG beat. The fields of the structure include 'onset', 
+%                 'offset', 'peak_time', etc. If the document's clocktype 
+%                 is global, 'onset' and 'offset' fields are converted to
+%                 `datetime`.
+%
+%   See also: MLT.DETECTHEARTBEATSIMPROVED, MLT.ADDBEATS2DOC,
+%       VLT.FILE.CUSTOM_FILE_FORMATS.VHSB_READ
+
+% Input argument validation
+arguments
+    S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
+    doc (1,1) {mustBeA(doc,{'ndi.document'})}
+end
 
 % Retrieve data from document
 beats_doc = database_openbinarydoc(S, doc, 'beats.vhsb');
