@@ -50,7 +50,7 @@ for i=1:numel(p),
     load(filename,'-mat');
     ax_here = mlt.gracePlotHeartBeat(beats, d, t, 'Linewidth', options.Linewidth); % Pass Linewidth
     ax = cat(1,ax,ax_here(:));
-    subplot(3,1,1);
+    figure(get(ax_here(1), 'Parent'));
     sgtitle([e{1}.elementstring],'interp','none');
 end
 
