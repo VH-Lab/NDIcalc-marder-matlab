@@ -118,6 +118,11 @@ function z = movzscore(x, k, options)
     end
     otherArgs = [otherArgs, {'Endpoints', options.Endpoints}];
     if ~isempty(options.SamplePoints)
+        if isdatetime(options.SamplePoints) && ~isduration(k)
+            error('MOVZSCORE:inconsistentUnits', 'Window length k must be duration when "SamplePoints" are datetime.');
+        elseif ~isdatetime(options.SamplePoints) && isduration(k)
+            error('MOVZSCORE:inconsistentUnits', 'Window length k must be numeric when "SamplePoints" are numeric.');
+        end
         otherArgs = [otherArgs, {'SamplePoints', options.SamplePoints}];
     end
     if tabular

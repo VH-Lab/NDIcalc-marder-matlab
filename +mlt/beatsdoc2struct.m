@@ -5,23 +5,20 @@ function [beats] = beatsdoc2struct(S,doc)
 %   information associated with a specific NDI document DOC within the
 %   context of an NDI session or dataset S. It retrieves the beat data
 %   from a binary file ('beats.vhsb'), formats it into a table based on
-%   metadata in DOC, adjusts time fields based on the document's clocktype,
-%   and returns the result as a structure array.
+%   metadata in DOC, and returns the result as a structure array.
 %
 %   Inputs:
 %       S       - An NDI session object (`ndi.session`) or NDI dataset
 %                 object (`ndi.dataset`).
 %       DOC     - An NDI document object (`ndi.document`) that references
 %                 the PPG beat data. This document must contain the
-%                 properties `ppg_beats.fields` (a comma-separated string
-%                 of field names) and `epochclocktimes.clocktype`.
+%                 property `ppg_beats.fields` (a comma-separated string
+%                 of field names).
 %
 %   Outputs:
 %       BEATS   - A structure array where each element represents a single
 %                 PPG beat. The fields of the structure include 'onset', 
-%                 'offset', 'peak_time', etc. If the document's clocktype 
-%                 is global, 'onset' and 'offset' fields are converted to
-%                 `datetime`.
+%                 'offset', 'peak_time', etc.
 %
 %   See also: MLT.DETECTHEARTBEATSIMPROVED, MLT.ADDBEATS2DOC,
 %       VLT.FILE.CUSTOM_FILE_FORMATS.VHSB_READ
@@ -40,14 +37,6 @@ database_closebinarydoc(S, beats_doc);
 % Make beats table
 beat_fields = split(doc.document_properties.ppg_beats.fields,',');
 beats = array2table([X,Y],'VariableNames',beat_fields);
-
-% Reformat onset and offset times to match clocktype
-clocktype = ndi.time.clocktype(doc.document_properties.epochclocktimes.clocktype);
-if ndi.time.clocktype.isGlobal(clocktype)
-    beats.onset = datetime(beats.onset,'ConvertFrom','datenum');
-    beats.offset = datetime(beats.offset,'ConvertFrom','datenum');
-end
-
 beats = table2struct(beats);
 
 end
