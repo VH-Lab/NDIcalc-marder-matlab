@@ -1,10 +1,12 @@
 {
 	"classname": "ppg_beats",
-	"superclasses":  [ "base", "epochid", "epochclocktimes" ],
+	"superclasses":  [ "base", "epochid" ],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1}
 	],
-	"file": [ "name": "beats.vhsb" ],
+	"file": [ 
+        {"name": "beats.vhsb", "mustbenotempty": 1}
+    ],
 	"ppg_beats": [
 		{
 			"name": "detection_parameters",
@@ -13,6 +15,14 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "Parameters used to detect the beats."
-		}
+		},
+        {
+            "name": "fields",
+            "type": "string",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The names of the fields in the beats structure."
+        }
 	]
 }

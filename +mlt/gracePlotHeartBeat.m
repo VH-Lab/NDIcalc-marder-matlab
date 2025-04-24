@@ -65,13 +65,15 @@ else
     time_unit = 'Time (hr)'; % X-axis label for hours
 end
 
-good = ([beats.valid]);
+good = logical([beats.valid]);
 
 ax1 = subplot(3,1,1);
 plot(t_plot, d);
 hold on;
-plot([beats(good).onset], zeros(size(good)), 'ko');
-plot([beats(good).offset], zeros(size(good)), 'kx');
+plot([beats(good).onset], mean(d)*ones(size(good)), 'ko');
+plot([beats(good).offset], mean(d)*ones(size(good)), 'kx');
+% plot([beats(good).onset], interp1(t,d,[beats(good).onset]), 'ko');
+% plot([beats(good).offset], interp1(t,d,[beats(good).offset]), 'kx');
 box off;
 ylabel('PPG');
 
