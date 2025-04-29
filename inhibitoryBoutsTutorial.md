@@ -1,0 +1,313 @@
+```markdown
+# Tutorial: Analyzing Spectrogram FWHM Around Inhibition Bouts
+
+This tutorial guides you through using NDI and associated `mlt` functions in Matlab to analyze spectrogram data from PPG recordings (heart or pylorus) relative to the onset and offset times of inhibitory bouts.
+
+**Assumptions:**
+
+* You have NDI, vhlab-toolbox-matlab, and NDIcalc-marder-matlab (including the `+mlt` namespace functions) installed and configured in your Matlab environment.
+* You have an NDI session stored on your computer containing the relevant PPG element data (e.g., `ppg_heart_lp_whole` or `ppg_pylorus_lp_whole`).
+* You have lists of the onset and offset times for the inhibitory bouts you want to analyze.
+
+---
+
+## Step 1: Open your NDI Session
+
+First, you need to open the NDI session containing your data. NDI sessions stored as directories on your computer can be opened using `ndi.session.dir`. You need to provide the full path to the session directory.
+
+**Example:**
+
+Replace `'path/to/my/data/972_000'` with the actual path to your session directory.
+
+```matlab
+% Define the path to your NDI session directory
+sessionPath = 'path/to/my/data/972_000'; % <-- USER: REPLACE THIS PATH
+
+% Open the NDI session
+S = ndi.session.dir(sessionPath);
+
+disp(['Opened session with reference: ' S.reference]);
+disp(['Session path: ' S.path()]);
+```
+
+---
+
+## Step 2: Format Your Bout Times as Datetime Objects
+
+The analysis functions require the inhibition bout onset and offset times to be provided as Matlab `datetime` objects. You need to convert your raw time data into this format.
+
+**How to convert:**
+
+The exact command depends on how your times are currently stored (e.g., as strings, separate numbers for year/month/day/hour/minute/second). Use the `datetime` function with the appropriate format specifiers. See `doc datetime` in Matlab for details.
+
+**Example 1: Times stored as strings 'yyyy-MM-dd HH:mm:ss.SSS'**
+
+```matlab
+% --- USER: Enter your raw onset and offset times below ---
+
+% Example raw times as strings (replace with your actual data)
+rawOnsetTimes = {
+    '2024-04-29 10:05:15.123'
+    '2024-04-29 10:15:20.456'
+    '2024-04-29 10:25:05.789'
+    }; % Add all your onset times here
+
+rawOffsetTimes = {
+    '2024-04-29 10:05:18.987'
+    '2024-04-29 10:15:24.321'
+    '2024-04-29 10:25:09.654'
+    }; % Add all your offset times here (must match number of onsets)
+
+% --- Conversion ---
+try
+    inhibitoryBoutOnsets = datetime(rawOnsetTimes, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+    inhibitoryBoutOffsets = datetime(rawOffsetTimes, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+
+    % Ensure they are column vectors
+    inhibitoryBoutOnsets = inhibitoryBoutOnsets(:);
+    inhibitoryBoutOffsets = inhibitoryBoutOffsets(:);
+
+    if numel(inhibitoryBoutOnsets) ~= numel(inhibitoryBoutOffsets)
+        error('Onset and Offset time lists must have the same number of entries.');
+    end
+
+    disp('Successfully created datetime vectors:');
+    disp('Onsets:');
+    disp(inhibitoryBoutOnsets);
+    disp('Offsets:');
+    disp(inhibitoryBoutOffsets);
+
+catch ME
+    error('Failed to convert times to datetime objects. Check format string and raw data: %s', ME.message);
+end
+```
+
+**Example 2: Times stored as numbers [Year Month Day Hour Minute Second]**
+
+```matlab
+% --- USER: Enter your raw onset and offset times below ---
+
+% Example raw times as numeric matrices (replace with your actual data)
+rawOnsetTimes = [
+    2024 4 29 10 5 15.123 ;
+    2024 4 29 10 15 20.456 ;
+    2024 4 29 10 25 5.789 ;
+    ]; % Add all your onset times here
+
+rawOffsetTimes = [
+    2024 4 29 10 5 18.987 ;
+    2024 4 29 10 15 24.321 ;
+    2024 4 29 10 25 9.654 ;
+    ]; % Add all your offset times here (must match number of onsets)
+
+% --- Conversion ---
+try
+    inhibitoryBoutOnsets = datetime(rawOnsetTimes);
+    inhibitoryBoutOffsets = datetime(rawOffsetTimes);
+
+    % Ensure they are column vectors
+    inhibitoryBoutOnsets = inhibitoryBoutOnsets(:);
+    inhibitoryBoutOffsets = inhibitoryBoutOffsets(:);
+
+     if numel(inhibitoryBoutOnsets) ~= numel(inhibitoryBoutOffsets)
+        error('Onset and Offset time lists must have the same number of entries.');
+    end
+
+    disp('Successfully created datetime vectors:');
+    disp('Onsets:');
+    disp(inhibitoryBoutOnsets);
+    disp('Offsets:');
+    disp(inhibitoryBoutOffsets);
+
+catch ME
+    error('Failed to convert times to datetime objects. Check numeric data format: %s', ME.message);
+end
+```
+
+Make sure the variables `inhibitoryBoutOnsets` and `inhibitoryBoutOffsets` exist in your workspace as column vectors of `datetime` objects before proceeding.
+
+---
+
+## Step 3: Run Spectrogram Analysis Around Bouts
+
+Now, use the `mlt.spectrogramInhibitoryBoutOnsetOffsetAnalysis` function to perform the analysis. This function finds the relevant PPG element, calculates time windows relative to your bout times, reads the spectrogram data for those windows, computes the time-averaged spectrum, and calculates the FWHM.
+
+**Inputs:**
+
+* `S`: Your NDI session object from Step 1.
+* `record_name`: `'heart'` or `'pylorus'`, depending on which data you want to analyze.
+* `reference`: The reference number of the element (e.g., `1` or `2`).
+* `inhibitoryBoutOnsets`: The `datetime` vector from Step 2.
+* `inhibitoryBoutOffsets`: The `datetime` vector from Step 2.
+* `skip`: A positive number (seconds). Defines the gap between the bout time (onset/offset) and the edge of the analysis window. For onsets, the window ends `skip` seconds *before* the onset. For offsets, the window starts `skip` seconds *after* the offset.
+* `timeWindow`: A positive number (seconds). Defines the duration of the analysis window.
+
+**Outputs:**
+
+* `OnsetData`: A structure containing the results for windows analyzed *before* the onsets.
+* `OffsetData`: A structure containing the results for windows analyzed *after* the offsets.
+    * Each structure contains: `.specData_matrix`, `.f`, `.fwhm_vector`, `.low_cutoff_vector`, `.high_cutoff_vector`.
+
+**Example:**
+
+```matlab
+% --- USER: Define analysis parameters ---
+my_record_name = 'pylorus'; % Or 'heart'
+my_reference = 1;          % Or 2, etc.
+my_skip = 5;               % Analyze 5 seconds away from bout start/end
+my_timeWindow = 10;        % Analyze a 10-second window
+
+% --- Check if datetime vectors exist ---
+if ~exist('inhibitoryBoutOnsets', 'var') || ~exist('inhibitoryBoutOffsets', 'var') || ~isdatetime(inhibitoryBoutOnsets) || ~isdatetime(inhibitoryBoutOffsets)
+    error('Run Step 2 first to create inhibitoryBoutOnsets and inhibitoryBoutOffsets datetime vectors.');
+end
+
+% --- Run the analysis function ---
+disp('Running spectrogram analysis...');
+[OnsetData, OffsetData] = mlt.spectrogramInhibitoryBoutOnsetOffsetAnalysis(...
+    S, my_record_name, my_reference, ...
+    inhibitoryBoutOnsets, inhibBoutOffsets, ...
+    my_skip, my_timeWindow);
+disp('Analysis complete.');
+
+% --- Display some results (optional) ---
+if ~isempty(OnsetData.f)
+    disp('Onset Analysis Results:');
+    disp(['  Number of successful bouts analyzed: ' num2str(size(OnsetData.specData_matrix, 2))]);
+    disp(['  Frequency vector length: ' num2str(length(OnsetData.f))]);
+    disp(['  Mean FWHM (Hz): ' num2str(mean(OnsetData.fwhm_vector, 'omitnan'))]);
+else
+    disp('No successful onset analysis results.');
+end
+if ~isempty(OffsetData.f)
+    disp('Offset Analysis Results:');
+    disp(['  Number of successful bouts analyzed: ' num2str(size(OffsetData.specData_matrix, 2))]);
+    disp(['  Frequency vector length: ' num2str(length(OffsetData.f))]);
+    disp(['  Mean FWHM (Hz): ' num2str(mean(OffsetData.fwhm_vector, 'omitnan'))]);
+else
+    disp('No successful offset analysis results.');
+end
+```
+
+---
+
+## Step 4: Plot the Analysis Results
+
+Use the `mlt.plotInhibitoryBoutOnsetOffset` function to visualize the results stored in the `OnsetData` and `OffsetData` structures.
+
+**Inputs:**
+
+* `OnsetData`: The output structure from Step 3.
+* `OffsetData`: The output structure from Step 3.
+* `(Optional) 'CapSize', value`: Controls the width of the error bar caps in the third panel (default is 15).
+
+**Outputs:**
+
+* A figure with three panels showing the averaged spectra and the FWHM comparison.
+* `ax`: A handle to the axes of the three subplots.
+
+**Example:**
+
+```matlab
+% --- Check if analysis data exists ---
+if ~exist('OnsetData', 'var') || ~exist('OffsetData', 'var')
+    error('Run Step 3 first to generate OnsetData and OffsetData.');
+end
+
+% --- Plot the results ---
+disp('Plotting results...');
+figure; % Create a new figure window
+ax = mlt.plotInhibitoryBoutOnsetOffset(OnsetData, OffsetData);
+disp('Plotting complete.');
+
+% --- Example: Plot with smaller error bar caps ---
+% figure;
+% ax_custom = mlt.plotInhibitoryBoutOnsetOffset(OnsetData, OffsetData, 'CapSize', 8);
+```
+
+This will generate the 3-panel plot described previously, allowing you to visually inspect the average power spectra before onsets and after offsets, and to compare the distribution and mean of the calculated FWHM values.
+
+---
+
+## Appendix: Using `mlt.readSpectrogramTimeWindow`
+
+The analysis functions used above rely on `mlt.readSpectrogramTimeWindow` to extract data for specific time windows. If you need to extract spectrogram data for a custom time window from a specific element, you can use this function directly.
+
+**Purpose:**
+
+Reads the *first available* spectrogram data chunk associated with a given element that falls within a specific time window.
+
+**Syntax:**
+
+```matlab
+[spectrogram_data, f, t_datetime, spectrogram_doc] = mlt.readSpectrogramTimeWindow(e, t0, t1)
+```
+
+**Inputs:**
+
+* `e`: The `ndi.element` object (e.g., 'ppg\_heart\_lp\_whole', reference 1) you want to read from. You first need to retrieve this element from your session `S`.
+* `t0`: A Matlab `datetime` object for the start of your desired window.
+* `t1`: A Matlab `datetime` object for the end of your desired window.
+
+**Outputs:**
+
+* `spectrogram_data`: The spectrogram data matrix (frequency x time) within the `[t0, t1]` window.
+* `f`: The frequency vector for the spectrogram.
+* `t_datetime`: The `datetime` vector for the time axis of the returned `spectrogram_data`.
+* `spectrogram_doc`: The `ndi.document` from which the data was extracted.
+
+**Example: How to get the element `e` and call the function:**
+
+```matlab
+% --- Prerequisite: Open session 'S' (from Step 1) ---
+% if ~exist('S','var') || ~isa(S,'ndi.session')
+%     error('Please run Step 1 first to open the session S.');
+% end
+
+% --- Define element details ---
+record_name = 'heart'; % Or 'pylorus'
+reference = 1;         % Or 2, etc.
+element_name = ['ppg_' record_name '_lp_whole'];
+
+% --- Get the element object ---
+e_cell = S.getelements('element.name', element_name, 'element.reference', reference);
+if isempty(e_cell)
+    error('Element %s ref %d not found.', element_name, reference);
+elseif numel(e_cell) > 1
+     error('Multiple elements found for %s ref %d.', element_name, reference);
+else
+    e = e_cell{1};
+    disp(['Found element: ' e.elementstring()]);
+end
+
+% --- Define your time window ---
+my_t0 = datetime('2024-04-29 10:10:00'); % Example start time
+my_t1 = datetime('2024-04-29 10:10:30'); % Example end time
+
+% --- Call readSpectrogramTimeWindow ---
+disp(['Reading spectrogram for element ' e.elementstring() ' between ' datestr(my_t0) ' and ' datestr(my_t1)]);
+[spec_data_chunk, freq_vector, time_vector, source_doc] = mlt.readSpectrogramTimeWindow(e, my_t0, my_t1);
+
+% --- Check and use the results ---
+if ~isempty(spec_data_chunk)
+    disp(['Successfully read data from document: ' source_doc.id()]);
+    disp(['Data size: ' mat2str(size(spec_data_chunk))]);
+    disp(['Frequency range: ' num2str(min(freq_vector)) ' Hz to ' num2str(max(freq_vector)) ' Hz']);
+    disp(['Time range: ' datestr(min(time_vector)) ' to ' datestr(max(time_vector))]);
+    
+    % Example: Plot the retrieved chunk
+    figure;
+    imagesc(seconds(time_vector-time_vector(1)), freq_vector, abs(spec_data_chunk)); % Plot absolute power vs time in seconds from start
+    set(gca,'YDir','normal');
+    xlabel('Time within window (s)');
+    ylabel('Frequency (Hz)');
+    title(['Spectrogram chunk for ' e.elementstring()], 'Interpreter', 'none');
+    colorbar;
+else
+    disp('No spectrogram data found for the specified element and time window.');
+end
+
+```
+
+This appendix shows how the underlying data retrieval works, which is wrapped by the main analysis functions used in Steps 3 and 4.
+```
