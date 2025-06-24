@@ -55,6 +55,7 @@ arguments
     options.colorbar (1,1) logical = false;
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99;
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula';
+    options.numSubplots = 10;
 end
 
 
@@ -73,7 +74,7 @@ for i=1:numel(p),
     end
     filenameSG = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat'])
     load(filenameSG,'-mat');
-    ax(end+1,1) = subplot(4,1,i);
+    ax(end+1,1) = subplot(options.numSubplots,1,i);
     filenameB = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '_beats.mat'])
     load(filenameB,'-mat');
     mlt.gracePlotSpectrogram(spec, f, ts, ...
@@ -85,13 +86,13 @@ for i=1:numel(p),
     if isa(beats(1).onset,'datetime')
         plot3([beats(good).onset],[beats(good).instant_freq],2e15*ones(size(good)),...
             'k-','linewidth',2);
-        if i==4,
+        if i==options.numSubplots,
             xlabel('Time');
         end;                
     else    
         plot3([beats(good).onset]/(60*60),[beats(good).instant_freq],2e15*ones(size(good)),...
             'k-','linewidth',2);
-        if i==4,
+        if i==options.numSubplots,
             xlabel('Time from start (hr)');
         end;        
     end

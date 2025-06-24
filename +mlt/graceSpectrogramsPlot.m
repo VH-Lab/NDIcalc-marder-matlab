@@ -28,6 +28,7 @@ arguments
     options.colorbar (1,1) logical = false;    
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99;
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula';
+    options.numSubplots = 10;
 end
 
 p = S.getprobes('type','ppg');
@@ -47,7 +48,7 @@ for i=1:numel(p)
     filename = fullfile(path,['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat']);
     load(filename,'-mat');
     figure(fig);
-    ax(end+1,1) = subplot(4,1,i);
+    ax(end+1,1) = subplot(options.numSubplots,1,i);
     mlt.gracePlotSpectrogram(spec, f, ts, ...
         'colorbar', options.colorbar, ...
         'maxColorPercentile', options.maxColorPercentile, ...
