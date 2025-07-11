@@ -1,4 +1,4 @@
-function elem_out_o = graceDownsample(S)
+function elem_out_o = graceDownsample(S, p_in)
 % GRACEDOWNSAMPLE - downsample data for Grace's experiments
 %
 % GRACEDOWNSAMPLE(S)
@@ -8,7 +8,15 @@ function elem_out_o = graceDownsample(S)
 % Downsamples probes of type 'ppg' by adding '_lp' to their name.
 %
 
-p = S.getprobes('type','ppg');
+if nargin<2
+    p_in = [];
+end
+
+if isempty(p_in)
+    p = S.getprobes('type','ppg');
+else
+    p = p_in;
+end
 
 for i=1:numel(p)
     disp(['Checking to see if we have already downsampled ' p{i}.elementstring '...']);
