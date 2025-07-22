@@ -13,7 +13,7 @@ function [states, timestamps, rates, state_stats] = hmmAnalysis(beat_times, opti
 %
 %   OPTIONAL NAME-VALUE PAIR ARGUMENTS:
 %   'N'                 - Number of hidden states. Default: 2.
-%   'ModelType'         - 'discrete' or 'gaussian'. Default: 'discrete'.
+%   'ModelType'         - 'discrete' or 'gaussian'. Default: 'gaussian'.
 %                         'gaussian' requires Kevin Murphy's BNT.
 %   'deltaT'            - Time step for rate binning (s). Default: 0.5.
 %   'W'                 - Window size for rate binning (s). Default: 5.
@@ -36,7 +36,7 @@ function [states, timestamps, rates, state_stats] = hmmAnalysis(beat_times, opti
     arguments
         beat_times {mustBeVector, mustBeNonempty, mustBeSorted, mustBeA(beat_times, ["double", "datetime"])}
         options.N (1,1) double {mustBeInteger, mustBePositive} = 2
-        options.ModelType (1,1) string {mustBeMember(options.ModelType, ["discrete", "gaussian"])} = "discrete"
+        options.ModelType (1,1) string {mustBeMember(options.ModelType, ["discrete", "gaussian"])} = "gaussian"
         options.deltaT (1,1) double {mustBePositive} = 0.5
         options.W (1,1) double {mustBePositive} = 5
         % Options for discrete model
