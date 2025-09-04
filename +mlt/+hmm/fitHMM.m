@@ -1,6 +1,6 @@
 function [TRANS, EMIS, state_stats, fit_info] = fitHMM(rates, N, options)
 %FITHMM Fits a discrete HMM and characterizes states by rate statistics.
-%   [TRANS, EMIS, state_stats, fit_info] = mlt.fitHMM(rates, N) fits an
+%   [TRANS, EMIS, state_stats, fit_info] = mlt.hmm.fitHMM(rates, N) fits an
 %   N-state HMM to the rate data. It uses a discrete emission model, which
 %   is required by MATLAB's hmmtrain function.
 %
@@ -9,7 +9,7 @@ function [TRANS, EMIS, state_stats, fit_info] = fitHMM(rates, N, options)
 %   are then sorted and re-ordered based on this mean rate (lowest to highest).
 %
 %   INPUTS:
-%   rates               - A vector of observed rates, e.g., from mlt.beatRateBins.
+%   rates               - A vector of observed rates, e.g., from mlt.beats.beatRateBins.
 %   N                   - The number of hidden states for the model.
 %
 %   OPTIONAL NAME-VALUE PAIR ARGUMENTS:
@@ -40,7 +40,7 @@ function [TRANS, EMIS, state_stats, fit_info] = fitHMM(rates, N, options)
     rates = rates(:)';
     
     % --- Step 1: Quantize Continuous Data using the helper function ---
-    [discrete_seq, edges] = mlt.beatRateBinQuantize(rates, options.NumSymbols);
+    [discrete_seq, edges] = mlt.beats.beatRateBinQuantize(rates, options.NumSymbols);
     fit_info.Edges = edges;
     
     % --- Step 2: Generate Initial Guesses and Train the Discrete HMM ---

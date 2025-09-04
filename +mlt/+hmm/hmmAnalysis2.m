@@ -1,12 +1,12 @@
 function [states, timestamps, rates, state_stats] = hmmAnalysis(beat_times, options)
 %HMMANALYSIS Performs a full HMM analysis pipeline on beat time data.
-%   ... = mlt.hmmAnalysis(beat_times, 'ModelType', type) allows choosing
+%   ... = mlt.hmm.hmmAnalysis(beat_times, 'ModelType', type) allows choosing
 %   between a 'discrete' model (using MATLAB's built-in tools) or a
 %   'gaussian' model (requires Kevin Murphy's BNT).
 %
 %   SYNTAX:
-%   [states, timestamps, rates] = mlt.hmmAnalysis(beat_times)
-%   [states, timestamps, rates, state_stats] = mlt.hmmAnalysis(beat_times, 'N', 3, 'ModelType', 'gaussian')
+%   [states, timestamps, rates] = mlt.hmm.hmmAnalysis(beat_times)
+%   [states, timestamps, rates, state_stats] = mlt.hmm.hmmAnalysis(beat_times, 'N', 3, 'ModelType', 'gaussian')
 %
 %   INPUTS:
 %   beat_times          - A vector of beat times (numeric seconds or datetime).
@@ -44,30 +44,44 @@ function [states, timestamps, rates, state_stats] = hmmAnalysis(beat_times, opti
         options.Tolerance (1,1) double {mustBePositive} = 1e-4
         % Options for gaussian model
         options.MaxIterations (1,1) double {mustBeInteger, mustBePositive} = 100
+        options.useFixedModel (1,1) = true
     end
 
     % --- Step 1: Calculate Binned Beat Rate ---
     fprintf('Step 1: Calculating binned beat rates...\n');
-    [rates, timestamps] = mlt.beatRateBins(beat_times, ...
+    [rates, timestamps] = mlt.beats.beatRateBins(beat_times, ...
         'deltaT', options.deltaT, 'W', options.W);
 
     % --- Step 2 & 3: Fit Model and Decode based on selected type ---
     if strcmpi(options.ModelType, "discrete")
         fprintf('Step 2: Fitting %d-state DISCRETE HMM...\n', options.N);
-        [TRANS, EMIS, state_stats, fit_info] = mlt.fitHMM(rates, options.N, ...
+        [TRANS, EMIS, state_stats, fit_info] = mlt.hmm.fitHMM(rates, options.N, ...
             'NumSymbols', options.NumSymbols, ...
             'MaxIterations', options.MaxIterations, 'Tolerance', options.Tolerance);
-        
         fprintf('Step 3: Decoding state sequence...\n');
-        states = mlt.decodeHMM(rates, TRANS, EMIS, fit_info);
+        states = mlt.hmm.decodeHMM(rates, TRANS, EMIS, fit_info);
 
     elseif strcmpi(options.ModelType, "gaussian")
         fprintf('Step 2: Fitting %d-state GAUSSIAN HMM (using BNT)...\n', options.N);
-        model = mlt.fitHMMGauss(rates, options.N, ...
+        model = mlt.hmm.fitHMMGauss(rates, options.N, ...
             'MaxIterations', options.MaxIterations);
-        
+        if options.useFixedModel
+            model.prior = [0.5;0.5];        
+            % experiment with fixed model
+            model.prior = [0.2;0.8];
+            model.transmat = [ 0.9 0.1; 0.1 0.9];
+            model.mu = [0 1];
+            model.Sigma(1,1,1) = 0.05;
+            model.Sigma(1,1,2) = 1;
+            model.StateRemap = [1 2];
+        end
+        %if model.mu(1)<model.mu(2)
+        %    model.StateRemap = [ 1 2];
+        %else
+        %    model.StateRemap = [ 2 1];
+        %end
         fprintf('Step 3: Decoding state sequence...\n');
-        states = mlt.decodeHMMGauss(rates, model);
+        states = mlt.hmm.decodeHMMGauss(rates, model);
         
         % Construct state_stats output for consistency
         % Squeeze removes singleton dimensions, ensuring vectors are correct shape for concatenation

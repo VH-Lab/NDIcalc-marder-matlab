@@ -1,17 +1,17 @@
 function states = decodeHMM(rates, TRANS, EMIS, fit_info)
 %DECODEHMM Finds the most likely state sequence using the Viterbi algorithm.
-%   states = mlt.decodeHMM(rates, TRANS, EMIS, fit_info) calculates the
+%   states = mlt.hmm.decodeHMM(rates, TRANS, EMIS, fit_info) calculates the
 %   most likely sequence of hidden states for a discrete HMM.
 %
-%   It uses the 'fit_info' struct from mlt.fitHMM to discretize the rate
+%   It uses the 'fit_info' struct from mlt.hmm.fitHMM to discretize the rate
 %   data and then remaps the output states to match the sorted order
 %   from the fitting step.
 %
 %   INPUTS:
 %   rates               - A vector of observed continuous rates.
-%   TRANS               - An N-by-N state transition matrix from mlt.fitHMM.
-%   EMIS                - The emission probability matrix from mlt.fitHMM.
-%   fit_info            - The fit_info struct output by mlt.fitHMM.
+%   TRANS               - An N-by-N state transition matrix from mlt.hmm.fitHMM.
+%   EMIS                - The emission probability matrix from mlt.hmm.fitHMM.
+%   fit_info            - The fit_info struct output by mlt.hmm.fitHMM.
 %
 %   OUTPUTS:
 %   states              - A vector the same length as 'rates' containing the

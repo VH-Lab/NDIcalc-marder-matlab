@@ -50,7 +50,7 @@ function [specData_matrix, f, fwhm_vector, low_cutoff_vector, high_cutoff_vector
 %       - vhlab-toolbox-matlab (+vlt), specifically vlt.signal.fwhm
 %       - NDIcalc-marder-matlab (+mlt), specifically mlt.readSpectrogramTimeWindow
 %         and this function (mlt.spectrogramInhibBoutAnalysis).
-%       - Associated helper functions like `mlt.readngrid` (if not standard)
+%       - Associated helper functions like `ndi.fun.data.readngrid` (if not standard)
 
 % --- Input Validation ---
 arguments

@@ -52,7 +52,7 @@ function [OnsetData, OffsetData] = spectrogramInhibitoryBoutOnsetOffsetAnalysis(
 %       - NDIcalc-marder-matlab (+mlt), specifically mlt.spectrogramFWHM,
 %         mlt.readSpectrogramTimeWindow, and this function
 %         (mlt.spectrogramInhibitoryBoutOnsetOffsetAnalysis).
-%       - Associated helper functions like `mlt.readngrid` (if not standard)
+%       - Associated helper functions like `ndi.fun.data.readngrid` (if not standard)
 
 % --- Input Validation ---
 arguments

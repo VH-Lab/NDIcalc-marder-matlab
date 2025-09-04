@@ -45,7 +45,7 @@ function ax = plotInhibitoryBoutOnsetOffset(OnsetData, OffsetData, options) % Ad
 %       - NDIcalc-marder-matlab (+mlt), specifically mlt.spectrogramFWHM,
 %         mlt.readSpectrogramTimeWindow, and this function
 %         (mlt.plotInhibitoryBoutOnsetOffset).
-%       - Associated helper functions like `mlt.readngrid` (if not standard)
+%       - Associated helper functions like `ndi.fun.data.readngrid` (if not standard)
 
 % --- Input Validation ---
 arguments

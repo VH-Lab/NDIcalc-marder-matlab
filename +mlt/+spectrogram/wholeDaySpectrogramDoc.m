@@ -73,7 +73,7 @@ else
 end
 
 % Collect metadata
-ngrid = mlt.mat2ngrid(spec,f,ts);
+ngrid = ndi.fun.data.mat2ngrid(spec,f,ts);
 spect = struct('frequency_ngrid_dim',1,'timestamp_ngrid_dim',2,'decibels',true);
 epoch_id = struct('epochid',et(1).epoch_id);
 
@@ -90,7 +90,7 @@ doc = doc.set_dependency_value('element_id',e.id());
 
 % Write spectrogram data to binary file
 filePath = fullfile(S.path,[options.e_name '_' int2str(options.e_reference) '.ngrid']);
-mlt.writengrid(spec,filePath,ngrid.data_type);
+ndi.fun.data.writengrid(spec,filePath,ngrid.data_type);
 
 % Add file to ndi document
 doc = doc.add_file('spectrogram_results.ngrid',filePath);

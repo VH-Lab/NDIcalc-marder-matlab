@@ -1,13 +1,13 @@
 function states = decodeHMMGauss(rates, model)
 %DECODEHMMGAUSS Finds the most likely state sequence for a Gaussian HMM.
-%   states = mlt.decodeHMMGauss(rates, model) calculates the most likely
+%   states = mlt.hmm.decodeHMMGauss(rates, model) calculates the most likely
 %   sequence of hidden states using the Viterbi algorithm.
 %
 %   *** REQUIRES KEVIN MURPHY'S BAYES NET TOOLBOX (BNT) ***
 %
 %   INPUTS:
 %   rates   - A vector of observed continuous rates.
-%   model   - The trained Gaussian HMM model struct from mlt.fitHMMGauss.
+%   model   - The trained Gaussian HMM model struct from mlt.hmm.fitHMMGauss.
 %
 %   OUTPUTS:
 %   states  - A vector of the most likely (sorted) state for each time point.

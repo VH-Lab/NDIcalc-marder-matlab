@@ -1,6 +1,6 @@
 function model = fitHMMGauss(rates, N, options)
 %FITHMMGAUSS Fits a Hidden Markov Model with Gaussian emissions using BNT.
-%   model = mlt.fitHMMGauss(rates, N) fits an N-state HMM to the
+%   model = mlt.hmm.fitHMMGauss(rates, N) fits an N-state HMM to the
 %   continuous rate data using Gaussian distributions for the emissions.
 %
 %   *** REQUIRES KEVIN MURPHY'S BAYES NET TOOLBOX (BNT) ***

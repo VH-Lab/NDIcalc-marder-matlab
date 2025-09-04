@@ -1,11 +1,17 @@
-function elem_out_o = graceDownsample(S, p_in)
-% GRACEDOWNSAMPLE - downsample data for Grace's experiments
+function elem_out_o = downsampple(S, p_in)
+% DOWNSAMPLE - downsample PPG data for Marder experiments
 %
-% GRACEDOWNSAMPLE(S)
+% DOWNSAMPLE(S)
 %
 % Downsample all ppg probes for an ndi.session or ndi.dataset S.
 %
 % Downsamples probes of type 'ppg' by adding '_lp' to their name.
+%
+% After downsampling, an element with a single epoch of the ppg record is made
+% by adding '_lp_whole' to the element name. This element is returned in 
+% ELEM_OUT_O.
+%
+% 
 %
 
 if nargin<2

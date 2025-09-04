@@ -59,7 +59,7 @@ function [spectrogram_data, f, t_datetime, spectrogram_doc] = readSpectrogramTim
 %         with t0_t1 values stored as Matlab datenums.
 %       - The time coordinate vector within the ngrid structure corresponds to
 %         the 'dev_local_time' clock for that specific epoch.
-%       - The `mlt.readngrid` function is available on the Matlab path.
+%       - The `ndi.fun.data.readngrid` function is available on the Matlab path.
 %       - The ndi.session associated with E has a valid ndi.time.syncgraph.
 
     % Validate input arguments using the arguments block
@@ -153,8 +153,8 @@ function [spectrogram_data, f, t_datetime, spectrogram_doc] = readSpectrogramTim
                 binary_doc_obj = []; % Initialize
                 try
                     binary_doc_obj = S.database_openbinarydoc(current_doc, 'spectrogram_results.ngrid'); % 
-                    % Assuming mlt.readngrid exists and works with file object or path
-                    spectrogram_data_full = mlt.readngrid(binary_doc_obj, ngrid_props.data_dim, ngrid_props.data_type); % 
+                    % Assuming ndi.fun.data.readngrid exists and works with file object or path
+                    spectrogram_data_full = ndi.fun.data.readngrid(binary_doc_obj, ngrid_props.data_dim, ngrid_props.data_type); % 
                     S.database_closebinarydoc(binary_doc_obj); % 
                     binary_doc_obj = [];
                 catch ME_read

@@ -42,7 +42,7 @@ function [specData_avg, f, fwhm_val, low_cutoff, high_cutoff] = spectrogramFWHM(
 %       - vhlab-toolbox-matlab (+vlt), specifically vlt.signal.fwhm
 %       - NDIcalc-marder-matlab (+mlt), specifically mlt.readSpectrogramTimeWindow
 %         and this function (mlt.spectrogramFWHM). % Updated Requires section
-%       - Associated helper functions like `mlt.readngrid` (if not standard)
+%       - Associated helper functions like `ndi.fun.data.readngrid` (if not standard)
 
 % --- Input Validation ---
 arguments
@@ -140,8 +140,8 @@ for i=1:numel(docs)
             f_vec = [];          % Initialize frequency vector locally
             try
                 binary_doc_obj = S.database_openbinarydoc(current_doc, 'spectrogram_results.ngrid'); % 
-                % Assuming mlt.readngrid exists and works with file object or path
-                spectrogram_data_full = mlt.readngrid(binary_doc_obj, ngrid_props.data_dim, ngrid_props.data_type); % 
+                % Assuming ndi.fun.data.readngrid exists and works with file object or path
+                spectrogram_data_full = ndi.fun.data.readngrid(binary_doc_obj, ngrid_props.data_dim, ngrid_props.data_type); % 
                 S.database_closebinarydoc(binary_doc_obj); % 
                 binary_doc_obj = [];
                 

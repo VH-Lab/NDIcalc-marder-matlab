@@ -1,17 +1,17 @@
 function DwellStats = StateDwellTimes(states, timestamps, options)
 %STATEDWELLTIMES Calculates and histograms the dwell time for each HMM state.
-%   DwellStats = mlt.StateDwellTimes(states, timestamps) takes the output
-%   from mlt.hmmAnalysis and calculates the duration of each consecutive
+%   DwellStats = mlt.hmm.StateDwellTimes(states, timestamps) takes the output
+%   from mlt.hmm.hmmAnalysis and calculates the duration of each consecutive
 %   period spent in a given state. It then computes a histogram of these
 %   durations for each state.
 %
 %   SYNTAX:
-%   DwellStats = mlt.StateDwellTimes(states, timestamps)
-%   DwellStats = mlt.StateDwellTimes(states, timestamps, 'timeBins', my_bins)
+%   DwellStats = mlt.hmm.StateDwellTimes(states, timestamps)
+%   DwellStats = mlt.hmm.StateDwellTimes(states, timestamps, 'timeBins', my_bins)
 %
 %   INPUTS:
 %   states              - A vector of integer state assignments, e.g., from
-%                         mlt.hmmAnalysis.
+%                         mlt.hmm.hmmAnalysis.
 %   timestamps          - A vector of timestamps corresponding to each state
 %                         assignment. Can be numeric (seconds) or datetime.
 %                         Must be evenly spaced.
@@ -29,13 +29,13 @@ function DwellStats = StateDwellTimes(states, timestamps, options)
 %
 %   EXAMPLE & PLOTTING:
 %       % First, run the main analysis pipeline
-%       [states, timestamps] = mlt.hmmAnalysis(beat_times);
+%       [states, timestamps] = mlt.hmm.hmmAnalysis(beat_times);
 %
 %       % Now, calculate the dwell time statistics
-%       DwellStats = mlt.StateDwellTimes(states, timestamps);
+%       DwellStats = mlt.hmm.StateDwellTimes(states, timestamps);
 %
 %       % Finally, generate the plot with the dedicated plotting function
-%       mlt.plotDwellTimes(DwellStats);
+%       mlt.plot.plotDwellTimes(DwellStats);
 
     % --- Input Argument Validation ---
     arguments

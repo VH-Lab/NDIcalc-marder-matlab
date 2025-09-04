@@ -62,7 +62,7 @@ for i=1:numel(p)
     ngrid = doc.document_properties.ngrid;
     specProp = doc.document_properties.spectrogram;
     specDoc = database_openbinarydoc(S, doc, 'spectrogram_results.ngrid');
-    spec = mlt.readngrid(specDoc,ngrid.data_dim,ngrid.data_type);
+    spec = ndi.fun.data.readngrid(specDoc,ngrid.data_dim,ngrid.data_type);
     database_closebinarydoc(S, specDoc);
     freqCoords = ngrid.data_dim(specProp.frequency_ngrid_dim);
     timeCoords = ngrid.data_dim(specProp.timestamp_ngrid_dim);
