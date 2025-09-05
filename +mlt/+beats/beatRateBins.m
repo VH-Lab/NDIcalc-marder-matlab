@@ -1,17 +1,17 @@
 function [rates, bin_centers] = beatRateBins(beat_times, options)
 %BEATRATEBINS Estimates beat rate in regularly spaced time bins.
-%   [rates, bin_centers] = mlt.beatRateBins(beat_times) estimates the heart
+%   [rates, bin_centers] = mlt.beats.beatRateBins(beat_times) estimates the heart
 %   rate from a vector of beat times (beat_times). The function uses a
 %   sliding window approach to calculate the rate at regular intervals.
 %
 %   The input beat_times can be a numeric vector (assumed to be in seconds)
 %   or a datetime vector. The output bin_centers will be of the same type.
 %
-%   This function is part of the mlt (Matlab Crab Lab Tools) namespace.
+%   This function is part of the mlt (Marder Lab Tools) namespace.
 %
 %   SYNTAX:
-%   [rates, bin_centers] = mlt.beatRateBins(beat_times)
-%   [rates, bin_centers] = mlt.beatRateBins(beat_times, 'deltaT', dt, 'W', w)
+%   [rates, bin_centers] = mlt.beats.beatRateBins(beat_times)
+%   [rates, bin_centers] = mlt.beats.beatRateBins(beat_times, 'deltaT', dt, 'W', w)
 %
 %   INPUTS:
 %   beat_times          - A vector of beat times. Can be a numeric vector
@@ -47,10 +47,10 @@ function [rates, bin_centers] = beatRateBins(beat_times, options)
 %       end
 %
 %       % 1. Calculate beat rate with default parameters
-%       [rates, centers] = mlt.beatRateBins(beats);
+%       [rates, centers] = mlt.beats.beatRateBins(beats);
 %
 %       % 2. Calculate with custom window and step size
-%       [rates_custom, centers_custom] = mlt.beatRateBins(beats, 'deltaT', 1, 'W', 10);
+%       [rates_custom, centers_custom] = mlt.beats.beatRateBins(beats, 'deltaT', 1, 'W', 10);
 %
 %       % Plot results
 %       figure;

@@ -1,6 +1,6 @@
 function bouts = findInhibitoryBouts(beat_times, options)
 %MLT.FINDINHIBITORYBOUTS Identifies inhibitory bouts from beat time data.
-%   bouts = mlt.findInhibitoryBouts(beat_times) analyzes a vector of beat
+%   bouts = mlt.inhibitoryBouts.findInhibitoryBouts(beat_times) analyzes a vector of beat
 %   times to identify periods of significant heart rate slowdown (inhibition)
 %   and the subsequent recovery.
 %
@@ -8,8 +8,8 @@ function bouts = findInhibitoryBouts(beat_times, options)
 %   then iterates through the rate data to find onsets and offsets.
 %
 %   SYNTAX:
-%   bouts = mlt.findInhibitoryBouts(beat_times)
-%   bouts = mlt.findInhibitoryBouts(beat_times, Name, Value, ...)
+%   bouts = mlt.inhibitoryBouts.findInhibitoryBouts(beat_times)
+%   bouts = mlt.inhibitoryBouts.findInhibitoryBouts(beat_times, Name, Value, ...)
 %
 %   INPUTS:
 %   beat_times          - A vector of beat times (numeric seconds or datetime).
@@ -41,7 +41,7 @@ function bouts = findInhibitoryBouts(beat_times, options)
 %
 %   EXAMPLE:
 %       beat_times = [ (0:0.4:10), (10.5:1:20), (20.4:0.4:30) ]';
-%       bouts = mlt.findInhibitoryBouts(beat_times);
+%       bouts = mlt.inhibitoryBouts.findInhibitoryBouts(beat_times);
 %       % The 'bouts' struct now contains onsets, offsets, and the rate data.
 
 % --- Input Argument Validation ---
@@ -55,7 +55,7 @@ arguments
 end
 
 % --- Step 1: Calculate Binned Beat Rate ---
-[rates, bin_centers] = mlt.beatRateBins(beat_times, ...
+[rates, bin_centers] = mlt.beats.beatRateBins(beat_times, ...
     'deltaT', options.deltaT, 'W', options.W);
 
 % --- Step 2: Initialize Output and Find Bouts ---

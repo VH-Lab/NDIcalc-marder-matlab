@@ -60,13 +60,13 @@ else % 'exp_global_time' exists, read a single epoch
     if options.zscoreWindowTime == 0
         d = zscore(d);
     else
-        d = mlt.movzscore(d,seconds(options.zscoreWindowTime),'SamplePoints',t);
+        d = mlt.util.movzscore(d,seconds(options.zscoreWindowTime),'SamplePoints',t);
     end
 end
 
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
-beats = mlt.detectHeartBeatsImproved(t,d);
+beats = mlt.beats.detectHeartBeatsImproved(t,d);
 
 close(wb);
 

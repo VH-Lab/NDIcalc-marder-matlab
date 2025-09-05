@@ -1,8 +1,8 @@
 function [specData_matrix, f, fwhm_vector, low_cutoff_vector, high_cutoff_vector] = spectrogramInhibBoutAnalysis(e, inhibBoutTimes, skip, timeWindow)
-%MLT.SPECTROGRAMINHIBBOUTANALYSIS Analyze spectrogram FWHM around inhibition bout times.
+%MLT.inhibitoryBouts.SPECTROGRAMINHIBBOUTANALYSIS Analyze spectrogram FWHM around inhibition bout times.
 %
 %   [SPECDATA_MATRIX, F, FWHM_VECTOR, LOW_CUTOFF_VECTOR, HIGH_CUTOFF_VECTOR] = ...
-%       mlt.spectrogramInhibBoutAnalysis(E, INHIBBOUTTIMES, SKIP, TIMEWINDOW)
+%       mlt.inhibitoryBouts.spectrogramInhibBoutAnalysis(E, INHIBBOUTTIMES, SKIP, TIMEWINDOW)
 %
 %   Analyzes the spectrogram associated with an ndi.element E around specified
 %   inhibition bout times. For each time provided in INHIBBOUTTIMES, it defines
@@ -48,8 +48,8 @@ function [specData_matrix, f, fwhm_vector, low_cutoff_vector, high_cutoff_vector
 %   Requires:
 %       - NDI toolbox (+ndi)
 %       - vhlab-toolbox-matlab (+vlt), specifically vlt.signal.fwhm
-%       - NDIcalc-marder-matlab (+mlt), specifically mlt.readSpectrogramTimeWindow
-%         and this function (mlt.spectrogramInhibBoutAnalysis).
+%       - NDIcalc-marder-matlab (+mlt), specifically mlt.spectrograph.readSpectrogramTimeWindow
+%         and this function (mlt.inhibitoryBouts..spectrogramInhibBoutAnalysis).
 %       - Associated helper functions like `ndi.fun.data.readngrid` (if not standard)
 
 % --- Input Validation ---
@@ -86,7 +86,7 @@ for i = 1:numel(inhibBoutTimes)
     % --- Get Spectrogram Data and FWHM for the window ---
     try
         [specData_avg_single, f_single, fwhm_val_single, low_cutoff_single, high_cutoff_single] = ...
-            mlt.spectrogramFWHM(e, t0, t1); % Call the FWHM function
+            mlt.spectrogram.spectrogramFWHM(e, t0, t1); % Call the FWHM function
 
         if ~isempty(specData_avg_single) && ~isempty(f_single)
             % Handle frequency vector consistency

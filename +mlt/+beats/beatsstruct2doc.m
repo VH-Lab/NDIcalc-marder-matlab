@@ -1,7 +1,7 @@
-function [doc_out] = addbeats2doc(doc_in,beats)
+function [doc_out] = beatsstruct2doc(doc_in,beats)
 %ADDBEATS2DOC Adds PPG beat data from a structure to an NDI document.
 %
-%   DOC_OUT = ADDBEATS2DOC(DOC_IN, BEATS) takes photoplethysmogram (PPG)
+%   DOC_OUT = BEATSSTRUCT2DOC(DOC_IN, BEATS) takes photoplethysmogram (PPG)
 %   beat information stored in a structure array BEATS and writes it to a
 %   binary file ('beats.vhsb'). It then associates this file with the
 %   provided NDI document object DOC_IN.
@@ -20,8 +20,7 @@ function [doc_out] = addbeats2doc(doc_in,beats)
 %                 includes a reference to the newly created 'beats.vhsb' file
 %                 containing the beat data.
 %
-%   See also: MLT.DETECTHEARTBEATSIMPROVED, MLT.BEATSDOC2STRUCT,
-%       VLT.FILE.CUSTOM_FILE_FORMATS.VHSB_WRITE
+%   See also: MLT.DETECTHEARTBEATSIMPROVED, MLT.BEATS.BEATSDOC2STRUCT,
 
 % Input argument validation
 arguments

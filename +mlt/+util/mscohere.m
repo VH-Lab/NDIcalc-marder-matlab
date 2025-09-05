@@ -1,14 +1,14 @@
 function [cxy, f] = mscohere(X, Y, dt, options)
 %MLT.MSCOHERE Computes magnitude-squared coherence with convenient defaults.
 %
-%   [cxy, f] = mlt.mscohere(X, Y, dt) computes the magnitude-squared
+%   [cxy, f] = mlt.util.mscohere(X, Y, dt) computes the magnitude-squared
 %   coherence estimate between time series X and Y. It is a wrapper for
 %   the built-in MATLAB `mscohere` function from the Signal Processing
 %   Toolbox, tailored for ease of use with specific defaults.
 %
 %   SYNTAX:
-%   [cxy, f] = mlt.mscohere(X, Y, dt)
-%   [cxy, f] = mlt.mscohere(X, Y, dt, Name, Value, ...)
+%   [cxy, f] = mlt.util.mscohere(X, Y, dt)
+%   [cxy, f] = mlt.util.mscohere(X, Y, dt, Name, Value, ...)
 %
 %   INPUTS:
 %   X           - First time series, specified as a column vector.
@@ -59,7 +59,7 @@ function [cxy, f] = mscohere(X, Y, dt, options)
 %   y = common_signal + noise2;
 %
 %   % Compute coherence using the function's defaults (0-10 Hz)
-%   [cxy, f] = mlt.mscohere(x, y, dt);
+%   [cxy, f] = mlt.util.mscohere(x, y, dt);
 %
 %   % Plot the results
 %   figure;

@@ -1,10 +1,10 @@
 function ax = plotInhibitoryBoutOnsetOffset(OnsetData, OffsetData, options) % Added options argument
-%MLT.PLOTINHIBITORYBOUTONSETOFFSET Plot spectrogram analysis results around onset/offset.
+%MLT.PLOT.PLOTINHIBITORYBOUTONSETOFFSET Plot spectrogram analysis results around onset/offset.
 %
-%   AX = mlt.plotInhibitoryBoutOnsetOffset(ONSETDATA, OFFSETDATA, Name, Value, ...)
+%   AX = mlt.plot.plotInhibitoryBoutOnsetOffset(ONSETDATA, OFFSETDATA, Name, Value, ...)
 %
 %   Creates a 3-panel figure summarizing the spectrogram analysis results
-%   obtained from `mlt.spectrogramInhibitoryBoutOnsetOffsetAnalysis`.
+%   obtained from `mlt.spectrogram.spectrogramInhibitoryBoutOnsetOffsetAnalysis`.
 %
 %   Inputs:
 %       ONSETDATA  - Structure containing results from analyzing windows before onsets:
@@ -41,10 +41,10 @@ function ax = plotInhibitoryBoutOnsetOffset(OnsetData, OffsetData, options) % Ad
 %
 %   Requires:
 %       - NDI toolbox (+ndi)
-%       - vhlab-toolbox-matlab (+vlt), specifically vlt.signal.fwhm (used by mlt.spectrogramFWHM)
-%       - NDIcalc-marder-matlab (+mlt), specifically mlt.spectrogramFWHM,
-%         mlt.readSpectrogramTimeWindow, and this function
-%         (mlt.plotInhibitoryBoutOnsetOffset).
+%       - vhlab-toolbox-matlab (+vlt), specifically vlt.signal.fwhm (used by mlt.spectrogram.spectrogramFWHM)
+%       - NDIcalc-marder-matlab (+mlt), specifically mlt.spectrogram.spectrogramFWHM,
+%         mlt.spectrogram.readSpectrogramTimeWindow, and this function
+%         (mlt.plot.plotInhibitoryBoutOnsetOffset).
 %       - Associated helper functions like `ndi.fun.data.readngrid` (if not standard)
 
 % --- Input Validation ---
@@ -55,6 +55,9 @@ arguments
     options.CapSize (1,1) double {mustBeNumeric, mustBeNonnegative} = 15 % Removed mustBeScalar, (1,1) enforces it
 end
 % --- End Input Validation ---
+
+disp('I still need updating for new package layout')
+
 
 % --- Check for data consistency ---
 if ~isempty(OnsetData.f) && ~isempty(OffsetData.f) && ~isequal(OnsetData.f, OffsetData.f)

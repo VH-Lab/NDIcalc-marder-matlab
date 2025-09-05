@@ -51,13 +51,13 @@ wb = waitbar(0,"Working on whole day heart beat");
 if options.zscoreWindowTime == 0
     d = zscore(d);
 else
-    d = mlt.movzscore(d,options.zscoreWindowTime,'SamplePoints',t);
+    d = mlt.util.movzscore(d,options.zscoreWindowTime,'SamplePoints',t);
 end
 
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
 % Detect beats
-[beats,detection_parameters] = mlt.detectHeartBeatsImproved(t,d);
+[beats,detection_parameters] = mlt.beats.detectHeartBeatsImproved(t,d);
 
 % Collect metadata
 beats_fields = strjoin(fieldnames(beats),',');
@@ -74,7 +74,7 @@ end
 doc = ndi.document('ppg_beats','ppg_beats',ppg_beats,'epochid',epoch_id) + ...
     S.newdocument();
 doc = doc.set_dependency_value('element_id',e.id());
-doc = mlt.addbeats2doc(doc,beats);
+doc = mlt.beats.beatstruct2doc(doc,beats);
 
 % Add document to database
 S.database_add(doc);
