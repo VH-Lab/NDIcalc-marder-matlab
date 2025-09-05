@@ -32,7 +32,7 @@ function ax = subjectTrace(S, subject_name, record_type, options)
 %       % Plot a summary for Subject A's heart recording
 %       ax = mlt.plot.subjectTrace(mySession, 'SubjectA', 'heart');
 %
-%   See also mlt.probe.getProbe, mlt.spectrogram.readTimeWindow, mlt.beats.beatsdoc2struct
+%   See also mlt.ndi.getElement, mlt.spectrogram.readTimeWindow, mlt.beats.beatsdoc2struct
 
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
@@ -42,18 +42,13 @@ arguments
     options.ColormapName (1,:) char = 'parula'
 end
 
-% --- Step 1: Find the correct probe and element ---
-disp('Finding probe and element...');
-probe = mlt.probe.getProbe(S, subject_name, record_type);
-if isempty(probe)
-    error('Could not find a unique probe for subject "%s" and record type "%s".', subject_name, record_type);
+% --- Step 1: Find the element ---
+disp('Finding element...');
+e = mlt.ndi.getElement(S, subject_name, record_type,'lp_whole');
+if isempty(e)
+    error('Could not find a unique element for subject "%s" and record type "%s".', subject_name, record_type);
 end
 
-e = S.getelements('element.name',[probe.name '_lp_whole'],'element.reference',probe.reference);
-if isempty(e)
-    error('Could not find the ''_lp_whole'' element for probe %s.', probe.elementstring);
-end
-e = e{1};
 et = e.epochtable();
 if isempty(et)
     error('Element %s has no epoch table.', e.elementstring);

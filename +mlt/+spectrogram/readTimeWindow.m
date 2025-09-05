@@ -72,7 +72,7 @@ t1_datenum = datenum(t1);
 
 % --- Database Search ---
 query = ndi.query('','isa','spectrogram') & ndi.query('','depends_on','element_id',e.id());
-docs = S.database_search(query);
+docs = S.database_search(query)
 
 if isempty(docs)
     disp('No spectrogram documents found for this element.');
