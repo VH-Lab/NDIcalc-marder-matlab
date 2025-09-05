@@ -53,7 +53,7 @@ for i=1:numel(p)
     
     % Call the core function to calculate the spectrogram
     disp(['Calculating spectrogram for ' e{1}.elementstring '...']);
-    [spec,f,ts] = mlt.wholeDaySpectrogram(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
+    [spec,f,ts] = mlt.spectrogram.wholeDaySpectrogram(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
     
     % Construct filename and save the results
     filename = fullfile(S.path(), ['ppg_' e{1}.name '_' int2str(e{1}.reference) '.mat']);

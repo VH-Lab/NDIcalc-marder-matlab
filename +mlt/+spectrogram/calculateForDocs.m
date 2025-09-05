@@ -50,7 +50,7 @@ for i=1:numel(p)
     
     % Call the core function to perform the analysis and create the NDI document
     disp(['Calculating spectrogram and creating document for ' e{1}.elementstring '...']);
-    mlt.wholeDaySpectrogramDoc(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
+    mlt.spectrogram.wholeDaySpectrogramDoc(S,'e_name',e{1}.name,'e_reference',e{1}.reference);
 end
 
 disp(' ');

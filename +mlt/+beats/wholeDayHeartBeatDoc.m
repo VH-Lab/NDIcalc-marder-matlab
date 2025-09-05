@@ -74,7 +74,7 @@ end
 doc = ndi.document('ppg_beats','ppg_beats',ppg_beats,'epochid',epoch_id) + ...
     S.newdocument();
 doc = doc.set_dependency_value('element_id',e.id());
-doc = mlt.beats.beatstruct2doc(doc,beats);
+doc = mlt.beats.beatsstruct2doc(doc,beats);
 
 % Add document to database
 S.database_add(doc);

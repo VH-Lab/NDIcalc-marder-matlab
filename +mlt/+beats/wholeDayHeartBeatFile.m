@@ -1,7 +1,7 @@
-function [beats, d, t] = wholeDayHeartBeat(S, options)
+function [beats, d, t] = wholeDayHeartBeatFile(S, options)
 %WHOLEDAYHEARTBEAT Generate heartbeat record for a whole day's recording.
 %
-%   [BEATS, D, T] = WHOLEDAYHEARTBEAT(S, OPTIONS) computes heart beat 
+%   [BEATS, D, T] = WHOLEDAYHEARTBEATFILE(S, OPTIONS) computes heart beat 
 %   analysis for an entire day's worth of data from an ndi.element, 
 %   typically 'ppg_heart_lp'. The function reads the data from the 
 %   specified element and performs heart beat detection.
