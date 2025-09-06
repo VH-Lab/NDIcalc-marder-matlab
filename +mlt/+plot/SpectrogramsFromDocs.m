@@ -88,8 +88,8 @@ for i=1:numel(p)
     
     freqCoords = ngrid.data_dim(specProp.frequency_ngrid_dim);
     timeCoords = ngrid.data_dim(specProp.timestamp_ngrid_dim);
-    f = ngrid.coordinates{1}(1:freqCoords);
-    ts = ngrid.coordinates{2}(1:timeCoords);
+    f = ngrid.coordinates(1:freqCoords);
+    ts = ngrid.coordinates(freqCoords + (1:timeCoords));
     
     % Plot spectrogram
     figure(fig);
