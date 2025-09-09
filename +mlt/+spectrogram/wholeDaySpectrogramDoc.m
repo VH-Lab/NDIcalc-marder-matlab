@@ -97,7 +97,7 @@ else
     else
         d = mlt.util.movzscore(d,options.zscoreWindowTime,'SamplePoints',t);
     end
-    [spec,f,ts] = mlt.util.computeSpectrogram(d,t,'frequencies',options.f, ...
+    [spec,f,ts] = mlt.util.computeChunkedSpectrogram(d,t,'frequencies',options.f, ...
         'windowSizeTime', options.windowTime,'timeIsDatenum',false);
 end
 

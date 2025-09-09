@@ -62,7 +62,7 @@ if is_datetime
 else
     sr = 1 / (t(2) - t(1));
 end
-
+sr
 % Calculate the window size in samples
 windowSizeSamples = round(options.windowSizeTime * sr);
 

@@ -104,8 +104,8 @@ else
         t_date = datetime(t,'convertFrom','datenum');
         d = mlt.util.movzscore(d,seconds(options.zscoreWindowTime),'SamplePoints',t_date);
     end
-    [spec,f,ts] = mlt.util.computeSpectrogram(d,t,'frequencies',options.f, ...
-        'windowSizeTime', options.windowTime,'timeIsDatenum',true);
+    [spec,f,ts] = mlt.util.computeChunkedSpectrogram(d,t_date,'frequencies',options.f, ...
+        'windowSizeTime', options.windowTime,'timeIsDatenum',false);
 end
 
 waitbar(1,wb,"Working on whole day spectrogram");
