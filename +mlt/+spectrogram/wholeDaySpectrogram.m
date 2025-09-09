@@ -72,7 +72,7 @@ arguments
 end
 
 e = S.getelements('element.name',options.e_name,'element.reference',options.e_reference);
-if numel(e)~=1,
+if numel(e)~=1
     error(['Could not find a single element.name ' options.e_name ' with reference ' int2str(options.e_reference) '.']);
 end
 e = e{1};
