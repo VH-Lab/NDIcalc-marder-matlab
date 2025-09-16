@@ -5,7 +5,7 @@ function ax = HeartBeat(beats, d, t, options)
 %
 %   Plots heart beat statistics derived from a photoplethysmogram (PPG).
 %   It generates a new figure with three stacked and linked subplots:
-%   1) The raw PPG signal with beat onsets/offsets marked.
+%   1) The PPG signal with beat onsets/offsets marked.
 %   2) The instantaneous beat frequency over time.
 %   3) The duty cycle of each beat over time.
 %
@@ -17,7 +17,7 @@ function ax = HeartBeat(beats, d, t, options)
 %               .valid      (logical) True if the beat is valid.
 %               .instant_freq (double) Instantaneous frequency (Hz).
 %               .duty_cycle (double) Duty cycle of the heartbeat.
-%       d     - A column vector of the raw PPG signal data.
+%       d     - A column vector of the PPG signal data.
 %       t     - A column vector of time values for the PPG data. This can
 %               be numeric (in seconds) or a datetime vector. Note: If
 %               numeric, the x-axis of the plot will be converted to hours.
@@ -47,7 +47,7 @@ arguments
 end
 
 figure;
-good_beats = beats([beats.valid]);
+good_beats = beats(logical([beats.valid]));
 
 % --- Time handling for plotting ---
 if isa(t, 'datetime')

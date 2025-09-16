@@ -3,106 +3,81 @@ function ax = HeartBeatFromDocs(S, options)
 %
 %   AX = mlt.plot.HeartBeatFromDocs(S)
 %
-%   This function visualizes pre-calculated heart beat statistics by
-%   overlaying them on top of the **raw, unnormalized** PPG signal.
+%   This function visualizes pre-calculated heart beat statistics for each
+%   subject and record type in an NDI session. It overlays the statistics on
+%   top of the **raw, unnormalized** PPG signal.
 %
-%   The beat statistics (such as onset times, frequency, and duty cycle),
-%   which are derived from a **normalized** version of the PPG data, are
-%   loaded from an NDI document. This allows for a direct comparison
-%   between the calculated beats and the original, unprocessed signal shown
-%   in the plot background. A separate figure is generated for each PPG probe.
+%   It uses helper functions to find the relevant 'ppg_beats' documents and raw
+%   signal data. A separate figure is generated for each unique element found.
 %
 %   Inputs:
 %       S - An ndi.session or ndi.dataset object containing the PPG data.
 %
 %   Optional Name-Value Pairs:
 %       Linewidth (1,1) double = 1;
-%           The line width to use for the plots.
+%           The line width for the plotted lines.
 %
 %   Outputs:
-%       AX - A column vector of axes handles. Each set of 3 axes handles
-%            (corresponding to the 3 subplots in a figure) is concatenated
-%            vertically.
+%       AX - A column vector of axes handles from all generated plots.
 %
-%   Example 1: Basic usage
-%       % Assuming 'mySession' is an ndi.session object
-%       ax = mlt.plot.HeartBeatFromDocs(mySession);
+%   Example:
+%       ax = mlt.plot.HeartBeatFromDocs(mySession, 'Linewidth', 1.5);
 %
-%   Example 2: Specifying a custom line width
-%       ax = mlt.plot.HeartBeatFromDocs(mySession, 'Linewidth', 2);
-%
-%   See also mlt.plot.HeartBeat, ndi.session, ndi.document
+%   See also mlt.plot.HeartBeat, mlt.doc.getHeartBeats, mlt.ppg.getRawData
 
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     options.Linewidth (1,1) double = 1
 end
 
-p = S.getprobes('type','ppg');
 ax = [];
+record_types = {'heart', 'pylorus', 'gastric'};
 
-for i=1:numel(p)
-    % Get the specified ndi.element
-    disp(['Processing element ' p{i}.elementstring '...']);
-    e_cell = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
-    if isempty(e_cell)
-        error(['No ''_lp_whole'' version of ' p{i}.elementstring ' found.']);
-    end
-    e = e_cell{1};
-    et = e.epochtable();
+% Find all subjects in the session
+subject_docs = S.database_search(ndi.query('','isa','subject'));
+if isempty(subject_docs)
+    disp('No subjects found in this session.');
+    return;
+end
 
-    % Get the specified document containing beat data
-    doc = ndi.database.fun.finddocs_elementEpochType(S,e.id(),et(1).epoch_id,'ppg_beats');
-    if isempty(doc)
-        error(['Beats document must be created for ' p{i}.elementstring ' prior to plotting.']);
-    elseif isscalar(doc)
-        doc = doc{1};
-    else
-        error('More than one beats document found for this element and epoch.');
-    end
-
-    % Determine the correct time reference (global or local)
-    epoch_clocks = et(1).epoch_clock;
-    ecs = cellfun(@(c) c.type, epoch_clocks, 'UniformOutput', false);
-    clock_ind = find(cellfun(@(x) ndi.time.clocktype.isGlobal(x), epoch_clocks), 1);
-    clock_local_ind = find(contains(ecs, 'dev_local_time'), 1);
-
-    use_global_clock = ~isempty(clock_ind);
-    if ~use_global_clock
-        clock_ind = clock_local_ind;
-        if isempty(clock_ind)
-            error('No global or local clock found for this element.');
+% Loop through each subject and record type
+for i = 1:numel(subject_docs)
+    subject_name = subject_docs{i}.document_properties.subject.local_identifier;
+    for j = 1:numel(record_types)
+        record_type = record_types{j};
+        
+        % Use a narrow try/catch block specifically to check for element existence
+        try
+            element = mlt.ndi.getElement(S, subject_name, record_type);
+        catch
+            % Silently skip if a unique element is not found for this combination
+            continue;
         end
-    end
 
-    % Get relevant time series data
-    t0_t1 = et(1).t0_t1{clock_ind};
-    tr = ndi.time.timereference(e, epoch_clocks{clock_ind}, [], 0);
-    [d,t] = e.readtimeseries(tr, t0_t1(1), t0_t1(2));
-    
-    % Retrieve beats from the document
-    [beats] = mlt.beats.beatsdoc2struct(S, doc);
-
-    % Reformat onset and offset times to match the chosen clock type
-    if use_global_clock
-        t = datetime(t, 'ConvertFrom', 'datenum');
-        beats = struct2table(beats);
+        % If we proceed, the element exists. Any subsequent errors are real problems.
         
-        tr_local = ndi.time.timereference(e, epoch_clocks{clock_local_ind}, 1, 0);
-        t0 = S.syncgraph.time_convert(tr_local, et(1).t0_t1{clock_local_ind}(1),...
-            e.underlying_element, epoch_clocks{clock_ind});
-        t0_datetime = datetime(t0, 'ConvertFrom', 'datenum');
+        % Get the beat data from the document
+        [docs, beats_data] = mlt.doc.getHeartBeats(S, subject_name, record_type);
         
-        beats.onset = seconds(beats.onset) + t0_datetime;
-        beats.offset = seconds(beats.offset) + t0_datetime;
-        beats = table2struct(beats);
+        % It's possible an element exists but has no beat document yet
+        if isempty(docs)
+            continue;
+        end
+        
+        % Get the raw PPG data
+        [d, t] = mlt.ppg.getRawData(S, subject_name, record_type);
+        
+        % Assume the first document is the one to plot
+        beats = beats_data{1};
+        
+        % Plot beats using the core plotting function
+        ax_here = mlt.plot.HeartBeat(beats, d, t, 'Linewidth', options.Linewidth);
+        ax = [ax; ax_here(:)];
+        
+        % Add a title to the new figure using the subject name and element object
+        figure(get(ax_here(1), 'Parent'));
+        title_str = [subject_name ': ' element.elementstring()];
+        sgtitle(title_str, 'Interpreter', 'none');
     end
-
-    % Plot beats using the core plotting function
-    ax_here = mlt.plot.HeartBeat(beats, d, t, 'Linewidth', options.Linewidth);
-    ax = [ax; ax_here(:)]; % Append axes handles
-    
-    % Add a title to the new figure
-    figure(get(ax_here(1), 'Parent'));
-    sgtitle(e.elementstring, 'Interpreter', 'none');
+end
 end

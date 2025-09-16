@@ -7,9 +7,9 @@ function ax = HeartBeatsFromFiles(S, options)
 %   overlaying them on top of the **raw, unnormalized** PPG signal.
 %
 %   It loads data from pre-processed MAT-files found within the NDI session
-%   path. These files are expected to contain the beat statistics (e.g.,
-%   onset, frequency), which were derived from a **normalized** version of
-%   the data, as well as the original raw PPG signal for the plot background.
+%   path. These files contain beat statistics (e.g., onset, frequency) that
+%   were derived from a **normalized** version of the data (using a rolling
+%   z-score), as well as the original raw PPG signal for the plot background.
 %
 %   The MAT-files are assumed to follow the naming convention:
 %   'ppg_ppg_AREA_lp_whole_NUMBER_beats.mat'
@@ -35,16 +35,13 @@ function ax = HeartBeatsFromFiles(S, options)
 %       ax = mlt.plot.HeartBeatsFromFiles(mySession, 'Linewidth', 2);
 %
 %   See also mlt.plot.HeartBeat, ndi.session, ndi.dataset
-
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     options.Linewidth (1,1) double = 1
 end
-
 p = S.getprobes('type','ppg');
 path = S.path();
 ax = [];
-
 for i=1:numel(p)
     disp(['Checking for processed beat file for ' p{i}.elementstring '...']);
     

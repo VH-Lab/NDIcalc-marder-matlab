@@ -6,9 +6,9 @@ Anyone with a GitHub account can contribute. Please see the guidelines below!
 
 If you have code that you would like to write, do the following.
 
-1. Press the Fork button in the upper-right corner of the [NDIcalc-vis-matlab](https://github.com/VH-Lab/NDIcalc-vis-matlab/) GitHub repository to make a copy of NDIcalc-vis-matlab in your own GitHub space.
+1. Press the Fork button in the upper-right corner of the [NDIcalc-marder-matlab](https://github.com/VH-Lab/NDIcalc-marder-matlab/) GitHub repository to make a copy of NDIcalc-marder-matlab in your own GitHub space.
 
-2. Make your changes to NDIcalc-vis-matlab.
+2. Make your changes to NDIcalc-marder-matlab.
 
 3. Commit your changes back to your fork.
 
