@@ -1,7 +1,7 @@
-function Traces(data, which_indices)
+function Traces(S, data, which_indices)
 % MLT.PLOT.TRACES - Plot heart beat and spectrogram data traces
 %
-%   MLT.PLOT.TRACES(DATA, WHICH_INDICES)
+%   MLT.PLOT.TRACES(S, DATA, WHICH_INDICES)
 %
 %   Plots the spectrogram, raw data, instantaneous firing rate, and amplitude
 %   for selected entries in the data structure returned by
@@ -15,12 +15,14 @@ function Traces(data, which_indices)
 %      - A blank plot for temperature (for future use)
 %
 %   Inputs:
+%      S - The ndi.session object.
 %      DATA - The data structure returned by mlt.doc.getHeartBeatAndSpectrogram.
 %      WHICH_INDICES - A vector of indices indicating which entries of the data
 %          to plot. Each index corresponds to a column of plots.
 %
 
 arguments
+    S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     data (1,1) struct
     which_indices (1,:) {mustBeInteger, mustBePositive}
 end
@@ -59,8 +61,7 @@ for i = 1:num_plots
 
     % Raw Data
     ax_raw = axes('Position', [left_pos, 0.05 + 3*plot_height, column_width, plot_height*0.9]);
-    hb_doc = data.HeartBeatDocs{idx};
-    [d, t_raw] = mlt.ppg.getRawData(hb_doc.session, data.subject_local_identifier, data.recordType);
+    [d, t_raw] = mlt.ppg.getRawData(S, data.subject_local_identifier, data.recordType);
     plot_timeseries(ax_raw, t_raw, d, 'Raw Data', false);
 
     % Instantaneous Firing Rate
