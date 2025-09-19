@@ -1,24 +1,25 @@
 function gracePlotSpectrogram(spec, f, ts, options)
-%GRACEPLOTSPECTROGRAM Plots a spectrogram.
+%MLT.PLOT.SPECTROGRAM Plots a spectrogram.
 %
-%   gracePlotSpectrogram(SPEC, F, TS, OPTIONS) plots a spectrogram in the current axes.
+%   mlt.plot.Spectrogram(SPEC, F, TS, Name, Value, ...) plots a spectrogram in the current axes.
 %
-%   Plots the spectrogram, applying dB/linear conversions as specified in OPTIONS.
+%   Plots the spectrogram, applying dB/linear conversions as specified.
 %   Plots time in hours if TS is in seconds, or uses datetime values directly.
 %
 %   Input Arguments:
 %       SPEC: Spectrogram data (matrix).
 %       F: Frequency vector.
 %       TS: Time vector (double in seconds or datetime).
-%       OPTIONS: (Optional) Structure containing options.
-%           OPTIONS.convertDBtoLinear: Logical, convert dB to linear (default true).
-%           OPTIONS.convertLinearToDB: Logical, convert linear to dB (default false).
-%           OPTIONS.shading: Shading style ('faceted', 'flat', or 'interp', default 'flat').
-%           OPTIONS.drawLabels: Logical, whether to draw axis labels (default true).
-%           OPTIONS.colorbar: Logical, whether to draw a colorbar (default false).
-%           OPTIONS.maxColorPercentile:  The percentile of data to use as
+%
+%   Name/Value Pairs:
+%       convertDBtoLinear: Logical, convert dB to linear (default true).
+%       convertLinearToDB: Logical, convert linear to dB (default false).
+%       shading: Shading style ('faceted', 'flat', or 'interp', default 'flat').
+%       drawLabels: Logical, whether to draw axis labels (default true).
+%       colorbar: Logical, whether to draw a colorbar (default false).
+%       maxColorPercentile:  The percentile of data to use as
 %                                       the maximum value for the color scale. (default 99).
-%           OPTIONS.colormapName: Name of the colormap to use (default 'parula').
+%       colormapName: Name of the colormap to use (default 'parula').
 
 
 
@@ -83,5 +84,3 @@ end
 if options.colorbar
     colorbar;
 end
-
-

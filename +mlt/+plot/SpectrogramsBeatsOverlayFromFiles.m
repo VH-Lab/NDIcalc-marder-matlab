@@ -1,7 +1,7 @@
-function ax = SpectrogramBeatsOverlayFromFiles(S, options)
-%SPECTROGRAMBEATSOVERLAYFROMFILES - Plots spectrograms with a heart beat frequency overlay.
+function ax = SpectrogramsBeatsOverlayFromFiles(S, options)
+%MLT.PLOT.SPECTROGRAMSBEATSOVERLAYFROMFILES - Plots spectrograms with a heart beat frequency overlay.
 %
-%   AX = mlt.plot.SpectrogramBeatsOverlayFromFiles(S)
+%   AX = mlt.plot.SpectrogramsBeatsOverlayFromFiles(S)
 %
 %   This function visualizes the relationship between instantaneous heart beat
 %   frequency and the spectral content of a PPG signal. For each PPG probe in
@@ -36,7 +36,7 @@ function ax = SpectrogramBeatsOverlayFromFiles(S, options)
 %
 %   Example:
 %       % Assuming 'mySession' is an ndi.session object
-%       ax = mlt.plot.SpectrogramBeatsOverlayFromFiles(mySession);
+%       ax = mlt.plot.SpectrogramsBeatsOverlayFromFiles(mySession);
 %
 %   See also mlt.plot.Spectrogram, mlt.plot.HeartBeatFromFiles
 

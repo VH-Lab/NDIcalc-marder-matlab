@@ -1,5 +1,5 @@
 function [doc_out] = beatsstruct2doc(doc_in,beats)
-%ADDBEATS2DOC Adds PPG beat data from a structure to an NDI document.
+%MLT.BEATS.BEATSSTRUCT2DOC Adds PPG beat data from a structure to an NDI document.
 %
 %   DOC_OUT = BEATSSTRUCT2DOC(DOC_IN, BEATS) takes photoplethysmogram (PPG)
 %   beat information stored in a structure array BEATS and writes it to a
