@@ -67,7 +67,7 @@ for i = 1:num_plots
     % Instantaneous Firing Rate
     ax_rate = axes('Position', [left_pos, 0.05 + 2*plot_height, column_width, plot_height*0.9]);
     hb_data = data.HeartBeatData{idx};
-    valid_beats = hb_data(logical(hb_data.valid));
+    valid_beats = hb_data(logical([hb_data.valid]));
     if ~isempty(valid_beats)
         plot_timeseries(ax_rate, [valid_beats.onset], [valid_beats.instant_freq], 'Rate (Hz)', false, '.-');
     else
