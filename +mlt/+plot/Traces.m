@@ -42,7 +42,7 @@ for i = 1:num_plots
     spec_data = data.SpectrogramData{idx};
 
     % Call the existing, shared plotting function
-    mlt.plot.Spectrogram(spec_data.spectrogram, spec_data.f, spec_data.ts, 'drawLabels', false);
+    mlt.plot.Spectrogram(spec_data.spec, spec_data.f, spec_data.ts, 'drawLabels', false);
 
     % Customize labels for this specific plot layout
     ylabel('Frequency (Hz)');
