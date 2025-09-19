@@ -18,6 +18,7 @@ In NDI, data is organized into sessions and datasets. A dataset is comprised of 
 To open an existing session, one simply uses:
 
 #### Code block 1.1:
+
 ```[matlab]
 S = ndi.session.dir(path/to/your/session);
 ```

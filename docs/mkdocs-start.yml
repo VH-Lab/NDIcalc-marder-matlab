@@ -21,6 +21,6 @@ nav:
   - Home: index.md
   - Installation: 'installation.md'
   - Tutorials:
-    - Marder Lab data and NDI
+    - Marder Lab data and NDI:
       - 1.1 Reading Marder lab data with NDI: 'tutorials/MarderLabDataAndNDI/1_ReadingMarderDataWithNDI.md'
   - Document reference:

@@ -6,4 +6,9 @@
 *.swp
 *.asv
 *.m~
+docs/documents/*
+docs/reference/
+docs/mkdocs-references.yml
+mkdocs.yml
+site/*
 __pycache__
