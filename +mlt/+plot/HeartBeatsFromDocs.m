@@ -1,7 +1,7 @@
 function ax = HeartBeatsFromDocs(S, options)
-%HEARTBEATFROMDOCS - Plots beat statistics overlaid on the raw PPG signal.
+%MLT.PLOT.HEARTBEATSFROMDOCS - Plots beat statistics overlaid on the raw PPG signal.
 %
-%   AX = mlt.plot.HeartBeatFromDocs(S)
+%   AX = mlt.plot.HeartBeatsFromDocs(S)
 %
 %   This function visualizes pre-calculated heart beat statistics for each
 %   subject and record type in an NDI session. It overlays the statistics on
@@ -21,7 +21,7 @@ function ax = HeartBeatsFromDocs(S, options)
 %       AX - A column vector of axes handles from all generated plots.
 %
 %   Example:
-%       ax = mlt.plot.HeartBeatFromDocs(mySession, 'Linewidth', 1.5);
+%       ax = mlt.plot.HeartBeatsFromDocs(mySession, 'Linewidth', 1.5);
 %
 %   See also mlt.plot.HeartBeat, mlt.doc.getHeartBeats, mlt.ppg.getRawData
 

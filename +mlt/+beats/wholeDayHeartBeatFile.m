@@ -1,5 +1,5 @@
 function [beats, d, t] = wholeDayHeartBeatFile(S, options)
-%WHOLEDAYHEARTBEAT Generate heartbeat record for a whole day's recording.
+%MLT.BEATS.WHOLEDAYHEARTBEATFILE Generate heartbeat record for a whole day's recording.
 %
 %   [BEATS, D, T] = WHOLEDAYHEARTBEATFILE(S, OPTIONS) computes heart beat 
 %   analysis for an entire day's worth of data from an ndi.element, 
@@ -71,5 +71,3 @@ beats = mlt.beats.detectHeartBeatsImproved(t,d);
 close(wb);
 
 end
-
-
