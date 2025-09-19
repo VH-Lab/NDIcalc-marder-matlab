@@ -415,6 +415,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tutorials/MarderLabDataAndNDI/3_HowToPlotHeartBeatsAndSpectrograms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    1.3 How to plot heart beats and spectrograms
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1064,6 +1087,29 @@
             doc PACKAGE
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%2Bdoc/getHeartBeatAndSpectrogram.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mlt.doc.getHeartBeatAndSpectrogram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1785,6 +1831,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../%2Bplot/Traces.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mlt.plot.Traces
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../%2Bplot/gracePlotAll.m/" class="md-nav__link">
         
   
@@ -2390,28 +2459,42 @@
 
 
 <h1 id="mltbeatsbeatsstruct2doc">mlt.beats.beatsstruct2doc<a class="headerlink" href="#mltbeatsbeatsstruct2doc" title="Permanent link">&para;</a></h1>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">ADDBEATS2DOC</span><span class="w"> </span><span class="n">Adds</span><span class="w"> </span><span class="n">PPG</span><span class="w"> </span><span class="n">beat</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">NDI</span><span class="w"> </span><span class="n">document</span><span class="p">.</span>
+<div class="codehilite"><pre><span></span><code> MLT.BEATS.BEATSSTRUCT2DOC Adds PPG beat data from a structure to an NDI document.
 
-<span class="w">    </span><span class="n">DOC_OUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BEATSSTRUCT2DOC</span><span class="p">(</span><span class="n">DOC_IN</span><span class="p">,</span><span class="w"> </span><span class="n">BEATS</span><span class="p">)</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="n">photoplethysmogram</span><span class="w"> </span><span class="p">(</span><span class="n">PPG</span><span class="p">)</span>
-<span class="w">    </span><span class="n">beat</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="k">stored</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="k">array</span><span class="w"> </span><span class="n">BEATS</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">writes</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">a</span>
-<span class="w">    </span><span class="kt">binary</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;beats.vhsb&#39;</span><span class="p">).</span><span class="w"> </span><span class="n">It</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">associates</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span>
-<span class="w">    </span><span class="n">provided</span><span class="w"> </span><span class="n">NDI</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="n">DOC_IN</span><span class="p">.</span>
+    DOC_OUT = BEATSSTRUCT2DOC(DOC_IN, BEATS) takes photoplethysmogram (PPG)
+    beat information stored in a structure array BEATS and writes it to a
+    binary file (&#39;beats.vhsb&#39;). It then associates this file with the
+    provided NDI document object DOC_IN.
 
-<span class="w">    </span><span class="n">Inputs</span><span class="o">:</span>
-<span class="w">        </span><span class="n">DOC_IN</span><span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">An</span><span class="w"> </span><span class="n">NDI</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="p">(</span><span class="n n-Quoted">`ndi.document`</span><span class="p">)</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">beat</span>
-<span class="w">                  </span><span class="k">data</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">added</span><span class="p">.</span>
-<span class="w">        </span><span class="n">BEATS</span><span class="w">   </span><span class="o">-</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="k">array</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">element</span><span class="w"> </span><span class="n">represents</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span>
-<span class="w">                  </span><span class="n">PPG</span><span class="w"> </span><span class="n">beat</span><span class="p">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="k">fields</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="kt">time</span>
-<span class="w">                  </span><span class="n">information</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">e</span><span class="p">.</span><span class="w"> </span><span class="s1">&#39;onset&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;offset&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">metrics</span><span class="p">.</span>
-<span class="w">                  </span><span class="kt">Time</span><span class="w"> </span><span class="k">fields</span><span class="w"> </span><span class="n">represented</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">MATLAB</span><span class="w"> </span><span class="n n-Quoted">`datetime`</span><span class="w"> </span><span class="n">are</span><span class="w"> </span>
-<span class="w">                  </span><span class="n">converted</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n n-Quoted">`datenum`</span><span class="w"> </span><span class="k">format</span><span class="w"> </span><span class="k">before</span><span class="w"> </span><span class="n">saving</span><span class="p">.</span>
+    Inputs:
+        DOC_IN  - An NDI document object (`ndi.document`) to which the beat
+                  data file will be added.
+        BEATS   - A structure array where each element represents a single
+                  PPG beat. The fields of the structure include:
+                    <span class="k">-</span> onset: Beat onset time.
+                    <span class="k">-</span> offset: Beat offset time.
+                    <span class="k">-</span> peak_time: Time of the beat&#39;s peak.
+                    <span class="k">-</span> peak_val: Signal value at the beat&#39;s peak.
+                    <span class="k">-</span> valley_time: Time of the beat&#39;s valley (trough).
+                    <span class="k">-</span> valley_val: Signal value at the beat&#39;s valley.
+                    <span class="k">-</span> up_time: Time of the upward slope.
+                    <span class="k">-</span> down_time: Time of the downward slope.
+                    <span class="k">-</span> duty_cycle: Ratio of beat duration to the period between beats.
+                    <span class="k">-</span> period: Time between consecutive beats.
+                    <span class="k">-</span> instant_freq: Instantaneous heart rate (beats per second).
+                    <span class="k">-</span> amplitude: Peak-to-peak amplitude.
+                    <span class="k">-</span> amplitude_high: Amplitude above a high threshold.
+                    <span class="k">-</span> amplitude_low: Amplitude below a low threshold.
+                    <span class="k">-</span> valid: Boolean indicating if the beat meets validity criteria.
+                    <span class="k">-</span> up_duration: Duration of the upward slope of the beat.
 
-<span class="w">    </span><span class="n">Outputs</span><span class="o">:</span>
-<span class="w">        </span><span class="n">DOC_OUT</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="n">NDI</span><span class="w"> </span><span class="n">document</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="p">(</span><span class="n n-Quoted">`ndi.document`</span><span class="p">)</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">now</span>
-<span class="w">                  </span><span class="n">includes</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">reference</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">newly</span><span class="w"> </span><span class="n">created</span><span class="w"> </span><span class="s1">&#39;beats.vhsb&#39;</span><span class="w"> </span><span class="k">file</span>
-<span class="w">                  </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">beat</span><span class="w"> </span><span class="k">data</span><span class="p">.</span>
+    Outputs:
+        DOC_OUT - The updated NDI document object (`ndi.document`) that now
+                  includes a reference to the newly created &#39;beats.vhsb&#39; file
+                  containing the beat data.
 
-<span class="w">    </span><span class="n">See</span><span class="w"> </span><span class="n">also</span><span class="o">:</span><span class="w"> </span><span class="n">MLT</span><span class="p">.</span><span class="n">DETECTHEARTBEATSIMPROVED</span><span class="p">,</span><span class="w"> </span><span class="n">MLT</span><span class="p">.</span><span class="n">BEATS</span><span class="p">.</span><span class="n">BEATSDOC2STRUCT</span><span class="p">,</span>
+    See also: mlt.beats.detectHeartBeatsImproved, mlt.beats.beatsdoc2struct,
+        vlt.file.custom_file_formats.vhsb_write
 </code></pre></div>
 
 

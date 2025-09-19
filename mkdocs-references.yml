@@ -15,6 +15,7 @@
         - mlt.beats.wholeDayHeartBeatDoc: 'reference/+mlt/+beats/wholeDayHeartBeatDoc.m.md'
         - mlt.beats.wholeDayHeartBeatFile: 'reference/+mlt/+beats/wholeDayHeartBeatFile.m.md'
       - doc PACKAGE:
+        - mlt.doc.getHeartBeatAndSpectrogram: 'reference/+mlt/+doc/getHeartBeatAndSpectrogram.m.md'
         - mlt.doc.getHeartBeats: 'reference/+mlt/+doc/getHeartBeats.m.md'
         - mlt.doc.getSpectrogramData: 'reference/+mlt/+doc/getSpectrogramData.m.md'
         - mlt.doc.heartBeatData: 'reference/+mlt/+doc/heartBeatData.m.md'
@@ -42,6 +43,7 @@
         - mlt.plot.SpectrogramsBeatsOverlayFromFiles: 'reference/+mlt/+plot/SpectrogramsBeatsOverlayFromFiles.m.md'
         - mlt.plot.SpectrogramsFromDocs: 'reference/+mlt/+plot/SpectrogramsFromDocs.m.md'
         - mlt.plot.SpectrogramsFromFiles: 'reference/+mlt/+plot/SpectrogramsFromFiles.m.md'
+        - mlt.plot.Traces: 'reference/+mlt/+plot/Traces.m.md'
         - mlt.plot.gracePlotAll: 'reference/+mlt/+plot/gracePlotAll.m.md'
         - mlt.plot.plotInhibitoryBoutONOFF: 'reference/+mlt/+plot/plotInhibitoryBoutONOFF.m.md'
         - mlt.plot.plotInhibitoryBoutOnsetOffset: 'reference/+mlt/+plot/plotInhibitoryBoutOnsetOffset.m.md'
