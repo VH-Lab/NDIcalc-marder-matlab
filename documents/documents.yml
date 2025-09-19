@@ -1,0 +1,3 @@
+      - heart:
+        - ppg_beats : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-marder-matlab/docs/documents/heart/ppg_beats.md'
+        - spectrogram : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-marder-matlab/docs/documents/heart/spectrogram.md'

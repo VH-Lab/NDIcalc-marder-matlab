@@ -1,0 +1,26 @@
+site_name: NDIcalc-marder-matlab
+repo_url: https://github.com/VH-Lab/NDIcalc-marder-matlab
+site_author: Marder lab and others
+docs_dir: 'docs'
+theme:
+  name: 'material'
+  palette:
+    - scheme: default
+      primary: 'indigo'
+      secondary: 'indigo'
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  features:
+    - navigation
+nav:
+  - Home: index.md
+  - Installation: 'installation.md'
+  - Tutorials:
+    - Marder Lab data and NDI:
+      - 1.1 Reading Marder lab data with NDI: 'tutorials/MarderLabDataAndNDI/1_ReadingMarderDataWithNDI.md'
+  - Document reference:
