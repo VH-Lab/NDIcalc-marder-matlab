@@ -77,15 +77,17 @@ ylabel('Instantaneous frequency')
 [SpectrogramDocs,SpectrogramData] = mlt.doc.getSpectograms(S,'gdy_0013@marderlab.brandeis.edu','heart');
 
 SpectrogramData{1}, % display the first structure
-
-
+mlt.plot.Spectrogram(SpectrogramData{1}.spec,SpectrogramData{1}.f,SpectrogramData{1}.ts);
 ```
 
+### 1.3.5 Get the heart and spectrogram data all together!
 
+```matlab
+mySubjectData = mlt.doc.getHeartBeatAndSpectrogram(S,'gdy_0013@marderlab.brandeis.edu','heart');
+mlt.plot.Traces(S,mySubjectData,1)
+```
 
-
-
-### 1.3.end Notes:
+### 1.3.6 Notes:
 
 The functions that read from local files where we initially stored the heart beat and spectrogram information are not recommended anymore. We will eventually remove them. These were quick and dirty treatments to get started looking at the data:
 
