@@ -1,16 +1,17 @@
 function ax = SpectrogramsFromDocs(S, options)
-%SPECTROGRAMSFROMDOCS - Plot spectrograms from NDI document data.
+% SPECTROGRAMSFROMDOCS - Plot spectrograms from NDI document data for each subject.
 %
-%   AX = mlt.plot.SpectrogramsFromDocs(S)
+%   AX = mlt.plot.SpectrogramsFromDocs(S, ...)
 %
-%   Plots spectrograms for all 'ppg' probes found within an ndi.session or
-%   ndi.dataset object S. The spectrograms for all probes are plotted as
-%   subplots within a single figure.
+%   Plots spectrograms for each subject and for each of the record types
+%   'heart', 'pylorus', and 'gastric'. For each subject and record type,
+%   this function searches for a unique NDI element. If found, it then
+%   searches for all associated 'spectrogram' documents.
 %
-%   This function queries the NDI database for documents of type 'spectrogram'
-%   associated with each PPG element. It then reads the spectrogram data,
-%   frequency vector, and time vector directly from the NDI document and
-%   its associated binary data store.
+%   A new figure is created for each element, and all of its spectrograms
+%   are plotted as subplots. This function uses `mlt.doc.getSpectrogramData`
+%   to retrieve the data, which automatically converts time to `datetime`
+%   if a global clock is available.
 %
 %   Inputs:
 %       S - An ndi.session or ndi.dataset object.
@@ -23,87 +24,83 @@ function ax = SpectrogramsFromDocs(S, options)
 %           color scale, clipping extreme values. Must be between 0 and 100.
 %       colormapName (1,:) char = 'parula'
 %           The name of the colormap to use (e.g., 'jet', 'hot', 'gray').
-%       numSubplots (1,1) double = 4
-%           The number of vertical subplots to prepare in the figure.
 %
 %   Outputs:
-%       ax - A column vector of axes handles for the generated subplots.
+%       ax - A column vector of all created axes handles.
 %
-%   Example 1: Basic usage
-%       % Assuming 'mySession' is an ndi.session object
-%       ax = mlt.plot.SpectrogramsFromDocs(mySession);
+%   Example:
+%       % Plot all spectrograms with a colorbar and a 'hot' colormap
+%       ax = mlt.plot.SpectrogramsFromDocs(mySession, 'colorbar', true, 'colormapName', 'hot');
 %
-%   Example 2: Plot with 8 subplots and a different colormap
-%       ax = mlt.plot.SpectrogramsFromDocs(mySession, 'numSubplots', 8, 'colormapName', 'jet');
-%
-%   See also mlt.plot.Spectrogram, ndi.session, ndi.document
+%   See also: mlt.plot.Spectrogram, mlt.doc.getSpectrogramData, mlt.ndi.getElement
 
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     options.colorbar (1,1) logical = false
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula'
-    options.numSubplots (1,1) double = 10
 end
 
-p = S.getprobes('type','ppg');
+ax = [];
+record_types = {'heart', 'pylorus', 'gastric'};
 
-if isempty(p)
-    disp('No PPG probes found in the session.');
-    ax = [];
+% Find all subjects in the session
+subject_docs = S.database_search(ndi.query('','isa','subject'));
+if isempty(subject_docs)
+    disp('No subjects found in this session.');
     return;
 end
 
-fig = figure;
-ax = [];
-
-for i=1:numel(p)
-    disp(['Processing element ' p{i}.elementstring '...']);
-    e_cell = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
-    if isempty(e_cell)
-        warning(['No ''_lp_whole'' version of ' p{i}.elementstring ' found. Skipping.']);
-        continue;
-    end
-    e = e_cell{1};
-    et = e.epochtable();
-    
-    % Find spectrogram document
-    doc = ndi.database.fun.finddocs_elementEpochType(S,e.id(),et(1).epoch_id,'spectrogram');
-    if isempty(doc)
-        warning(['Spectrogram document not found for ' p{i}.elementstring '. Skipping.']);
-        continue;
-    elseif isscalar(doc)
-        doc = doc{1};
-    else
-        warning(['More than one spectrogram document found for ' p{i}.elementstring '. Skipping.']);
-        continue;
-    end
-    
-    % Load spectrogram, timestamps, and frequencies from document
-    ngrid = doc.document_properties.ngrid;
-    specProp = doc.document_properties.spectrogram;
-    specDoc = database_openbinarydoc(S, doc, 'spectrogram_results.ngrid');
-    spec = ndi.fun.data.readngrid(specDoc,ngrid.data_dim,ngrid.data_type);
-    database_closebinarydoc(S, specDoc);
-    
-    freqCoords = ngrid.data_dim(specProp.frequency_ngrid_dim);
-    timeCoords = ngrid.data_dim(specProp.timestamp_ngrid_dim);
-    f = ngrid.coordinates(1:freqCoords);
-    ts = ngrid.coordinates(freqCoords + (1:timeCoords));
-    
-    % Plot spectrogram
-    figure(fig);
-    ax(end+1,1) = subplot(options.numSubplots, 1, i);
-    mlt.plot.Spectrogram(spec, f, ts, ...
-        'colorbar', options.colorbar, ...
-        'maxColorPercentile', options.maxColorPercentile, ...
-        'colormapName', options.colormapName);
+% Loop through each subject and record type
+for i = 1:numel(subject_docs)
+    subject_name = subject_docs{i}.document_properties.subject.local_identifier;
+    for j = 1:numel(record_types)
+        record_type = record_types{j};
         
-    title(e.elementstring, 'Interpreter', 'none');
-end
+        % Use a narrow try/catch block specifically to check for element existence
+        try
+            element = mlt.ndi.getElement(S, subject_name, record_type);
+        catch
+            % Silently skip if a unique element is not found for this combination
+            continue;
+        end
 
-if ~isempty(ax)
-    linkaxes(ax,'xy');
-end
+        % If we proceed, the element exists. Any subsequent errors are real problems.
 
+        % Get the spectrogram data from the document
+        [docs, spectrogram_data] = mlt.doc.getSpectrogramData(S, subject_name, record_type);
+
+        % It's possible an element exists but has no spectrogram document yet
+        if isempty(docs)
+            continue;
+        end
+
+        % Create a new figure for this element
+        fig = figure;
+
+        current_axes = [];
+        % Plot each spectrogram in a subplot
+        for k = 1:numel(spectrogram_data)
+            data = spectrogram_data{k};
+
+            ax_here = subplot(numel(spectrogram_data), 1, k);
+            mlt.plot.Spectrogram(data.spec, data.f, data.ts, ...
+                'colorbar', options.colorbar, ...
+                'maxColorPercentile', options.maxColorPercentile, ...
+                'colormapName', options.colormapName);
+
+            current_axes(end+1,1) = ax_here;
+        end
+
+        if ~isempty(current_axes)
+            linkaxes(current_axes, 'xy');
+            ax = [ax; current_axes(:)];
+        end
+
+        % Add a title to the new figure using the subject name and element object
+        figure(fig);
+        title_str = [subject_name ': ' element.elementstring()];
+        sgtitle(title_str, 'Interpreter', 'none');
+    end
+end
 end
