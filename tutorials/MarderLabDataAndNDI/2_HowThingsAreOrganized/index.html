@@ -11,25 +11,25 @@
       
       
       
-        <link rel="prev" href="../gracePlotAll.m/">
+        <link rel="prev" href="../1_ReadingGenericDataWithNDI/">
       
       
-        <link rel="next" href="../plotInhibitoryBoutOnsetOffset.m/">
+        <link rel="next" href="../../../documents/heart/ppg_beats/">
       
       
-      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
     
     
       
-        <title>mlt.plot.plotInhibitoryBoutONOFF - NDIcalc-marder-matlab</title>
+        <title>1.2 How we have been organizing things - NDIcalc-marder-matlab</title>
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2afb09e1.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mltplotplotinhibitoryboutonoff" class="md-skip">
+        <a href="#tutorial-1-marder-lab-data-and-ndi" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../../.." title="NDIcalc-marder-matlab" class="md-header__button md-logo" aria-label="NDIcalc-marder-matlab" data-md-component="logo">
+    <a href="../../.." title="NDIcalc-marder-matlab" class="md-header__button md-logo" aria-label="NDIcalc-marder-matlab" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              mlt.plot.plotInhibitoryBoutONOFF
+              1.2 How we have been organizing things
             
           </span>
         </div>
@@ -226,7 +226,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../../.." title="NDIcalc-marder-matlab" class="md-nav__button md-logo" aria-label="NDIcalc-marder-matlab" data-md-component="logo">
+    <a href="../../.." title="NDIcalc-marder-matlab" class="md-nav__button md-logo" aria-label="NDIcalc-marder-matlab" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -256,7 +256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -278,7 +278,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../installation/" class="md-nav__link">
+      <a href="../../../installation/" class="md-nav__link">
         
   
   
@@ -297,18 +297,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -324,7 +326,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Tutorials
@@ -335,18 +337,20 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
         
           
           <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
@@ -362,7 +366,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_1">
             <span class="md-nav__icon md-icon"></span>
             Marder Lab data and NDI
@@ -376,7 +380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../tutorials/MarderLabDataAndNDI/1_ReadingGenericDataWithNDI/" class="md-nav__link">
+      <a href="../1_ReadingGenericDataWithNDI/" class="md-nav__link">
         
   
   
@@ -396,10 +400,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../../tutorials/MarderLabDataAndNDI/2_HowThingsAreOrganized/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    1.2 How we have been organizing things
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -410,6 +436,74 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#12-how-we-have-been-organizing-things" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 How we have been organizing things
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 How we have been organizing things">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-are-the-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Where are the sessions?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-a-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opening a session
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Opening a session">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-block-121" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code block 1.2.1:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -513,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../documents/heart/ppg_beats/" class="md-nav__link">
+      <a href="../../../documents/heart/ppg_beats/" class="md-nav__link">
         
   
   
@@ -536,7 +630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../documents/heart/spectrogram/" class="md-nav__link">
+      <a href="../../../documents/heart/spectrogram/" class="md-nav__link">
         
   
   
@@ -571,20 +665,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -600,7 +692,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Code reference
@@ -611,20 +703,18 @@
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
@@ -640,7 +730,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             mlt PACKAGE
@@ -654,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../graceAnalysisAll.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/graceAnalysisAll.m/" class="md-nav__link">
         
   
   
@@ -677,7 +767,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../gracedemo.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/gracedemo.m/" class="md-nav__link">
         
   
   
@@ -738,7 +828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/beatRateBinQuantize.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/beatRateBinQuantize.m/" class="md-nav__link">
         
   
   
@@ -761,7 +851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/beatRateBins.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/beatRateBins.m/" class="md-nav__link">
         
   
   
@@ -784,7 +874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/beatsdoc2struct.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/beatsdoc2struct.m/" class="md-nav__link">
         
   
   
@@ -807,7 +897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/beatsstruct2doc.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/beatsstruct2doc.m/" class="md-nav__link">
         
   
   
@@ -830,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/calculateForDocs.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/calculateForDocs.m/" class="md-nav__link">
         
   
   
@@ -853,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/calculateForFiles.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/calculateForFiles.m/" class="md-nav__link">
         
   
   
@@ -876,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/detectHeartBeats.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/detectHeartBeats.m/" class="md-nav__link">
         
   
   
@@ -899,7 +989,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/detectHeartBeatsImproved.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/detectHeartBeatsImproved.m/" class="md-nav__link">
         
   
   
@@ -922,7 +1012,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/getRawBeatValues.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/getRawBeatValues.m/" class="md-nav__link">
         
   
   
@@ -945,7 +1035,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/getRawBeatValuesFromDoc.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/getRawBeatValuesFromDoc.m/" class="md-nav__link">
         
   
   
@@ -968,7 +1058,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/wholeDayHeartBeatDoc.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/wholeDayHeartBeatDoc.m/" class="md-nav__link">
         
   
   
@@ -991,7 +1081,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bbeats/wholeDayHeartBeatFile.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bbeats/wholeDayHeartBeatFile.m/" class="md-nav__link">
         
   
   
@@ -1060,7 +1150,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bdoc/getHeartBeats.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bdoc/getHeartBeats.m/" class="md-nav__link">
         
   
   
@@ -1083,7 +1173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bdoc/getSpectrogramData.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bdoc/getSpectrogramData.m/" class="md-nav__link">
         
   
   
@@ -1106,7 +1196,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bdoc/heartBeatData.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bdoc/heartBeatData.m/" class="md-nav__link">
         
   
   
@@ -1129,7 +1219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bdoc/spectrogramData.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bdoc/spectrogramData.m/" class="md-nav__link">
         
   
   
@@ -1198,7 +1288,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bhmm/Analysis.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bhmm/Analysis.m/" class="md-nav__link">
         
   
   
@@ -1221,7 +1311,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bhmm/StateDwellTimes.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bhmm/StateDwellTimes.m/" class="md-nav__link">
         
   
   
@@ -1244,7 +1334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bhmm/decode.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bhmm/decode.m/" class="md-nav__link">
         
   
   
@@ -1267,7 +1357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bhmm/decodeGauss.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bhmm/decodeGauss.m/" class="md-nav__link">
         
   
   
@@ -1290,7 +1380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bhmm/fit.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bhmm/fit.m/" class="md-nav__link">
         
   
   
@@ -1313,7 +1403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bhmm/fitGauss.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bhmm/fitGauss.m/" class="md-nav__link">
         
   
   
@@ -1382,7 +1472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2BinhibitoryBouts/findInhibitoryBouts.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2BinhibitoryBouts/findInhibitoryBouts.m/" class="md-nav__link">
         
   
   
@@ -1405,7 +1495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2BinhibitoryBouts/spectrogramInhibBoutAnalysis.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2BinhibitoryBouts/spectrogramInhibBoutAnalysis.m/" class="md-nav__link">
         
   
   
@@ -1428,7 +1518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2BinhibitoryBouts/spectrogramInhibitoryBoutOnsetOffsetAnalysis.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2BinhibitoryBouts/spectrogramInhibitoryBoutOnsetOffsetAnalysis.m/" class="md-nav__link">
         
   
   
@@ -1497,7 +1587,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bndi/getElement.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bndi/getElement.m/" class="md-nav__link">
         
   
   
@@ -1525,20 +1615,18 @@
                 
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_8" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1_8" >
         
           
           <label class="md-nav__link" for="__nav_5_1_8" id="__nav_5_1_8_label" tabindex="0">
@@ -1554,7 +1642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_8_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_1_8_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1_8">
             <span class="md-nav__icon md-icon"></span>
             plot PACKAGE
@@ -1568,7 +1656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../HMMStateDwellTimes.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/HMMStateDwellTimes.m/" class="md-nav__link">
         
   
   
@@ -1591,7 +1679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../HMMStates.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/HMMStates.m/" class="md-nav__link">
         
   
   
@@ -1614,7 +1702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../HeartBeat.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/HeartBeat.m/" class="md-nav__link">
         
   
   
@@ -1637,7 +1725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../HeartBeatsFromDocs.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/HeartBeatsFromDocs.m/" class="md-nav__link">
         
   
   
@@ -1660,7 +1748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../HeartBeatsFromFiles.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/HeartBeatsFromFiles.m/" class="md-nav__link">
         
   
   
@@ -1683,7 +1771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../Spectrogram.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/Spectrogram.m/" class="md-nav__link">
         
   
   
@@ -1706,7 +1794,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SpectrogramsBeatsOverlayFromFiles.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/SpectrogramsBeatsOverlayFromFiles.m/" class="md-nav__link">
         
   
   
@@ -1729,7 +1817,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SpectrogramsFromDocs.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/SpectrogramsFromDocs.m/" class="md-nav__link">
         
   
   
@@ -1752,7 +1840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../SpectrogramsFromFiles.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/SpectrogramsFromFiles.m/" class="md-nav__link">
         
   
   
@@ -1775,7 +1863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gracePlotAll.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/gracePlotAll.m/" class="md-nav__link">
         
   
   
@@ -1795,19 +1883,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../reference/%2Bmlt/%2Bplot/plotInhibitoryBoutONOFF.m/" class="md-nav__link">
         
   
   
@@ -1818,7 +1897,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1831,7 +1909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../plotInhibitoryBoutOnsetOffset.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/plotInhibitoryBoutOnsetOffset.m/" class="md-nav__link">
         
   
   
@@ -1854,7 +1932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subjectTrace.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bplot/subjectTrace.m/" class="md-nav__link">
         
   
   
@@ -1923,7 +2001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bppg/downsample.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bppg/downsample.m/" class="md-nav__link">
         
   
   
@@ -1946,7 +2024,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bppg/getRawData.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bppg/getRawData.m/" class="md-nav__link">
         
   
   
@@ -2015,7 +2093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bspectrogram/FWHM.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bspectrogram/FWHM.m/" class="md-nav__link">
         
   
   
@@ -2038,7 +2116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bspectrogram/calculateForDocs.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bspectrogram/calculateForDocs.m/" class="md-nav__link">
         
   
   
@@ -2061,7 +2139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bspectrogram/calculateForFiles.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bspectrogram/calculateForFiles.m/" class="md-nav__link">
         
   
   
@@ -2084,7 +2162,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bspectrogram/readTimeWindow.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bspectrogram/readTimeWindow.m/" class="md-nav__link">
         
   
   
@@ -2107,7 +2185,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bspectrogram/wholeDaySpectrogram.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bspectrogram/wholeDaySpectrogram.m/" class="md-nav__link">
         
   
   
@@ -2130,7 +2208,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Bspectrogram/wholeDaySpectrogramDoc.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Bspectrogram/wholeDaySpectrogramDoc.m/" class="md-nav__link">
         
   
   
@@ -2199,7 +2277,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Butil/computeChunkedSpectrogram.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Butil/computeChunkedSpectrogram.m/" class="md-nav__link">
         
   
   
@@ -2222,7 +2300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Butil/computeSpectrogram.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Butil/computeSpectrogram.m/" class="md-nav__link">
         
   
   
@@ -2245,7 +2323,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Butil/makeSpectrogram.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Butil/makeSpectrogram.m/" class="md-nav__link">
         
   
   
@@ -2268,7 +2346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Butil/movzscore.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Butil/movzscore.m/" class="md-nav__link">
         
   
   
@@ -2291,7 +2369,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../%2Butil/mscohere.m/" class="md-nav__link">
+      <a href="../../../reference/%2Bmlt/%2Butil/mscohere.m/" class="md-nav__link">
         
   
   
@@ -2337,7 +2415,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../contributing/" class="md-nav__link">
+      <a href="../../../contributing/" class="md-nav__link">
         
   
   
@@ -2372,6 +2450,62 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#12-how-we-have-been-organizing-things" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 How we have been organizing things
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 How we have been organizing things">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-are-the-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Where are the sessions?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-a-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Opening a session
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Opening a session">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-block-121" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code block 1.2.1:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2389,41 +2523,20 @@
   
 
 
-<h1 id="mltplotplotinhibitoryboutonoff">mlt.plot.plotInhibitoryBoutONOFF<a class="headerlink" href="#mltplotplotinhibitoryboutonoff" title="Permanent link">&para;</a></h1>
-<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="n">MLT</span><span class="p">.</span><span class="n">PLOT</span><span class="p">.</span><span class="n">PLOTINHIBITORYBOUTONOFF</span><span class="w"> </span><span class="n">Plots</span><span class="w"> </span><span class="n">binned</span><span class="w"> </span><span class="n">beat</span><span class="w"> </span><span class="n">rates</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">bout</span><span class="w"> </span><span class="nb">events</span><span class="p">.</span>
-<span class="w">    </span><span class="n">ax</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">mlt</span><span class="p">.</span><span class="n">plotInhibitoryBoutONOFF</span><span class="p">(</span><span class="n">bouts</span><span class="p">)</span><span class="w"> </span><span class="n">creates</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="nb">plot</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">binned</span>
-<span class="w">    </span><span class="n">beat</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="n">over</span><span class="w"> </span><span class="nb">time</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">overlays</span><span class="w"> </span><span class="n">vertical</span><span class="w"> </span><span class="nb">lines</span><span class="w"> </span><span class="n">indicating</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">onset</span>
-<span class="w">    </span><span class="p">(</span><span class="n">RED</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">inhibitory</span><span class="w"> </span><span class="n">bouts</span><span class="p">.</span>
-
-<span class="w">    </span><span class="n">The</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">uses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">binned</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">stored</span><span class="w"> </span><span class="n">within</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="s">&#39;bouts&#39;</span>
-<span class="w">    </span><span class="n">structure</span><span class="p">,</span><span class="w"> </span><span class="nb">which</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">generated</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">mlt</span><span class="p">.</span><span class="n">inhibitoryBouts</span><span class="p">.</span><span class="n">findInhibitoryBouts</span><span class="p">.</span>
-
-<span class="w">    </span><span class="n">SYNTAX</span><span class="p">:</span>
-<span class="w">    </span><span class="n">ax</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">mlt</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">plotInhibitoryBoutONOFF</span><span class="p">(</span><span class="n">bouts</span><span class="p">)</span>
-
-<span class="w">    </span><span class="n">INPUTS</span><span class="p">:</span>
-<span class="w">    </span><span class="n">bouts</span><span class="w">               </span><span class="o">-</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">structure</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">mlt</span><span class="p">.</span><span class="n">inhibitoryBouts</span><span class="p">.</span><span class="n">findInhibitoryBouts</span><span class="p">.</span>
-<span class="w">                          </span><span class="n">It</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">contain</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">fields</span><span class="p">:</span>
-<span class="w">                          </span><span class="p">.</span><span class="n">beatRate</span>
-<span class="w">                          </span><span class="p">.</span><span class="n">beatRateTimes</span>
-<span class="w">                          </span><span class="p">.</span><span class="n">inhibitoryBoutOnset</span>
-<span class="w">                          </span><span class="p">.</span><span class="n">inhibitoryBoutOffset</span>
-
-<span class="w">    </span><span class="n">OUTPUTS</span><span class="p">:</span>
-<span class="w">    </span><span class="n">ax</span><span class="w">                  </span><span class="o">-</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="nb">handle</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nb">axes</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">generated</span><span class="w"> </span><span class="nb">plot</span><span class="p">.</span>
-
-<span class="w">    </span><span class="n">EXAMPLE</span><span class="p">:</span>
-<span class="w">        </span><span class="c">% 1. Create synthetic beat data</span>
-<span class="w">        </span><span class="n">beat_times</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="mf">0.4</span><span class="p">:</span><span class="mi">10</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mf">10.5</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mf">20.4</span><span class="p">:</span><span class="mf">0.4</span><span class="p">:</span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="o">&#39;</span><span class="p">;</span>
-
-<span class="w">        </span><span class="c">% 2. Find the inhibitory bouts (which now includes rate data)</span>
-<span class="w">        </span><span class="n">bouts</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">mlt</span><span class="p">.</span><span class="n">inhibitoryBouts</span><span class="p">.</span><span class="n">findInhibitoryBouts</span><span class="p">(</span><span class="n">beat_times</span><span class="p">);</span>
-
-<span class="w">        </span><span class="c">% 3. Plot the results directly from the bouts structure</span>
-<span class="w">        </span><span class="nb">figure</span><span class="p">;</span>
-<span class="w">        </span><span class="n">ax</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">mlt</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">plotInhibitoryBoutONOFF</span><span class="p">(</span><span class="n">bouts</span><span class="p">);</span>
-<span class="w">        </span><span class="nb">title</span><span class="p">(</span><span class="s">&#39;Inhibitory Bout Detection&#39;</span><span class="p">);</span>
+<h1 id="tutorial-1-marder-lab-data-and-ndi">Tutorial 1 Marder Lab data and NDI<a class="headerlink" href="#tutorial-1-marder-lab-data-and-ndi" title="Permanent link">&para;</a></h1>
+<h2 id="12-how-we-have-been-organizing-things">1.2 How we have been organizing things<a class="headerlink" href="#12-how-we-have-been-organizing-things" title="Permanent link">&para;</a></h2>
+<h3 id="where-are-the-sessions">Where are the sessions?<a class="headerlink" href="#where-are-the-sessions" title="Permanent link">&para;</a></h3>
+<p>For the time being, we have been storing the PPG sessions in zipped folders on a shared Google Drive.</p>
+<p>Soon (overdue) this can all be in the cloud so it will get much easier.</p>
+<h3 id="opening-a-session">Opening a session<a class="headerlink" href="#opening-a-session" title="Permanent link">&para;</a></h3>
+<p>Let's use 994_13 as an example. Find the 994_13.zip file on the shared drive, download it, and put it on your disk where you'd like.</p>
+<h4 id="code-block-121">Code block 1.2.1:<a class="headerlink" href="#code-block-121" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="n">myDataPath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;/Users/vanhoosr/data/grace&#39;</span><span class="p">;</span>
+<span class="n">mySessionPath</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fullfile</span><span class="p">(</span><span class="n">myDataPath</span><span class="p">,</span><span class="s">&#39;994_13&#39;</span><span class="p">);</span>
+<span class="n">S</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">session</span><span class="p">.</span><span class="n">dir</span><span class="p">(</span><span class="n">mySessionPath</span><span class="p">);</span>
 </code></pre></div>
+
+<p>Now you can list the subjects and look at the probes and epochs as in the <a href="../1_ReadingGenericDataWithNDI.md/">generic tutorial</a>.</p>
 
 
 
@@ -2472,10 +2585,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>
