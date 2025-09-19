@@ -24,4 +24,5 @@ nav:
     - Marder Lab data and NDI:
       - 1.1 Reading Generic lab data with NDI: 'tutorials/MarderLabDataAndNDI/1_ReadingGenericDataWithNDI.md'
       - 1.2 How we have been organizing things: 'tutorials/MarderLabDataAndNDI/2_HowThingsAreOrganized.md'
+      - 1.3 How to plot heart beats and spectrograms: 'tutorials/MarderLabDataAndNDI/3_HowToPlotHeartBeatsAndSpectrograms.md'
   - Document reference:

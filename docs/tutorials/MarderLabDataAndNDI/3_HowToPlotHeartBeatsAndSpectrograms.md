@@ -27,9 +27,9 @@ For me, this returns:
 #### Code block 1.3.3 (output only, don't type in)
 
 ```matlab
-sT =
+sT = 
 
-  4×2 table
+  4x2 table
 
           SubjectDocumentIdentifier                SubjectLocalIdentifier       
     _____________________________________    ___________________________________
@@ -94,5 +94,4 @@ The functions that read from local files where we initially stored the heart bea
 - `mlt.plot.HeartBeatsFromFiles` - Not recommended
 - `mlt.plot.SpectrogramsFromFiles` - Not recommended
 - `SpectrogramsBeatsOverlayFromFiles` - Not recommended
-
 
