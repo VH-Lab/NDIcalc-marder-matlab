@@ -1,16 +1,15 @@
 function ax = SpectrogramsFromDocs(S, options)
-%SPECTROGRAMSFROMDOCS - Plot spectrograms from NDI document data.
+% SPECTROGRAMSFROMDOCS - Plot spectrograms from NDI document data for each subject.
 %
-%   AX = mlt.plot.SpectrogramsFromDocs(S)
+%   AX = mlt.plot.SpectrogramsFromDocs(S, ...)
 %
-%   Plots spectrograms for all 'ppg' probes found within an ndi.session or
-%   ndi.dataset object S. The spectrograms for all probes are plotted as
-%   subplots within a single figure.
+%   Plots all available spectrograms from all subjects and record types
+%   ('heart', 'pylorus', 'gastric') into a single figure with multiple subplots.
 %
-%   This function queries the NDI database for documents of type 'spectrogram'
-%   associated with each PPG element. It then reads the spectrogram data,
-%   frequency vector, and time vector directly from the NDI document and
-%   its associated binary data store.
+%   The function first loops through all subjects and record types to find all
+%   available spectrograms and determine the total number of subplots needed.
+%   It then creates a single figure and plots each spectrogram in a separate
+%   subplot. Finally, it links the axes of all subplots.
 %
 %   Inputs:
 %       S - An ndi.session or ndi.dataset object.
@@ -23,87 +22,82 @@ function ax = SpectrogramsFromDocs(S, options)
 %           color scale, clipping extreme values. Must be between 0 and 100.
 %       colormapName (1,:) char = 'parula'
 %           The name of the colormap to use (e.g., 'jet', 'hot', 'gray').
-%       numSubplots (1,1) double = 4
-%           The number of vertical subplots to prepare in the figure.
 %
 %   Outputs:
-%       ax - A column vector of axes handles for the generated subplots.
+%       ax - A column vector of all created axes handles.
 %
-%   Example 1: Basic usage
-%       % Assuming 'mySession' is an ndi.session object
-%       ax = mlt.plot.SpectrogramsFromDocs(mySession);
+%   Example:
+%       % Plot all spectrograms with a colorbar and a 'hot' colormap
+%       ax = mlt.plot.SpectrogramsFromDocs(mySession, 'colorbar', true, 'colormapName', 'hot');
 %
-%   Example 2: Plot with 8 subplots and a different colormap
-%       ax = mlt.plot.SpectrogramsFromDocs(mySession, 'numSubplots', 8, 'colormapName', 'jet');
-%
-%   See also mlt.plot.Spectrogram, ndi.session, ndi.document
+%   See also: mlt.plot.Spectrogram, mlt.doc.getSpectrogramData, mlt.ndi.getElement
 
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
     options.colorbar (1,1) logical = false
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula'
-    options.numSubplots (1,1) double = 10
 end
 
-p = S.getprobes('type','ppg');
+ax = [];
+record_types = {'heart', 'pylorus', 'gastric'};
+plots_to_make = {};
 
-if isempty(p)
-    disp('No PPG probes found in the session.');
-    ax = [];
+% Find all subjects in the session
+subject_docs = S.database_search(ndi.query('','isa','subject'));
+if isempty(subject_docs)
+    disp('No subjects found in this session.');
     return;
 end
 
-fig = figure;
-ax = [];
+% --- Step 1: Pre-computation loop to gather data ---
+for i = 1:numel(subject_docs)
+    subject_name = subject_docs{i}.document_properties.subject.local_identifier;
+    for j = 1:numel(record_types)
+        record_type = record_types{j};
 
-for i=1:numel(p)
-    disp(['Processing element ' p{i}.elementstring '...']);
-    e_cell = S.getelements('element.name',[p{i}.name '_lp_whole'],'element.reference',p{i}.reference);
-    if isempty(e_cell)
-        warning(['No ''_lp_whole'' version of ' p{i}.elementstring ' found. Skipping.']);
-        continue;
+        try
+            element = mlt.ndi.getElement(S, subject_name, record_type);
+        catch
+            continue; % Skip if element doesn't exist
+        end
+
+        [~, spectrogram_data] = mlt.doc.getSpectrogramData(S, subject_name, record_type);
+
+        if ~isempty(spectrogram_data)
+            for k = 1:numel(spectrogram_data)
+                plot_info.data = spectrogram_data{k};
+                plot_info.title = [subject_name ': ' element.elementstring()];
+                plots_to_make{end+1} = plot_info;
+            end
+        end
     end
-    e = e_cell{1};
-    et = e.epochtable();
-    
-    % Find spectrogram document
-    doc = ndi.database.fun.finddocs_elementEpochType(S,e.id(),et(1).epoch_id,'spectrogram');
-    if isempty(doc)
-        warning(['Spectrogram document not found for ' p{i}.elementstring '. Skipping.']);
-        continue;
-    elseif isscalar(doc)
-        doc = doc{1};
-    else
-        warning(['More than one spectrogram document found for ' p{i}.elementstring '. Skipping.']);
-        continue;
-    end
-    
-    % Load spectrogram, timestamps, and frequencies from document
-    ngrid = doc.document_properties.ngrid;
-    specProp = doc.document_properties.spectrogram;
-    specDoc = database_openbinarydoc(S, doc, 'spectrogram_results.ngrid');
-    spec = ndi.fun.data.readngrid(specDoc,ngrid.data_dim,ngrid.data_type);
-    database_closebinarydoc(S, specDoc);
-    
-    freqCoords = ngrid.data_dim(specProp.frequency_ngrid_dim);
-    timeCoords = ngrid.data_dim(specProp.timestamp_ngrid_dim);
-    f = ngrid.coordinates(1:freqCoords);
-    ts = ngrid.coordinates(freqCoords + (1:timeCoords));
-    
-    % Plot spectrogram
-    figure(fig);
-    ax(end+1,1) = subplot(options.numSubplots, 1, i);
-    mlt.plot.Spectrogram(spec, f, ts, ...
+end
+
+if isempty(plots_to_make)
+    disp('No spectrograms found to plot.');
+    return;
+end
+
+% --- Step 2: Create a single figure and plot all spectrograms ---
+fig = figure;
+total_subplots = numel(plots_to_make);
+
+for i = 1:total_subplots
+    plot_info = plots_to_make{i};
+
+    ax(i,1) = subplot(total_subplots, 1, i);
+    mlt.plot.Spectrogram(plot_info.data.spec, plot_info.data.f, plot_info.data.ts, ...
         'colorbar', options.colorbar, ...
         'maxColorPercentile', options.maxColorPercentile, ...
         'colormapName', options.colormapName);
-        
-    title(e.elementstring, 'Interpreter', 'none');
+
+    title(plot_info.title, 'Interpreter', 'none');
 end
 
+% --- Step 3: Link all subplot axes ---
 if ~isempty(ax)
-    linkaxes(ax,'xy');
+    linkaxes(ax, 'xy');
 end
 
 end
