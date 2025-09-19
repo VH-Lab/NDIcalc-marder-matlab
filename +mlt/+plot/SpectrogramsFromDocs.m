@@ -3,15 +3,13 @@ function ax = SpectrogramsFromDocs(S, options)
 %
 %   AX = mlt.plot.SpectrogramsFromDocs(S, ...)
 %
-%   Plots spectrograms for each subject and for each of the record types
-%   'heart', 'pylorus', and 'gastric'. For each subject and record type,
-%   this function searches for a unique NDI element. If found, it then
-%   searches for all associated 'spectrogram' documents.
+%   Plots all available spectrograms from all subjects and record types
+%   ('heart', 'pylorus', 'gastric') into a single figure with multiple subplots.
 %
-%   A new figure is created for each element, and all of its spectrograms
-%   are plotted as subplots. This function uses `mlt.doc.getSpectrogramData`
-%   to retrieve the data, which automatically converts time to `datetime`
-%   if a global clock is available.
+%   The function first loops through all subjects and record types to find all
+%   available spectrograms and determine the total number of subplots needed.
+%   It then creates a single figure and plots each spectrogram in a separate
+%   subplot. Finally, it links the axes of all subplots.
 %
 %   Inputs:
 %       S - An ndi.session or ndi.dataset object.
@@ -43,6 +41,7 @@ end
 
 ax = [];
 record_types = {'heart', 'pylorus', 'gastric'};
+plots_to_make = {};
 
 % Find all subjects in the session
 subject_docs = S.database_search(ndi.query('','isa','subject'));
@@ -51,56 +50,54 @@ if isempty(subject_docs)
     return;
 end
 
-% Loop through each subject and record type
+% --- Step 1: Pre-computation loop to gather data ---
 for i = 1:numel(subject_docs)
     subject_name = subject_docs{i}.document_properties.subject.local_identifier;
     for j = 1:numel(record_types)
         record_type = record_types{j};
-        
-        % Use a narrow try/catch block specifically to check for element existence
+
         try
             element = mlt.ndi.getElement(S, subject_name, record_type);
         catch
-            % Silently skip if a unique element is not found for this combination
-            continue;
+            continue; % Skip if element doesn't exist
         end
 
-        % If we proceed, the element exists. Any subsequent errors are real problems.
+        [~, spectrogram_data] = mlt.doc.getSpectrogramData(S, subject_name, record_type);
 
-        % Get the spectrogram data from the document
-        [docs, spectrogram_data] = mlt.doc.getSpectrogramData(S, subject_name, record_type);
-
-        % It's possible an element exists but has no spectrogram document yet
-        if isempty(docs)
-            continue;
+        if ~isempty(spectrogram_data)
+            for k = 1:numel(spectrogram_data)
+                plot_info.data = spectrogram_data{k};
+                plot_info.title = [subject_name ': ' element.elementstring()];
+                plots_to_make{end+1} = plot_info;
+            end
         end
-
-        % Create a new figure for this element
-        fig = figure;
-
-        current_axes = [];
-        % Plot each spectrogram in a subplot
-        for k = 1:numel(spectrogram_data)
-            data = spectrogram_data{k};
-
-            ax_here = subplot(numel(spectrogram_data), 1, k);
-            mlt.plot.Spectrogram(data.spec, data.f, data.ts, ...
-                'colorbar', options.colorbar, ...
-                'maxColorPercentile', options.maxColorPercentile, ...
-                'colormapName', options.colormapName);
-
-            current_axes(end+1,1) = ax_here;
-        end
-
-        if ~isempty(current_axes)
-            linkaxes(current_axes, 'xy');
-            ax = [ax; current_axes(:)];
-        end
-
-        % Add a title to the new figure using the subject name and element object
-        figure(fig);
-        title_str = [subject_name ': ' element.elementstring()];
-        sgtitle(title_str, 'Interpreter', 'none');
     end
 end
+
+if isempty(plots_to_make)
+    disp('No spectrograms found to plot.');
+    return;
+end
+
+% --- Step 2: Create a single figure and plot all spectrograms ---
+fig = figure;
+total_subplots = numel(plots_to_make);
+
+for i = 1:total_subplots
+    plot_info = plots_to_make{i};
+
+    ax(i,1) = subplot(total_subplots, 1, i);
+    mlt.plot.Spectrogram(plot_info.data.spec, plot_info.data.f, plot_info.data.ts, ...
+        'colorbar', options.colorbar, ...
+        'maxColorPercentile', options.maxColorPercentile, ...
+        'colormapName', options.colormapName);
+
+    title(plot_info.title, 'Interpreter', 'none');
+end
+
+% --- Step 3: Link all subplot axes ---
+if ~isempty(ax)
+    linkaxes(ax, 'xy');
+end
+
 end
