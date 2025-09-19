@@ -31,8 +31,6 @@ num_plots = numel(which_indices);
 column_width = 0.9 / num_plots;
 column_spacing = 0.1 / (num_plots + 1);
 
-all_axes = [];
-
 for i = 1:num_plots
     idx = which_indices(i);
 
@@ -82,10 +80,9 @@ for i = 1:num_plots
     axis(ax_temp, 'off');
     text(ax_temp, 0.5, 0.5, 'Temperature (Future)', 'HorizontalAlignment', 'center');
 
-    all_axes = [all_axes, ax_spec, ax_raw, ax_rate, ax_amp];
+    column_axes = [ax_spec, ax_raw, ax_rate, ax_amp];
+    linkaxes(column_axes, 'x');
 end
-
-linkaxes(all_axes, 'x');
 
 end
 
