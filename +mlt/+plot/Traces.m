@@ -38,10 +38,16 @@ for i = 1:num_plots
 
     % Spectrogram (top 40%)
     ax_spec = axes('Position', [left_pos, 0.60, column_width, 0.35]);
+    axes(ax_spec); % Set the current axes for the plotting function
     spec_data = data.SpectrogramData{idx};
 
-    % Use a helper function for plotting to keep code clean
-    plot_spectrogram(ax_spec, spec_data);
+    % Call the existing, shared plotting function
+    mlt.plot.Spectrogram(spec_data.spectrogram, spec_data.f, spec_data.ts, 'drawLabels', false);
+
+    % Customize labels for this specific plot layout
+    ylabel('Frequency (Hz)');
+    set(ax_spec, 'xticklabel', []);
+
     if i == 1
         title(ax_spec, ['Subject: ' data.subject_local_identifier ', Record: ' data.recordType]);
     else
@@ -84,22 +90,6 @@ for i = 1:num_plots
     linkaxes(column_axes, 'x');
 end
 
-end
-
-function plot_spectrogram(ax, spec_data)
-    axes(ax);
-
-    if isa(spec_data.t, 'datetime')
-        t_plot = spec_data.t;
-    else
-        t_plot = spec_data.t / 3600; % convert seconds to hours
-    end
-
-    surf(t_plot, spec_data.f, 10.^(spec_data.spectrogram/10), 'EdgeColor', 'none');
-    view(0, 90);
-    shading flat;
-    ylabel('Frequency (Hz)');
-    set(ax,'xticklabel',[]);
 end
 
 function plot_timeseries(ax, t, d, ylabel_str, show_xlabel, plot_style)
