@@ -10,17 +10,31 @@ function [doc_out] = beatsstruct2doc(doc_in,beats)
 %       DOC_IN  - An NDI document object (`ndi.document`) to which the beat
 %                 data file will be added.
 %       BEATS   - A structure array where each element represents a single
-%                 PPG beat. The fields of the structure include time
-%                 information (i.e. 'onset', 'offset') and other metrics.
-%                 Time fields represented as MATLAB `datetime` are 
-%                 converted to `datenum` format before saving.
+%                 PPG beat. The fields of the structure include:
+%                   - onset: Beat onset time.
+%                   - offset: Beat offset time.
+%                   - peak_time: Time of the beat's peak.
+%                   - peak_val: Signal value at the beat's peak.
+%                   - valley_time: Time of the beat's valley (trough).
+%                   - valley_val: Signal value at the beat's valley.
+%                   - up_time: Time of the upward slope.
+%                   - down_time: Time of the downward slope.
+%                   - duty_cycle: Ratio of beat duration to the period between beats.
+%                   - period: Time between consecutive beats.
+%                   - instant_freq: Instantaneous heart rate (beats per second).
+%                   - amplitude: Peak-to-peak amplitude.
+%                   - amplitude_high: Amplitude above a high threshold.
+%                   - amplitude_low: Amplitude below a low threshold.
+%                   - valid: Boolean indicating if the beat meets validity criteria.
+%                   - up_duration: Duration of the upward slope of the beat.
 %
 %   Outputs:
 %       DOC_OUT - The updated NDI document object (`ndi.document`) that now
 %                 includes a reference to the newly created 'beats.vhsb' file
 %                 containing the beat data.
 %
-%   See also: MLT.DETECTHEARTBEATSIMPROVED, MLT.BEATS.BEATSDOC2STRUCT,
+%   See also: mlt.beats.detectHeartBeatsImproved, mlt.beats.beatsdoc2struct,
+%       vlt.file.custom_file_formats.vhsb_write
 
 % Input argument validation
 arguments

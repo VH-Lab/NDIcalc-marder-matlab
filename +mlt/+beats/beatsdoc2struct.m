@@ -17,11 +17,26 @@ function [beats] = beatsdoc2struct(S,doc)
 %
 %   Outputs:
 %       BEATS   - A structure array where each element represents a single
-%                 PPG beat. The fields of the structure include 'onset', 
-%                 'offset', 'peak_time', etc.
+%                 PPG beat. The fields of the structure include:
+%                   - onset: Beat onset time.
+%                   - offset: Beat offset time.
+%                   - peak_time: Time of the beat's peak.
+%                   - peak_val: Signal value at the beat's peak.
+%                   - valley_time: Time of the beat's valley (trough).
+%                   - valley_val: Signal value at the beat's valley.
+%                   - up_time: Time of the upward slope.
+%                   - down_time: Time of the downward slope.
+%                   - duty_cycle: Ratio of beat duration to the period between beats.
+%                   - period: Time between consecutive beats.
+%                   - instant_freq: Instantaneous heart rate (beats per second).
+%                   - amplitude: Peak-to-peak amplitude.
+%                   - amplitude_high: Amplitude above a high threshold.
+%                   - amplitude_low: Amplitude below a low threshold.
+%                   - valid: Boolean indicating if the beat meets validity criteria.
+%                   - up_duration: Duration of the upward slope of the beat.
 %
-%   See also: MLT.DETECTHEARTBEATSIMPROVED, MLT.ADDBEATS2DOC,
-%       VLT.FILE.CUSTOM_FILE_FORMATS.VHSB_READ
+%   See also: mlt.beats.detectHeartBeatsImproved, mlt.beats.beatsstruct2doc,
+%       vlt.file.custom_file_formats.vhsb_read
 
 % Input argument validation
 arguments
