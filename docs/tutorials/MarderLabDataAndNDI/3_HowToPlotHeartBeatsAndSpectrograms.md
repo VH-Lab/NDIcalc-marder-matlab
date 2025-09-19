@@ -45,12 +45,52 @@ sT =
 
 We can plot a summary of the whole session with the following code:
 
-#### Code block 1.3.3:
+#### Code block 1.3.4:
 
 ```matlab
 mlt.plot.HeartBeatsFromDocs(S)
 mlt.plot.SpectrogramsFromDocs(S)
 ```
 
+### 1.3.3 Get the heart beat data for a subject and sensor location
+
+Use the `mlt.doc.*` functions. You can see the documentation for the heart beat fields by typing `help mlt.beats.beatdocs2struct`.
+
+#### Code block 1.3.5
+
+```matlab
+[heartBeatDocs,HeartBeatData] = mlt.doc.getHeartBeats(S,'gdy_0013@marderlab.brandeis.edu','heart');
+
+HeartBeatData{1}, % display the first structure
+
+figure;
+plot([HeartBeatData{1}.onset],[HeartBeatData{1}.instant_freq],'k-');
+xlabel('Time (UTC)');
+ylabel('Instantaneous frequency')
+```
+
+### 1.3.4 Get the spectrogram data for a subject and sensor location
+
+#### Code block 1.3.5
+
+```matlab
+[SpectrogramDocs,SpectrogramData] = mlt.doc.getSpectograms(S,'gdy_0013@marderlab.brandeis.edu','heart');
+
+SpectrogramData{1}, % display the first structure
+
+
+```
+
+
+
+
+
+### 1.3.end Notes:
+
+The functions that read from local files where we initially stored the heart beat and spectrogram information are not recommended anymore. We will eventually remove them. These were quick and dirty treatments to get started looking at the data:
+
+- `mlt.plot.HeartBeatsFromFiles` - Not recommended
+- `mlt.plot.SpectrogramsFromFiles` - Not recommended
+- `SpectrogramsBeatsOverlayFromFiles` - Not recommended
 
 

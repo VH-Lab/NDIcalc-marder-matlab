@@ -1,4 +1,4 @@
-function ax = HeartBeatFromDocs(S, options)
+function ax = HeartBeatsFromDocs(S, options)
 %HEARTBEATFROMDOCS - Plots beat statistics overlaid on the raw PPG signal.
 %
 %   AX = mlt.plot.HeartBeatFromDocs(S)
