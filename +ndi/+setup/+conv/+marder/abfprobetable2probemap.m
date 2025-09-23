@@ -1,46 +1,40 @@
 function abfprobetable2probemap(S,options)
-% ABFPROBETABLE2PROBEMAP - Create epochprobemap files for a Marder ndi session
+% ABFPROBETABLE2PROBEMAP - Create epochprobemap files from a probe table.
 %
-%   ABFPROBETABLE2PROBEMAP(S) reads all ABF files within the NDI session
-%   directory specified by the ndi.session or ndi.dataset object S and
-%   generates corresponding epochprobemap files. This function utilizes
-%   the 'probetable.csv' file and any 'subject*.txt' files found in the
-%   main session directory to map recorded channels to probes and subjects.
+%   ABFPROBETABLE2PROBEMAP(S, [OPTIONS])
 %
-%   ABFPROBETABLE2PROBEMAP(S, OPTIONS) allows for customization of the
-%   epochprobemap creation process through a structure of name-value pair
-%   arguments.
+%   Creates '.epochprobemap.txt' files for a Marder Lab NDI session. This function
+%   reads all Axon Binary Files (*.abf) in the session directory and uses a
+%   'probeTable.csv' file to map recording channels to probes and subjects for
+%   each epoch.
 %
-%   Inputs:
-%   S (ndi.session or ndi.dataset)
-%       An ndi.session or ndi.dataset object representing the experimental
-%       session containing the ABF data. The function will operate on the
-%       directory associated with this object.
+%   This function is essential for linking the raw data channels in ABF files
+%   to the higher-level probe and subject information managed by NDI.
 %
-%   Options:
-%   'acquisitionDelay' (duration, default = seconds(0))
-%       A duration specifying the minimum time that must have passed since
-%       an ABF file's creation date for it to be processed. This can be
-%       useful to avoid processing files that are still being written.
+% INPUTS:
+%   S: (ndi.session or ndi.dataset) An NDI session or dataset object. The function
+%      operates on the directory associated with this object.
+%   OPTIONS: (Optional) A struct with the following fields:
+%     acquisitionDelay: (duration) The minimum time that must have passed since
+%                       an ABF file's creation to be processed. Useful for
+%                       avoiding incomplete files. Default is `seconds(0)`.
+%     overwrite: (logical) If true, existing epochprobemap files will be
+%                overwritten. If false, they will be skipped. Default is `false`.
 %
-%   'overwrite' (logical, default = false)
-%       A logical flag indicating whether existing epochprobemap files 
-%       should be overwritten. If true, the function will re-create 
-%       epochprobemap files even if they already exist. If false, existing 
-%       files will be skipped.
+% OUTPUTS:
+%   This function does not return any values but writes a '.epochprobemap.txt'
+%   file for each new or specified ABF file in the session directory.
 %
-%   Notes:
-%   - The 'probetable.csv' file is expected to have columns that can be 
-%       used to match channel names (found in the ABF header) to probe 
-%       information. The exact column names used for matching are 
-%       determined within the 
-%       NDI.SETUP.CONV.MARDER.CHANNELNAMETABLE2PROBENAME function.
-%   - The 'subject*.txt' files are expected to contain a single line with 
-%       the subject's local identifier.
+% EXAMPLE:
+%   % Assuming S is a valid NDI session object
+%   % Create epochprobemap files for all new ABF files
+%   ndi.setup.conv.marder.abfprobetable2probemap(S);
 %
-%   See also: NDI.SESSION, NDI.DATASET, NDI.EPOCH.EPOCHPROBEMAP_DAQSYSTEM, 
-%       NDI.SETUP.CONV.MARDER.CHANNELNAMETABLE2PROBENAME,
-%       NDR.FORMAT.AXON.READ_ABF_HEADER
+%   % Overwrite all existing epochprobemap files
+%   ndi.setup.conv.marder.abfprobetable2probemap(S, 'overwrite', true);
+%
+% See also: ndi.session, ndi.dataset, ndi.epoch.epochprobemap_daqsystem,
+%   ndi.setup.conv.marder.channelnametable2probename, ndr.format.axon.read_abf_header
 
 % Input argument validation
 arguments

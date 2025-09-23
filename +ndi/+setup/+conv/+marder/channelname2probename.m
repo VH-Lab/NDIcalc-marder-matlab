@@ -1,15 +1,35 @@
 function [probename, proberef, subjectname] = channelname2probename(chName, subjects, options)
-    % CHANNELNAME2PROBENAME - convert a Marder channel name to a probe name
+    % CHANNELNAME2PROBENAME - Convert a Marder Lab channel name to a standardized probe name.
     %
-    % [PROBENAME, PROBEREF, SUBJECTNAME] = CHANNELNAME2PROBENAME(CHNAME, SUBJECTS)
+    % [PROBENAME, PROBEREF, SUBJECTNAME] = CHANNELNAME2PROBENAME(CHNAME, SUBJECTS, [OPTIONS])
     %
-    % Given a channel name (e.g., 'DGN1_A','lvn','lvn2'), returns a probe name
-    % and subject name. PROBEREF is always 1.
+    % Converts a raw channel name from a Marder Lab recording (e.g., 'DGN1_A',
+    % 'lvn', 'lvn2') into a standardized probe name, probe reference number, and
+    % associated subject name.
     %
-    % If there is more than one subject (usually a maximum of 2), then the
-    % program looks for a '1' or '2' in CHNAME. If none is found, then it is
-    % assumed there is only 1 subject and 1 is the end of the string.
-    % If a 2 is found and there is no second subject, a warning is produced.
+    % This function identifies the subject by searching for '1' or '2' in the
+    % channel name. If neither is found, it defaults to the first subject.
+    %
+    % INPUTS:
+    %   chName: (string) The channel name to be converted.
+    %   subjects: (cell array of strings) A list of subject identifiers.
+    %   OPTIONS: (Optional) A struct with the following fields:
+    %     forceIgnore2: (logical) If true, ignores '2' in the channel name
+    %                   and assigns the channel to the first subject. Default is false.
+    %
+    % OUTPUTS:
+    %   probename: (string) The standardized probe name (e.g., 'dgn_1', 'lvn_2').
+    %              If no standard name is found, it returns a MATLAB-validated
+    %              version of the input channel name.
+    %   proberef: (double) The reference number for the probe, always 1.
+    %   subjectname: (string) The identifier of the subject associated with the channel.
+    %
+    % EXAMPLE:
+    %   subjects = {'crab1', 'crab2'};
+    %   [p_name, p_ref, s_name] = ndi.setup.conv.marder.channelname2probename('dgn2_A', subjects)
+    %   % p_name = 'dgn_2'
+    %   % p_ref = 1
+    %   % s_name = 'crab2'
     %
 
     arguments

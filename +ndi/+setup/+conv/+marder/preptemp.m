@@ -1,45 +1,44 @@
 function [out] = preptemp(t, d, temp_table, options)
-    % PREPTEMP - identify temperature parameters for a temperature record
+    % PREPTEMP - Identify temperature parameters from a temperature recording.
     %
-    % OUT = PREPTEMP(T, D, TEMP_TABLE, ...)
+    % OUT = PREPTEMP(T, D, TEMP_TABLE, [OPTIONS])
     %
-    % Identify the temperature of a Marder lab record. The timestamps of the
-    % record are provided in T, and the data in degrees C are provided in
-    % D.
+    % Analyzes a temperature recording to determine if it represents a constant
+    % temperature or a temperature change. It matches the observed temperatures
+    % to a provided table of command temperatures.
     %
-    % The program attempts to identify which of several command temperatures
-    % in TEMP_TABLE are employed in the record.
+    % INPUTS:
+    %   t: (array) A vector of timestamps for the temperature data.
+    %   d: (array) A vector of temperature data in degrees Celsius.
+    %   temp_table: (array) A vector of possible command temperatures.
+    %   OPTIONS: (Optional) A struct with the following fields:
+    %     change_threshold: (double) The temperature range threshold to classify
+    %                       a recording as a 'change'. Default is 3.
+    %     beginning_time: (double) The duration in seconds at the start of the
+    %                     record to average for the initial temperature. Default is 2.
+    %     ending_time: (double) The duration in seconds at the end of the record
+    %                  to average for the final temperature. Default is 2.
+    %     filter: (array) A convolution filter to smooth the temperature data.
+    %             Default is `ones(5,1)/5`.
+    %     interactive: (logical) If true, prompts the user for input. Default is false.
     %
-    % The record is categorized as 'constant' or 'change' if the record exhibits
-    % a change greater than 'change_threshold'.
+    % OUTPUTS:
+    %   out: (struct) A structure containing the analysis results, with fields:
+    %     type: ('constant' or 'change') The classification of the recording.
+    %     temp: (array) The matching command temperature(s) from temp_table.
+    %           One value for 'constant', two for 'change' (start and end).
+    %     raw: (array) The raw (averaged) temperature value(s).
+    %     range: (double) The observed temperature range in the recording.
     %
-    % OUT is a structure with fields:
-    %   'type':  takes the value 'constant or 'change'
-    %   'temp': that contains the values in TEMP_TABLE that most closely match
-    %           the record. In the case of a 'constant' record,
-    %           'temp' will have one value; in the case of a 'change' record,
-    %           it will have two values (the beginning and end values).
-    %   'raw':  the raw temperature values before they are translated to
-    %           table entries.
-    % 'range':  the observed temperature range
+    % EXAMPLE:
+    %   t = 0:0.1:10;
+    %   d = 10 + 15 * (t/10); % Ramp from 10 to 25 degrees
+    %   temp_table = [10, 15, 20, 25];
+    %   out = ndi.setup.conv.marder.preptemp(t, d, temp_table);
+    %   % out.type will be 'change'
+    %   % out.temp will be [10 25]
     %
-    %
-    % The function takes name/value pairs that modify its default behavior:
-    % |----------------------------|--------------------------------------|
-    % | Parameter (default)        | Description                          |
-    % |----------------------------|--------------------------------------|
-    % | change_threshold (3)       | Threshold at which to describe the   |
-    % |                            |   record as a 'change'.              |
-    % | beginning_time (2)         | Time in seconds that constitutes the |
-    % |                            |   beginning of the record.           |
-    % | ending_time (2)            | Time in seconds from the end of the  |
-    % |                            |   record that constitutes the ending |
-    % |                            |   time to be averaged.               |
-    % | filter ( ones(5,1)/5 )     | A convolution filter to smooth data  |
-    % | interactive (false)        | Should we ask the user for input?    |
-    % |----------------------------|--------------------------------------|
-    %
-    %
+    % See also: ndi.setup.conv.marder.preptemptable, conv, vlt.data.findclosest
 
     arguments
         t

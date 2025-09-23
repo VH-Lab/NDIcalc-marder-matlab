@@ -1,9 +1,38 @@
 function d = marderprobe2uberon(S)
+    % MARDERPROBE2UBERON - Add probe location information based on Marder probe data.
     %
     % D = MARDERPROBE2UBERON(S)
     %
-    % Add probe_location information based on Marder probe data.
+    % Creates 'probe_location' NDI documents by mapping probe names in an NDI
+    % session to anatomical locations defined in the UBERON ontology.
     %
+    % The function retrieves all 'n-trode', 'sharp-Vm', 'sharp-Im', and 'ppg'
+    % probes from the session. It then uses a lookup table,
+    % 'marderprobe2uberontable.txt', to find the corresponding UBERON anatomical
+    % term for each probe.
+    %
+    % For each match found, it creates a 'probe_location' document that links
+    % the probe's ID to the UBERON identifier.
+    %
+    % INPUTS:
+    %   S: (ndi.session) The NDI session object.
+    %
+    % OUTPUTS:
+    %   d: (cell array of ndi.document) A cell array of the newly created
+    %      'probe_location' documents. Note: These documents are NOT automatically
+    %      added to the database.
+    %
+    % REQUIRED FILES:
+    %   - [toolbox_path]/+ndi/+setup/+conv/+marder/marderprobe2uberontable.txt:
+    %     A tab-delimited file that maps probe names to UBERON anatomical terms.
+    %     It must contain "probe" and "name" columns.
+    %
+    % EXAMPLE:
+    %   % Assuming S is a valid NDI session with defined probes
+    %   location_docs = ndi.setup.conv.marder.marderprobe2uberon(S);
+    %   S.database_add(location_docs); % Add the new documents to the database
+    %
+    % See also: ndi.database.fun.uberon_ontology_lookup, readtable
 
     p = S.getprobes('type','n-trode');
     p1 = S.getprobes('type','sharp-Vm');

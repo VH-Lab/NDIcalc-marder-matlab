@@ -1,11 +1,40 @@
 function smrepochprobemap(S, options)
-    % SMREPOCHPROBEMAP - Create epochprobemap files for a Marder SMR directory
+    % SMREPOCHPROBEMAP - Create epochprobemap files from Spike2 SMR files.
     %
-    % SMREPOCHPROBEMAP(DIRNAME)
+    % SMREPOCHPROBEMAP(S, [OPTIONS])
     %
-    % Reads all SMR files in DIRNAME and creates corresponding epochprobemap files.
+    % Creates '.epochprobemap.txt' files for a Marder Lab NDI session by reading
+    % metadata from all Spike2 SMR files (*.smr) in the session directory. These
+    % map files link recording channels to probe information for each epoch.
     %
+    % This function assumes that the NDI session `S` has been created and that
+    % the session path contains the SMR files. It also relies on 'subject*.txt'
+    % files to identify subjects and adds them to the NDI database if they do
+    % not already exist.
     %
+    % INPUTS:
+    %   S: (ndi.session) An NDI_SESSION object for the Marder Lab session.
+    %   OPTIONS: (Optional) A struct with the following fields:
+    %     forceIgnore2: (logical) If true, forces the function to ignore '2'
+    %                   in channel names when mapping to probe information,
+    %                   preventing misinterpretation as a second prep.
+    %                   Default is false.
+    %
+    % OUTPUTS:
+    %   This function does not return any values but writes a
+    %   '.epochprobemap.txt' file for each SMR file in the session directory.
+    %   These files define the relationship between data channels and
+    %   experimental probes for each recording epoch.
+    %
+    % EXAMPLE:
+    %   % Create a new Marder Lab session
+    %   ref = 'ML002';
+    %   dirname = '/path/to/marder/smr_data';
+    %   S = ndi.setup.lab('marderlab', ref, dirname);
+    %   % Create the epochprobemap files from SMR data
+    %   ndi.setup.conv.marder.smrepochprobemap(S);
+    %
+    % See also: ndi.setup.lab, ndi.epoch.epochprobemap_daqsystem, ndr.format.ced.read_SOMSMR_header
 
     arguments
         S (1,1)

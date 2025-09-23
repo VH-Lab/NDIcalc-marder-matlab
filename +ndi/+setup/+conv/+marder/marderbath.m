@@ -1,11 +1,42 @@
 function d = marderbath(S)
-% MARDERBATH - add bath information to a Marder session
+% MARDERBATH - Create NDI documents for bath stimulation information.
 %
 % D = MARDERBATH(S)
 %
-% Create NDI documents of type 'stimulus_bath' based on the mixture table
-% at location [S.path filesep 'bath_table.csv']
+% Creates NDI documents of type 'stimulus_bath' for a Marder Lab session.
+% This function reads a 'bath_table.csv' file from the session directory, which
+% specifies the chemical mixtures applied to the bath and the epochs during
+% which they were active.
 %
+% It uses helper JSON files ('marder_mixtures.json' and 'marder_bathtargets.json')
+% to look up detailed information about the mixtures and their target locations.
+%
+% The function generates a 'stimulus_bath' document for each epoch and stimulus
+% combination defined in the bath table, linking them to the appropriate
+% stimulus elements and anatomical locations (via UBERON ontology).
+%
+% INPUTS:
+%   S: (ndi.session) The NDI session object.
+%
+% OUTPUTS:
+%   d: (cell array of ndi.document) A cell array of the newly created
+%      'stimulus_bath' documents. Note: These documents are NOT automatically
+%      added to the database.
+%
+% REQUIRED FILES:
+%   - [session_path]/bath_table.csv: A table defining bath applications.
+%     Columns should include "firstFile", "lastFile", "bathTargets", "mixtures".
+%   - [toolbox_path]/+ndi/+setup/+conv/+marder/marder_mixtures.json: Defines the
+%     composition of chemical mixtures.
+%   - [toolbox_path]/+ndi/+setup/+conv/+marder/marder_bathtargets.json: Maps
+%     target names to UBERON ontology identifiers.
+%
+% EXAMPLE:
+%   % Assuming S is a valid NDI session object and bath_table.csv exists
+%   bath_docs = ndi.setup.conv.marder.marderbath(S);
+%   S.database_add(bath_docs); % Add the new documents to the database
+%
+% See also: ndi.setup.conv.marder.mixtureStr2mixtureTable, ndi.database.fun.uberon_ontology_lookup
 
 arguments 
 	S (1,1) ndi.session 

@@ -1,10 +1,38 @@
 function preptemptable(S)
-    % PREPTEMPTABLE - write a prep temperature table to the session directory
+    % PREPTEMPTABLE - Create and save a temperature analysis table for an NDI session.
     %
     % PREPTEMPTABLE(S)
     %
-    % Write a temperature table to the session directory.
+    % Analyzes temperature data for all 'thermometer' probes in an NDI session.
+    % For each epoch of each thermometer probe, it reads the temperature time
+    % series and uses `ndi.setup.conv.marder.preptemp` to classify the
+    % temperature profile as 'constant' or 'change' and identify the command
+    % temperatures.
     %
+    % The results are compiled into a table and saved as 'temptable.mat' in the
+    % session directory.
+    %
+    % INPUTS:
+    %   S: (ndi.session) The NDI session object.
+    %
+    % OUTPUTS:
+    %   This function does not return any values but writes a 'temptable.mat'
+    %   file in the session directory. The file contains a single table variable
+    %   named 'temptable' with the following columns:
+    %     - probe_id: The ID of the thermometer probe.
+    %     - epoch_id: The ID of the recording epoch.
+    %     - type: 'constant' or 'change'.
+    %     - temp: The identified command temperature(s).
+    %     - raw: The raw averaged temperature(s).
+    %
+    % EXAMPLE:
+    %   % Assuming S is a valid NDI session with thermometer probes and data
+    %   ndi.setup.conv.marder.preptemptable(S);
+    %   % This will create 'temptable.mat' in the session directory.
+    %   load(fullfile(S.getpath(), 'temptable.mat'));
+    %   disp(temptable);
+    %
+    % See also: ndi.setup.conv.marder.preptemp, save, load
 
     dirname = S.path();
 
