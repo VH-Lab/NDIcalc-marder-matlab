@@ -19,7 +19,7 @@ function t = mixtureStr2mixtureTable(str,mixtureStruct)
 %
 % Example:  
 %    str = 'normal_saline';
-%    marderFolder = fullfile(ndi.common.PathConstants.RootFolder,'+ndi','+setup','+conv','+marder');
+%    marderFolder = fullfile(mlt.util.toolboxdir(),'+ndi','+setup','+conv','+marder');
 %    mixtureStruct = jsondecode(fileread(fullfile(marderFolder,"marder_mixtures.json")));
 %    t = ndi.setup.conv.marder.mixtureStr2mixtureTable(str,mixtureStruct)
 %    % a table of entries

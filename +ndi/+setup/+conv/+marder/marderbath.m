@@ -17,7 +17,7 @@ stim = S.getprobes('type','stimulator');
 
 et = stim{1}.epochtable();
 
-marderFolder = fullfile(ndi.common.PathConstants.RootFolder,'+ndi','+setup','+conv','+marder');
+marderFolder = fullfile(mlt.util.toolboxdir(),'+ndi','+setup','+conv','+marder');
 
 mixtureInfo = jsondecode(fileread(fullfile(marderFolder,"marder_mixtures.json")));
 
