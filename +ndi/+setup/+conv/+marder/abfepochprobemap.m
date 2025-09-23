@@ -1,25 +1,40 @@
 function abfepochprobemap(S, options)
-    % ABFEPOCHPROBEMAP - Create epochprobemap files for a Marder ndi session
+    % ABFEPOCHPROBEMAP - Create epochprobemap files from Axon Binary Files (ABF).
     %
-    % ABFEPOCHPROBEMAP(S)
+    % ABFEPOCHPROBEMAP(S, [OPTIONS])
     %
-    % Reads all ABF files in the NDI session S and creates corresponding
-    % epochprobemap files.
+    % Creates '.epochprobemap.txt' files for a Marder Lab NDI session by reading
+    % metadata from all Axon Binary Files (*.abf) in the session directory.
+    % These map files link recording channels to probe information for each epoch.
     %
-    % To create a new Marder lab session from a directory, use
-    %  S = ndi.setup.lab
+    % This function assumes that the NDI session `S` has been created and that
+    % the session path contains the ABF files. It also relies on 'subject*.txt'
+    % files to identify the subjects for the experiment and adds them to the NDI
+    % database if they do not already exist.
     %
-    % ABFEPOCHPROBEMAP(S,'forceIgnore2',true) does not interpret a 2 in the
-    % channel name as a second prep.
+    % INPUTS:
+    %   S: An NDI_SESSION object representing the Marder Lab session.
+    %   OPTIONS: (Optional) A struct with the following fields:
+    %     forceIgnore2: (logical) If true, forces the function to ignore the
+    %                   second character in channel names when mapping to probe
+    %                   information, preventing misinterpretation as a second prep.
+    %                   Default is false.
     %
-    % It is necessary to first create a subject1.txt file with the subject
-    % identifier of the first crab. If there are two crabs being recorded, then
-    % it is necessary to create a subject2.txt file. And so on.
+    % OUTPUTS:
+    %   This function does not return any values but writes a
+    %   '.epochprobemap.txt' file for each ABF file in the session directory.
+    %   These files define the relationship between data channels and experimental
+    %   probes for each recording epoch.
     %
-    % The usual naming convention: 745_003_01@marderlab.brandeis.edu
-    %  where 745 is the lab notebook, 003 is the experiment number in the
-    %  lab notebook, and 01 indicates that there is only one prep in this
-    %  experiment.
+    % EXAMPLE:
+    %   % Create a new Marder Lab session
+    %   ref = 'ML001';
+    %   dirname = '/path/to/marder/data';
+    %   S = ndi.setup.lab('marderlab', ref, dirname);
+    %   % Create the epochprobemap files
+    %   ndi.setup.conv.marder.abfepochprobemap(S);
+    %
+    % See also: ndi.setup.lab, ndi.epoch.epochprobemap_daqsystem, ndr.format.axon.read_abf_header
     %
 
     arguments

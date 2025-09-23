@@ -1,8 +1,42 @@
 function [name, ref, daqsysstr,subjectlist] = channelnames2daqsystemstrings(chNames, daqname, subjects, options)
+    % CHANNELNAMES2DAQSYSTEMSTRINGS - Convert channel names to NDI DAQ system strings and probe info.
     %
-    % DAQSYSSTR = CHANNELNAMES2DAQSYSTEMSTRINGS(CHNAMES, DAQNAME, SUBJECTS)
+    % [NAME, REF, DAQSYSSTR, SUBJECTLIST] = CHANNELNAMES2DAQSYSTEMSTRINGS(CHNAMES, DAQNAME, SUBJECTS, [OPTIONS])
     %
+    % This function processes a list of Marder Lab channel names, converts them
+    % into standardized probe names, and generates corresponding NDI DAQ system
+    % strings. It also assigns subject identifiers to each channel.
     %
+    % A special case is handled for 'PhysiTemp' channels: if a temperature
+    % channel is found and there are multiple subjects, it is duplicated and
+    % assigned to the second subject as well.
+    %
+    % INPUTS:
+    %   chNames: (cell array of strings) The list of channel names to process.
+    %   daqname: (string) The name of the DAQ system (e.g., 'marder_abf').
+    %   subjects: (cell array of strings) A list of subject identifiers.
+    %   OPTIONS: (Optional) A struct with the following fields:
+    %     forceIgnore2: (logical) If true, ignores '2' in channel names,
+    %                   assigning them to the first subject. Default is false.
+    %     channelnumbers: (array) An array of channel numbers to be used for
+    %                     generating DAQ system strings. If empty, it defaults
+    %                     to 1:numel(chNames).
+    %
+    % OUTPUTS:
+    %   name: (cell array of strings) The standardized probe names.
+    %   ref: (array) The reference numbers for each probe (always 1).
+    %   daqsysstr: (ndi.daq.daqsystemstring array) The generated DAQ system strings.
+    %   subjectlist: (cell array of strings) The subject identifier for each channel.
+    %
+    % EXAMPLE:
+    %   chNames = {'dgn1_A', 'lvn2_A', 'PhysiTemp'};
+    %   daqname = 'marder_abf';
+    %   subjects = {'crab1', 'crab2'};
+    %   [n, r, d, s] = ndi.setup.conv.marder.channelnames2daqsystemstrings(chNames, daqname, subjects);
+    %   % This will return probe names, references, DAQ strings, and subjects
+    %   % for each channel, including a duplicated PhysiTemp for the second crab.
+    %
+    % See also: ndi.setup.conv.marder.channelname2probename, ndi.daq.daqsystemstring
 
     arguments
         chNames

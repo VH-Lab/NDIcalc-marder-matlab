@@ -1,28 +1,41 @@
 function t = mixtureStr2mixtureTable(str,mixtureStruct)
-% MIXTURESTR2MIXTURETABLE - convert a mixture string to a mixture table
+% MIXTURESTR2MIXTURETABLE - Convert a mixture string to a detailed mixture table.
 %
-% T = ndi.setup.conv.marder.MIXTURESTR2MIXTURETABLE(STR, MIXTURESTRUCT)
+% T = MIXTURESTR2MIXTURETABLE(STR, MIXTURESTRUCT)
 %
-% Converts a mixture string STR to a table of mixtures.
+% Converts a compact mixture string into a detailed table of chemical components
+% and their concentrations. The function parses the string, looks up component
+% definitions in a provided structure, and calculates final concentrations.
 %
-% STR is a string of the form "v1,v2,N*v3", etc. It indicates what
-% mixtures, which are fields of the MIXTURESTRUCT, are present here.
+% INPUTS:
+%   str: (string) A comma-separated string describing the mixture.
+%        Each element can be a mixture name (e.g., 'normal_saline') or a
+%        mixture name with a multiplier (e.g., '2*picrotoxin').
 %
-% MIXTURESTRUCT is a structure with fields equal to the possibly mixture
-% type values V. The entries of MIXTURESTRUCT.V are a structure array with the following
-% values:
-%    ontologyName :   Node name of the compound in an ontology
-%            name :   The name of the compound (official name in the ontology)
-%           value :   The value of the concentration of the mixture
-%    ontologyUnit :   The unit of measure, usually 'OM:MolarVolumeUnit'
-%        unitName :   The name of the unit, usually 'Molar'
+%   mixtureStruct: (struct) A structure where each field is a mixture name
+%                  (e.g., 'normal_saline'). The value of each field is a
+%                  structure array defining the components of that mixture,
+%                  with the following fields:
+%     - ontologyName: The ontology identifier for the compound (e.g., 'CHEBI:28997').
+%     - name: The common name of the compound (e.g., 'picrotoxin').
+%     - value: The base concentration of the compound.
+%     - ontologyUnit: The ontology identifier for the unit (e.g., 'OM:MolarVolumeUnit').
+%     - unitName: The common name of the unit (e.g., 'Molar').
 %
-% Example:  
-%    str = 'normal_saline';
+% OUTPUTS:
+%   t: (table) A table listing all components from the resolved mixture string,
+%      with columns: "ontologyName", "name", "value" (final calculated
+%      concentration), "ontologyUnit", and "unitName".
+%
+% EXAMPLE:
+%    str = 'normal_saline,2*picrotoxin';
 %    marderFolder = fullfile(mlt.util.toolboxdir(),'+ndi','+setup','+conv','+marder');
 %    mixtureStruct = jsondecode(fileread(fullfile(marderFolder,"marder_mixtures.json")));
-%    t = ndi.setup.conv.marder.mixtureStr2mixtureTable(str,mixtureStruct)
-%    % a table of entries
+%    t = ndi.setup.conv.marder.mixtureStr2mixtureTable(str,mixtureStruct);
+%    % t will be a table containing all components of normal_saline and
+%    % picrotoxin at twice its base concentration.
+%
+% See also: jsondecode, readtable
 
 t = vlt.data.emptytable("ontologyName","string","name","string","value",...
 	"double","ontologyUnit","string","unitName","string");

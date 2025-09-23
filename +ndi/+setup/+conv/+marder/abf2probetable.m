@@ -1,22 +1,43 @@
 function abf2probetable(S, options)
-    % ABF2PROBETABLE - Populate a probetable table for a Marder ndi session
+    % ABF2PROBETABLE - Populate a probetable file from Axon Binary Files (ABF).
     %
-    % ABF2PROBETABLE(S)
+    % ABF2PROBETABLE(S, [OPTIONS])
     %
-    % Reads all ABF files in the NDI session S and creates a putative
-    % probetable file.
+    % Populates a 'probeTable.csv' file for a Marder Lab NDI session by reading
+    % metadata from all Axon Binary Files (*.abf) in the session directory.
+    % The function identifies channel information, probe types, and subject
+    % associations to create a comprehensive probe table.
     %
-    % To create a new Marder lab session from a directory, use
-    %  S = ndi.setup.lab('marderlab',REF,DIRNAME)
+    % This function assumes that the NDI session `S` has been created and that
+    % the session path contains the ABF files. It also relies on 'subject*.txt'
+    % files to identify the subjects for the experiment.
     %
-    % It is necessary to first create a subject1.txt file with the subject
-    % identifier of the first crab. If there are two crabs being recorded, then
-    % it is necessary to create a subject2.txt file. And so on.
+    % INPUTS:
+    %   S: An NDI_SESSION object representing the Marder Lab session.
+    %   OPTIONS: (Optional) A struct with the following fields:
+    %     forceIgnore2: (logical) If true, forces the function to ignore the
+    %                   second character in channel names when mapping to probe
+    %                   information. Default is false.
     %
-    % The usual naming convention: 745_003_01@marderlab.brandeis.edu
-    %  where 745 is the lab notebook, 003 is the experiment number in the
-    %  lab notebook, and 01 indicates that there is only one prep in this
-    %  experiment.
+    % OUTPUTS:
+    %   This function does not return any values but writes a 'probeTable.csv'
+    %   file in the session directory. This file contains the following columns:
+    %     - channelName: The name of the channel from the ABF file.
+    %     - probeName: The standardized name of the probe.
+    %     - probeRef: The reference number for the probe.
+    -     - probeType: The type of probe (e.g., 'sharp-Vm', 'n-trode').
+    %     - subject: The identifier for the subject associated with the probe.
+    %     - firstAppears: The name of the ABF file where the channel first appears.
+    %
+    % EXAMPLE:
+    %   % Create a new Marder Lab session
+    %   ref = 'ML001';
+    %   dirname = '/path/to/marder/data';
+    %   S = ndi.setup.lab('marderlab', ref, dirname);
+    %   % Populate the probe table
+    %   ndi.setup.conv.marder.abf2probetable(S);
+    %
+    % See also: ndi.setup.lab, ndi.setup.conv.marder.channelnames2daqsystemstrings
     %
 
     arguments

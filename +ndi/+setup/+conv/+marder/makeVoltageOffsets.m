@@ -1,18 +1,37 @@
 function docList = makeVoltageOffsets(S)
-% MAKEVOLTAGEOFFSETS - Make documents from a table of voltage offset values
+% MAKEVOLTAGEOFFSETS - Create NDI documents from a table of voltage offset values.
 %
 % DOCLIST = MAKEVOLTAGEOFFSETS(S)
 %
-% Read in a table called "MEoffset.txt" that is comma separated value and has 
-% columns "probeName", "offsetV", and "T" (for temperature). The function then
-% checks to see if the offset data has been added to the database, and, if not
-% adds it.
+% Reads a comma-separated value file named 'MEoffset.txt' from the NDI session's
+% directory. This file should contain microelectrode voltage offset data. The function
+% then creates 'electrode_offset_voltage' documents in the NDI database for any
+% new offset values.
 %
-% If there is no file, then no action is taken and a warning is given.
+% The 'MEoffset.txt' file must have the following columns:
+%   - "probeName": The name of the probe associated with the offset.
+%   - "offsetV": The voltage offset value.
+%   - "T": The temperature at which the offset was measured.
 %
-% Any newly created documents are returned in DOCLIST. They will already be added
-% to the database of session S.
+% If the file does not exist, the function issues a warning and takes no action.
 %
+% INPUTS:
+%   S: (ndi.session) The NDI session object.
+%
+% OUTPUTS:
+%   docList: (cell array of ndi.document) A cell array of any newly created
+%            'electrode_offset_voltage' documents. These documents are also
+%            added to the session's database.
+%
+% EXAMPLE:
+%   % Create a 'MEoffset.txt' file in the session directory with the columns:
+%   % probeName,offsetV,T
+%   % dgn_1,0.005,22.5
+%
+%   % Assuming S is a valid NDI session object
+%   new_docs = ndi.setup.conv.marder.makeVoltageOffsets(S);
+%
+% See also: readtable, ndi.document
 
 arguments
    S (1,1) ndi.session
