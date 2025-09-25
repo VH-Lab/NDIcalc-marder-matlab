@@ -22,7 +22,7 @@ The Marder lab experiments often involve manipulations of the drugs in the bath.
 The bath table is a comma separated file:
 ![An example bath table](5__bathimage.png)
 
-The mixture strings indicate which mixture(s) in `USERPATH/tools/NDIc-marder-matlab/+ndi/+setup/+conv/+marder/marder_mixtures.json` and applies them to targets `USERPATH/tools/NDIc-marder-matlab/+ndi/+setup/+conv/+marder/marder_bathtargets.json` 
+The mixture strings indicate which mixture(s) in `USERPATH/tools/NDIc-marder-matlab/+ndi/+setup/+conv/+marder/+bath/marder_mixtures.json` and applies them to targets `USERPATH/tools/NDIc-marder-matlab/+ndi/+setup/+conv/+marder/+bath/marder_bathtargets.json`
 
 ### Step 5: Initial build of ndi.session object
 

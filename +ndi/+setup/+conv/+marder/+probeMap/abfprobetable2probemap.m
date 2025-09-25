@@ -28,13 +28,13 @@ function abfprobetable2probemap(S,options)
 % EXAMPLE:
 %   % Assuming S is a valid NDI session object
 %   % Create epochprobemap files for all new ABF files
-%   ndi.setup.conv.marder.abfprobetable2probemap(S);
+%   ndi.setup.conv.marder.probeMap.abfprobetable2probemap(S);
 %
 %   % Overwrite all existing epochprobemap files
-%   ndi.setup.conv.marder.abfprobetable2probemap(S, 'overwrite', true);
+%   ndi.setup.conv.marder.probeMap.abfprobetable2probemap(S, 'overwrite', true);
 %
 % See also: ndi.session, ndi.dataset, ndi.epoch.epochprobemap_daqsystem,
-%   ndi.setup.conv.marder.channelnametable2probename, ndr.format.axon.read_abf_header
+%   ndi.setup.conv.marder.probeMap.channelnametable2probename, ndr.format.axon.read_abf_header
 
 % Input argument validation
 arguments
@@ -93,7 +93,7 @@ for i = epoch_i
 
     for j=1:numel(h.recChNames)
         [name,ref,probeType,subjectlist] = ...
-            ndi.setup.conv.marder.channelnametable2probename(h.recChNames{j},probetable);
+            ndi.setup.conv.marder.probeMap.channelnametable2probename(h.recChNames{j},probetable);
         daqsysstr = ndi.daq.daqsystemstring(daqname,{'ai'},j);
         for z=1:numel(name)
             probemap(end+1) = ndi.epoch.epochprobemap_daqsystem(name{z},ref(z),probeType{z},...

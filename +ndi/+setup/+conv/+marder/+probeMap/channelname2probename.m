@@ -26,7 +26,7 @@ function [probename, proberef, subjectname] = channelname2probename(chName, subj
     %
     % EXAMPLE:
     %   subjects = {'crab1', 'crab2'};
-    %   [p_name, p_ref, s_name] = ndi.setup.conv.marder.channelname2probename('dgn2_A', subjects)
+    %   [p_name, p_ref, s_name] = ndi.setup.conv.marder.probeMap.channelname2probename('dgn2_A', subjects)
     %   % p_name = 'dgn_2'
     %   % p_ref = 1
     %   % s_name = 'crab2'

@@ -20,11 +20,11 @@ function makesubjects(S, n)
     %
     % EXAMPLE:
     %   % Assuming S is a valid NDI session object for a directory named 'my_exp'
-    %   ndi.setup.conv.marder.makesubjects(S, 2);
+    %   ndi.setup.conv.marder.subject.makesubjects(S, 2);
     %   % This will create 'subject1.txt' with content 'my_exp_01@marderlab.brandeis.edu'
     %   % and 'subject2.txt' with content 'my_exp_02@marderlab.brandeis.edu'.
     %
-    % See also: ndi.setup.conv.marder.abf2probetable, ndi.setup.conv.marder.abfepochprobemap
+    % See also: ndi.setup.conv.marder.probeMap.abf2probetable, ndi.setup.conv.marder.probeMap.abfepochprobemap
 
     dirname = S.path();
 

@@ -32,7 +32,7 @@ function smrepochprobemap(S, options)
     %   dirname = '/path/to/marder/smr_data';
     %   S = ndi.setup.lab('marderlab', ref, dirname);
     %   % Create the epochprobemap files from SMR data
-    %   ndi.setup.conv.marder.smrepochprobemap(S);
+    %   ndi.setup.conv.marder.probeMap.smrepochprobemap(S);
     %
     % See also: ndi.setup.lab, ndi.epoch.epochprobemap_daqsystem, ndr.format.ced.read_SOMSMR_header
 
@@ -61,7 +61,7 @@ function smrepochprobemap(S, options)
     for i=1:numel(d)
         h = ndr.format.ced.read_SOMSMR_header([dirname filesep d(i).name]);
         inc = find([h.channelinfo.kind]==1);
-        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.channelnames2daqsystemstrings({h.channelinfo(inc).title},'marder_ced',subject,...
+        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings({h.channelinfo(inc).title},'marder_ced',subject,...
             'forceIgnore2',options.forceIgnore2,'channelnumbers',[h.channelinfo(inc).number]);
         for j=1:numel(name)
             if j==1

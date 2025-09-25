@@ -23,13 +23,13 @@ function d = marderprobe2uberon(S)
     %      added to the database.
     %
     % REQUIRED FILES:
-    %   - [toolbox_path]/+ndi/+setup/+conv/+marder/marderprobe2uberontable.txt:
+    %   - [toolbox_path]/+ndi/+setup/+conv/+marder/+probeMap/marderprobe2uberontable.txt:
     %     A tab-delimited file that maps probe names to UBERON anatomical terms.
     %     It must contain "probe" and "name" columns.
     %
     % EXAMPLE:
     %   % Assuming S is a valid NDI session with defined probes
-    %   location_docs = ndi.setup.conv.marder.marderprobe2uberon(S);
+    %   location_docs = ndi.setup.conv.marder.probeMap.marderprobe2uberon(S);
     %   S.database_add(location_docs); % Add the new documents to the database
     %
     % See also: ndi.database.fun.uberon_ontology_lookup, readtable

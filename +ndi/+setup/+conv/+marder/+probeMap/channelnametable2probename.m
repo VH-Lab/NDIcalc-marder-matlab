@@ -25,10 +25,10 @@ function [probename, proberef, probetype, subjectname] = channelnametable2proben
     %   % Assume 'myProbeTable.csv' exists and is loaded into a table called 'pt'
     %   pt = readtable('myProbeTable.csv');
     %   chName = 'dgn_1';
-    %   [p_name, p_ref, p_type, s_name] = ndi.setup.conv.marder.channelnametable2probename(chName, pt);
+    %   [p_name, p_ref, p_type, s_name] = ndi.setup.conv.marder.probeMap.channelnametable2probename(chName, pt);
     %   % This will return the probe details for the 'dgn_1' channel.
     %
-    % See also: readtable, ndi.setup.conv.marder.abf2probetable
+    % See also: readtable, ndi.setup.conv.marder.probeMap.abf2probetable
 
     arguments
         chName

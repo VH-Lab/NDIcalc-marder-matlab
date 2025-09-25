@@ -32,11 +32,11 @@ function [name, ref, daqsysstr,subjectlist] = channelnames2daqsystemstrings(chNa
     %   chNames = {'dgn1_A', 'lvn2_A', 'PhysiTemp'};
     %   daqname = 'marder_abf';
     %   subjects = {'crab1', 'crab2'};
-    %   [n, r, d, s] = ndi.setup.conv.marder.channelnames2daqsystemstrings(chNames, daqname, subjects);
+    %   [n, r, d, s] = ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings(chNames, daqname, subjects);
     %   % This will return probe names, references, DAQ strings, and subjects
     %   % for each channel, including a duplicated PhysiTemp for the second crab.
     %
-    % See also: ndi.setup.conv.marder.channelname2probename, ndi.daq.daqsystemstring
+    % See also: ndi.setup.conv.marder.probeMap.channelname2probename, ndi.daq.daqsystemstring
 
     arguments
         chNames
@@ -62,7 +62,7 @@ function [name, ref, daqsysstr,subjectlist] = channelnames2daqsystemstrings(chNa
         else
             daqsysstr(end+1) = ndi.daq.daqsystemstring(daqname, {'ai'}, options.channelnumbers(i));
         end
-        [name{i},ref(i),subjectlist{i}] = ndi.setup.conv.marder.channelname2probename(chNames{i},subjects,...
+        [name{i},ref(i),subjectlist{i}] = ndi.setup.conv.marder.probeMap.channelname2probename(chNames{i},subjects,...
             'forceIgnore2',options.forceIgnore2);
         if strcmp(name{i},'PhysiTemp_1')
             hasPhysio = options.channelnumbers(i);
