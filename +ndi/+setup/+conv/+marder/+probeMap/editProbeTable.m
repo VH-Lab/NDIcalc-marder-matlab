@@ -22,10 +22,13 @@ function editProbeTable(S)
     subjectFiles = dir(fullfile(sessionPath, 'subject*.txt'));
     subjects = {};
     for i = 1:numel(subjectFiles)
-        subjects = [subjects; readlines(fullfile(sessionPath, subjectFiles(i).name))];
+        % Read file content and remove leading/trailing whitespace
+        content = strtrim(fileread(fullfile(sessionPath, subjectFiles(i).name)));
+        if ~isempty(content)
+            subjects{end+1} = content;
+        end
     end
-    % remove any empty lines and duplicates
-    subjects = subjects(strlength(subjects) > 0);
+    % remove any duplicates
     subjects = unique(subjects, 'stable');
 
     if isempty(subjects)
