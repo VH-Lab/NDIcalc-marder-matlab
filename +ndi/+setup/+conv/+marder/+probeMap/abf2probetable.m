@@ -18,6 +18,9 @@ function probetable = abf2probetable(S, options)
     %     forceIgnore2: (logical) If true, forces the function to ignore the
     %                   second character in channel names when mapping to probe
     %                   information. Default is false.
+    %     defaultProbeType: (string) The default probe type to use when a
+    %                       channel cannot be identified. Can be 'n-trode' or
+    %                       'ppg'. Default is 'n-trode'.
     %
     % OUTPUTS:
     %   PROBETABLE: A Matlab table with the following columns:
@@ -44,6 +47,7 @@ function probetable = abf2probetable(S, options)
     arguments
         S (1,1)
         options.forceIgnore2 = false
+        options.defaultProbeType {mustBeMember(options.defaultProbeType,{'n-trode','ppg'})} = 'n-trode'
     end
 
     dirname = S.getpath();
@@ -52,9 +56,9 @@ function probetable = abf2probetable(S, options)
 
     s = dir([dirname filesep  'subje*.txt']);
 
-    subject = {};
+    subject = cell(1,numel(s));
     for i=1:numel(s)
-        subject{i} = fileread([dirname filesep s(i).name]);
+        subject{i} = strtrim(fileread([dirname filesep s(i).name]));
     end
 
     cols = {'channelName','probeName','probeRef','probeType','subject','firstAppears'};
@@ -64,28 +68,28 @@ function probetable = abf2probetable(S, options)
 
     for i=1:numel(d)
         h = ndr.format.axon.read_abf_header([dirname filesep d(i).name]);
-        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings(h.recChNames,'marder_abf',subject,...
+        [name,ref,~,subjectlist] = ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings(h.recChNames,'marder_abf',subject,...
             'forceIgnore2',options.forceIgnore2);
         for j=1:numel(name)
             if j<=numel(h.recChNames)
-                if isempty(find(strcmp(h.recChNames{j},probetable.("channelName"))))
-                    if any(lower(h.recChNames{j})=='a') & any(lower(h.recChNames{j})=='v')
+                if isempty(find(strcmp(h.recChNames{j},probetable.("channelName")),1))
+                    if any(lower(h.recChNames{j})=='a') && any(lower(h.recChNames{j})=='v')
                         probeType = 'sharp-Vm';
                         name{j} = 'XP';
-                    elseif any(lower(h.recChNames{j})=='a') & any(lower(h.recChNames{j})=='i')
+                    elseif any(lower(h.recChNames{j})=='a') && any(lower(h.recChNames{j})=='i')
                         probeType = 'sharp-Im';
                         name{j} = 'XP';
                     elseif ~isempty(findstr(lower(h.recChNames{j}),'temp'))
                         probeType = 'thermometer';
                     else
-                        probeType = 'n-trode';
+                        probeType = options.defaultProbeType;
                     end
                     probetable_new = cell2table({ h.recChNames{j} name{j} ref(j) probeType subjectlist{j} d(i).name},...
                         'VariableNames',cols);
                     probetable = cat(1,probetable,probetable_new);
                 end
-            else, probetable_new = cell2table({ 'nothing' name{j} ref(j) 'unknown' subjectlist{j} d(i).name},...
-                        'VariableNames',cols);
+            % else, probetable_new = cell2table({ 'nothing' name{j} ref(j) 'unknown' subjectlist{j} d(i).name},...
+            %             'VariableNames',cols);
             end
          end
     end
