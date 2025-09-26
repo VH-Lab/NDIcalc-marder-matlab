@@ -42,17 +42,22 @@ function editProbeTable(S)
         % Ask the user what to do
         fprintf('\nWhat would you like to do?\n');
         fprintf('  e - Edit a line\n');
-        fprintf('  q - Quit and save\n');
+        fprintf('  s - Save and quit\n');
+        fprintf('  q - Quit without saving\n');
         choice = input('Enter your choice: ', 's');
 
         switch lower(choice)
             case 'e'
                 % Edit a line
                 probeTable = editLine(probeTable, subjects);
-            case 'q'
-                % Quit and save
+            case 's'
+                % Save and quit
                 writetable(probeTable, probeTableFile);
                 disp('Table saved. Exiting.');
+                break;
+            case 'q'
+                % Quit without saving
+                disp('Exiting without saving. Changes are not saved.');
                 break;
             otherwise
                 disp('Invalid choice. Please try again.');
