@@ -1,10 +1,10 @@
-function abf2probetable(S, options)
-    % ABF2PROBETABLE - Populate a probetable file from Axon Binary Files (ABF).
+function probetable = abf2probetable(S, options)
+    % ABF2PROBETABLE - Create a probetable from Axon Binary Files (ABF).
     %
-    % ABF2PROBETABLE(S, [OPTIONS])
+    % PROBETABLE = ABF2PROBETABLE(S, [OPTIONS])
     %
-    % Populates a 'probeTable.csv' file for a Marder Lab NDI session by reading
-    % metadata from all Axon Binary Files (*.abf) in the session directory.
+    % Creates a Matlab table object ('probetable') for a Marder Lab NDI session
+    % by reading metadata from all Axon Binary Files (*.abf) in the session directory.
     % The function identifies channel information, probe types, and subject
     % associations to create a comprehensive probe table.
     %
@@ -20,12 +20,11 @@ function abf2probetable(S, options)
     %                   information. Default is false.
     %
     % OUTPUTS:
-    %   This function does not return any values but writes a 'probeTable.csv'
-    %   file in the session directory. This file contains the following columns:
+    %   PROBETABLE: A Matlab table with the following columns:
     %     - channelName: The name of the channel from the ABF file.
     %     - probeName: The standardized name of the probe.
     %     - probeRef: The reference number for the probe.
-    -     - probeType: The type of probe (e.g., 'sharp-Vm', 'n-trode').
+    %     - probeType: The type of probe (e.g., 'sharp-Vm', 'n-trode').
     %     - subject: The identifier for the subject associated with the probe.
     %     - firstAppears: The name of the ABF file where the channel first appears.
     %
@@ -34,8 +33,10 @@ function abf2probetable(S, options)
     %   ref = 'ML001';
     %   dirname = '/path/to/marder/data';
     %   S = ndi.setup.lab('marderlab', ref, dirname);
-    %   % Populate the probe table
-    %   ndi.setup.conv.marder.probeMap.abf2probetable(S);
+    %   % Create the probe table
+    %   probetable = ndi.setup.conv.marder.probeMap.abf2probetable(S);
+    %   % Write the table to a file
+    %   writetable(probetable, [dirname filesep 'probeTable.csv']);
     %
     % See also: ndi.setup.lab, ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings
     %
@@ -88,5 +89,3 @@ function abf2probetable(S, options)
             end
          end
     end
-
-    writetable(probetable,[dirname filesep 'probeTable.csv']);
