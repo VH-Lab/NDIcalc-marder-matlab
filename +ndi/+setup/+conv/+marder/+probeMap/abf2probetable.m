@@ -58,7 +58,7 @@ function probetable = abf2probetable(S, options)
 
     subject = cell(1,numel(s));
     for i=1:numel(s)
-        subject{i} = fileread([dirname filesep s(i).name]);
+        subject{i} = strtrim(fileread([dirname filesep s(i).name]));
     end
 
     cols = {'channelName','probeName','probeRef','probeType','subject','firstAppears'};
