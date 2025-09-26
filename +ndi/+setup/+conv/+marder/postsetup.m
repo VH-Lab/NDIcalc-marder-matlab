@@ -5,13 +5,13 @@ function postsetup(S)
     %
     % 1) Generates epochprobemaps for ABF data
     % 2) Checks that the probes are available in S
-    % 3) Generates the metadata with ndi.setup.conv.marder.pretemptable(S)
+    % 3) Generates the metadata with ndi.setup.conv.marder.bath.preptemptable(S)
     %
 
     % Step 1:
 
     disp(['Setting up epochprobemaps...']);
-    ndi.setup.conv.marder.abfprobetable2probemap(S)
+    ndi.setup.conv.marder.probeMap.abfprobetable2probemap(S)
 
     % Step 2:
 
@@ -22,27 +22,27 @@ function postsetup(S)
     % Step 3:
 
     disp(['Charting temperature readings'])
-    ndi.setup.conv.marder.preptemptable(S)
+    ndi.setup.conv.marder.bath.preptemptable(S)
 
     disp(['Setting up stimulus parameters ...']);
     d = S.database_search(ndi.query('','isa','stimulus_parameter'));
     S.database_rm(d);
-    d = ndi.setup.conv.marder.temptable2stimulusparameters(S);
+    d = ndi.setup.conv.marder.bath.temptable2stimulusparameters(S);
     S.database_add(d);
 
     disp(['Setting probe locations...']);
     d = S.database_search(ndi.query('','isa','probe_location'));
     S.database_rm(d);
-    d = ndi.setup.conv.marder.marderprobe2uberon(S)
+    d = ndi.setup.conv.marder.probeMap.marderprobe2uberon(S)
     S.database_add(d);
 
     disp(['Setting sharp electrode offset measurements...']);
-    ndi.setup.conv.marder.makeVoltageOffsets(S);
+    ndi.setup.conv.marder.probeMap.makeVoltageOffsets(S);
 
     disp(['Adding bath stimulation documents...']);
     d=S.database_search(ndi.query('','isa','stimulus_bath'));
     S.database_rm(d);
-    d=ndi.setup.conv.marder.marderbath(S);
+    d=ndi.setup.conv.marder.bath.marderbath(S);
     S.database_add(d);
 
     disp(['Adding acclimation information...']);

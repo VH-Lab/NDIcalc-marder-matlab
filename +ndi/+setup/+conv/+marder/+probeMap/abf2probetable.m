@@ -35,9 +35,9 @@ function abf2probetable(S, options)
     %   dirname = '/path/to/marder/data';
     %   S = ndi.setup.lab('marderlab', ref, dirname);
     %   % Populate the probe table
-    %   ndi.setup.conv.marder.abf2probetable(S);
+    %   ndi.setup.conv.marder.probeMap.abf2probetable(S);
     %
-    % See also: ndi.setup.lab, ndi.setup.conv.marder.channelnames2daqsystemstrings
+    % See also: ndi.setup.lab, ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings
     %
 
     arguments
@@ -63,7 +63,7 @@ function abf2probetable(S, options)
 
     for i=1:numel(d)
         h = ndr.format.axon.read_abf_header([dirname filesep d(i).name]);
-        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.channelnames2daqsystemstrings(h.recChNames,'marder_abf',subject,...
+        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings(h.recChNames,'marder_abf',subject,...
             'forceIgnore2',options.forceIgnore2);
         for j=1:numel(name)
             if j<=numel(h.recChNames)

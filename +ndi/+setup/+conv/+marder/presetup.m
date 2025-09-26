@@ -49,7 +49,7 @@ function S = presetup(dirname, n, options)
     % Conditionally run makesubjects
     if options.makeSubjects
         disp(['Creating subject entries with identifier: ' num2str(n)]);
-        ndi.setup.conv.marder.makesubjects(S,n);
+        ndi.setup.conv.marder.subject.makesubjects(S,n);
         disp('Subject entries creation attempted.');
     else
         disp('Skipping subject entry creation (makeSubjects=false).');
@@ -59,14 +59,14 @@ function S = presetup(dirname, n, options)
     if options.makeProbeTable
         disp('Generating probeTable.csv...');
         % Pass n==1 as the value for 'forceIgnore2' parameter
-        ndi.setup.conv.marder.abf2probetable(S,'forceIgnore2', n==1);
+        ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', n==1);
         probeTablePath = fullfile(dirname, 'probeTable.csv');
         if exist(probeTablePath, 'file')
             disp(['Probe table created at: ' probeTablePath]);
             disp('Opening probeTable.csv for editing...');
             edit(probeTablePath);
         else
-            warning('ndi.setup.conv.marder.abf2probetable did not seem to create probeTable.csv');
+            warning('ndi.setup.conv.marder.probeMap.abf2probetable did not seem to create probeTable.csv');
         end
     else
         disp('Skipping probe table generation (makeProbeTable=false).');

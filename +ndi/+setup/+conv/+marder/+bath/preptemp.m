@@ -34,11 +34,11 @@ function [out] = preptemp(t, d, temp_table, options)
     %   t = 0:0.1:10;
     %   d = 10 + 15 * (t/10); % Ramp from 10 to 25 degrees
     %   temp_table = [10, 15, 20, 25];
-    %   out = ndi.setup.conv.marder.preptemp(t, d, temp_table);
+    %   out = ndi.setup.conv.marder.bath.preptemp(t, d, temp_table);
     %   % out.type will be 'change'
     %   % out.temp will be [10 25]
     %
-    % See also: ndi.setup.conv.marder.preptemptable, conv, vlt.data.findclosest
+    % See also: ndi.setup.conv.marder.bath.preptemptable, conv, vlt.data.findclosest
 
     arguments
         t

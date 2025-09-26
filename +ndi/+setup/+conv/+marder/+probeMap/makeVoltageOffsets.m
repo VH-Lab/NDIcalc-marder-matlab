@@ -29,7 +29,7 @@ function docList = makeVoltageOffsets(S)
 %   % dgn_1,0.005,22.5
 %
 %   % Assuming S is a valid NDI session object
-%   new_docs = ndi.setup.conv.marder.makeVoltageOffsets(S);
+%   new_docs = ndi.setup.conv.marder.probeMap.makeVoltageOffsets(S);
 %
 % See also: readtable, ndi.document
 
@@ -80,6 +80,3 @@ end
 if ~isempty(docList)
     S.database_add(docList);
 end
-
-
-

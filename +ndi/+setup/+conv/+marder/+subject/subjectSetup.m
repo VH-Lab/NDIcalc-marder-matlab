@@ -1,7 +1,7 @@
 function subjectSetup(directory)
-    % NDI.SETUP.CONV.MARDER.SUBJECTSETUP - An interactive program to set up subject files for Marder lab conversion.
+    % NDI.SETUP.CONV.MARDER.SUBJECT.SUBJECTSETUP - An interactive program to set up subject files for Marder lab conversion.
     %
-    %   NDI.SETUP.CONV.MARDER.SUBJECTSETUP([DIRECTORY])
+    %   NDI.SETUP.CONV.MARDER.SUBJECT.SUBJECTSETUP([DIRECTORY])
     %
     %   Takes as input a directory (default: the pwd) and builds subjectN.txt files
     %   to facilitate Marder lab conversion.

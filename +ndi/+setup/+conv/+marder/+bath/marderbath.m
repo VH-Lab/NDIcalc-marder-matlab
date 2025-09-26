@@ -26,17 +26,17 @@ function d = marderbath(S)
 % REQUIRED FILES:
 %   - [session_path]/bath_table.csv: A table defining bath applications.
 %     Columns should include "firstFile", "lastFile", "bathTargets", "mixtures".
-%   - [toolbox_path]/+ndi/+setup/+conv/+marder/marder_mixtures.json: Defines the
+%   - [toolbox_path]/+ndi/+setup/+conv/+marder/+bath/marder_mixtures.json: Defines the
 %     composition of chemical mixtures.
-%   - [toolbox_path]/+ndi/+setup/+conv/+marder/marder_bathtargets.json: Maps
+%   - [toolbox_path]/+ndi/+setup/+conv/+marder/+bath/marder_bathtargets.json: Maps
 %     target names to UBERON ontology identifiers.
 %
 % EXAMPLE:
 %   % Assuming S is a valid NDI session object and bath_table.csv exists
-%   bath_docs = ndi.setup.conv.marder.marderbath(S);
+%   bath_docs = ndi.setup.conv.marder.bath.marderbath(S);
 %   S.database_add(bath_docs); % Add the new documents to the database
 %
-% See also: ndi.setup.conv.marder.mixtureStr2mixtureTable, ndi.database.fun.uberon_ontology_lookup
+% See also: ndi.setup.conv.marder.bath.mixtureStr2mixtureTable, ndi.database.fun.uberon_ontology_lookup
 
 arguments 
 	S (1,1) ndi.session 
@@ -48,7 +48,7 @@ stim = S.getprobes('type','stimulator');
 
 et = stim{1}.epochtable();
 
-marderFolder = fullfile(mlt.util.toolboxdir(),'+ndi','+setup','+conv','+marder');
+marderFolder = fullfile(fileparts(mfilename('fullpath')));
 
 mixtureInfo = jsondecode(fileread(fullfile(marderFolder,"marder_mixtures.json")));
 
@@ -84,7 +84,7 @@ for i=1:numel(et)
                         else
                             bathLoc = locTable(index).bathLoc;
                         end
-                        mixTable = ndi.setup.conv.marder.mixtureStr2mixtureTable(bathTable{k,"mixtures"}{1},mixtureInfo);
+                        mixTable = ndi.setup.conv.marder.bath.mixtureStr2mixtureTable(bathTable{k,"mixtures"}{1},mixtureInfo);
                         mixTableStr = ndi.database.fun.writetablechar(mixTable);
                         stimulus_bath.location.ontologyNode = locList(l).location;
                         stimulus_bath.location.name = bathLoc.Name;

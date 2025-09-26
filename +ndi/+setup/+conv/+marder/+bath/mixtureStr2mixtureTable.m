@@ -29,9 +29,9 @@ function t = mixtureStr2mixtureTable(str,mixtureStruct)
 %
 % EXAMPLE:
 %    str = 'normal_saline,2*picrotoxin';
-%    marderFolder = fullfile(mlt.util.toolboxdir(),'+ndi','+setup','+conv','+marder');
+%    marderFolder = fullfile(fileparts(mfilename('fullpath')));
 %    mixtureStruct = jsondecode(fileread(fullfile(marderFolder,"marder_mixtures.json")));
-%    t = ndi.setup.conv.marder.mixtureStr2mixtureTable(str,mixtureStruct);
+%    t = ndi.setup.conv.marder.bath.mixtureStr2mixtureTable(str,mixtureStruct);
 %    % t will be a table containing all components of normal_saline and
 %    % picrotoxin at twice its base concentration.
 %
@@ -80,4 +80,3 @@ function tokens = extractTokens(text)
     
     tokens{end+1} = {coeff, match.str}; 
   end
-

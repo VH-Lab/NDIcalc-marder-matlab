@@ -32,7 +32,7 @@ function abfepochprobemap(S, options)
     %   dirname = '/path/to/marder/data';
     %   S = ndi.setup.lab('marderlab', ref, dirname);
     %   % Create the epochprobemap files
-    %   ndi.setup.conv.marder.abfepochprobemap(S);
+    %   ndi.setup.conv.marder.probeMap.abfepochprobemap(S);
     %
     % See also: ndi.setup.lab, ndi.epoch.epochprobemap_daqsystem, ndr.format.axon.read_abf_header
     %
@@ -61,7 +61,7 @@ function abfepochprobemap(S, options)
 
     for i=1:numel(d)
         h = ndr.format.axon.read_abf_header([dirname filesep d(i).name]);
-        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.channelnames2daqsystemstrings(h.recChNames,'marder_abf',subject,...
+        [name,ref,daqsysstr,subjectlist] = ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings(h.recChNames,'marder_abf',subject,...
             'forceIgnore2',options.forceIgnore2);
         for j=1:numel(name)
             if j==1

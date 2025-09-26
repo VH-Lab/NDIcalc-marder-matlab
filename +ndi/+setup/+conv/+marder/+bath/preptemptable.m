@@ -5,7 +5,7 @@ function preptemptable(S)
     %
     % Analyzes temperature data for all 'thermometer' probes in an NDI session.
     % For each epoch of each thermometer probe, it reads the temperature time
-    % series and uses `ndi.setup.conv.marder.preptemp` to classify the
+    % series and uses `ndi.setup.conv.marder.bath.preptemp` to classify the
     % temperature profile as 'constant' or 'change' and identify the command
     % temperatures.
     %
@@ -27,12 +27,12 @@ function preptemptable(S)
     %
     % EXAMPLE:
     %   % Assuming S is a valid NDI session with thermometer probes and data
-    %   ndi.setup.conv.marder.preptemptable(S);
+    %   ndi.setup.conv.marder.bath.preptemptable(S);
     %   % This will create 'temptable.mat' in the session directory.
     %   load(fullfile(S.getpath(), 'temptable.mat'));
     %   disp(temptable);
     %
-    % See also: ndi.setup.conv.marder.preptemp, save, load
+    % See also: ndi.setup.conv.marder.bath.preptemp, save, load
 
     dirname = S.path();
 
@@ -49,7 +49,7 @@ function preptemptable(S)
         et = p{P}.epochtable();
         for j=1:numel(et)
             [D,t] = p{P}.readtimeseries(et(j).epoch_id,-Inf,Inf);
-            out = ndi.setup.conv.marder.preptemp(t,D,standard_temps);
+            out = ndi.setup.conv.marder.bath.preptemp(t,D,standard_temps);
             newtable = cell2table({ p{P}.id() et(j).epoch_id out.type mat2cell(out.temp,1) mat2cell(out.raw,1)},...
                 'VariableNames',cols);
             temptable = cat(1,temptable,newtable);
