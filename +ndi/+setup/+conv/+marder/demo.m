@@ -17,8 +17,8 @@ for i=1:numel(m_doc)
 
     % Step 2: Find all eopchs in this session that have a constant temperature stimulus
 
-    item_const = ndi.database.fun.ndicloud_ontology_lookup('Name','Command temperature constant');
-    const_o = ['NDIC:' int2str(item_const.Identifier)];
+    [item_const_id] = ndi.ontology.lookup('NDIC:Command temperature constant');
+    const_o = ['NDIC:' int2str(item_const_id)];
 
     q_m = ndi.query('base.session_id','exact_string',m_doc{i}.document_properties.base.session_id);
     q_const = ndi.query('stimulus_parameter.ontology_name','exact_string',const_o);

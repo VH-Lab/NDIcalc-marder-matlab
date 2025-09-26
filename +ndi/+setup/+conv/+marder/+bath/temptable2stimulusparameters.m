@@ -51,13 +51,13 @@ function docs = temptable2stimulusparameters(S)
 
     et = stim{1}.epochtable();
 
-    item_const = ndi.database.fun.ndicloud_ontology_lookup('Name','Command temperature constant');
-    item_start = ndi.database.fun.ndicloud_ontology_lookup('Name','Command temperature start');
-    item_end = ndi.database.fun.ndicloud_ontology_lookup('Name','Command temperature end');
+    [item_const_id] = ndi.ontology.lookup('NDIC:Command temperature constant');
+    [item_start_id] = ndi.ontology.lookup('NDIC:Command temperature start');
+    [item_end_id] = ndi.ontology.lookup('NDIC:Command temperature end');
 
-    const_o = ['NDIC:' int2str(item_const.Identifier)];
-    temp_start = ['NDIC:' int2str(item_start.Identifier)];
-    temp_end = ['NDIC:' int2str(item_end.Identifier)];
+    const_o = ['NDIC:' int2str(item_const_id)];
+    temp_start = ['NDIC:' int2str(item_start_id)];
+    temp_end = ['NDIC:' int2str(item_end_id)];
 
     last_match = [];
 
