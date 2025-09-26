@@ -1,5 +1,0 @@
-subject,probe_name,probe_reference_number,probe_type,devicestring
-subject1,ppg_heart,1,ppg,device1
-subject2,ppg_pylorus,2,ppg,device2
-subject1,stimulator,3,n-trode,device3
-subject3,ppg_gastric,4,ppg,device4
