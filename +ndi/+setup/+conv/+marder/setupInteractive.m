@@ -36,7 +36,7 @@ function S = setupInteractive(dirname)
     % Step 4: Create the probeTable
     disp('Now, let''s create the probe table.');
     disp('Generating probeTable.csv...');
-    probeTable = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', true, 'defaultProbeType','ppg');
+    probeTable = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', true);
     probeTableFileName = fullfile(dirname, 'probeTable.csv');
     writetable(probeTable,probeTableFileName);
     if exist(probeTableFileName, 'file')
