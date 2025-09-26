@@ -54,7 +54,13 @@ mixtureInfo = jsondecode(fileread(fullfile(marderFolder,"marder_mixtures.json"))
 
 bathTargets = jsondecode(fileread(fullfile(marderFolder,"marder_bathtargets.json")));
 
-bathTable = readtable(fullfile(S.getpath(),"bath_table.csv"),"Delimiter",',');
+bath_table_path = fullfile(S.getpath(), 'bath_table.csv');
+if ~exist(bath_table_path, 'file')
+    warning(['The file ' bath_table_path ' was not found. No bath information will be loaded.']);
+    d = {};
+    return;
+end
+bathTable = readtable(bath_table_path, "Delimiter", ',');
 
 locTable = vlt.data.emptystruct('Identifier','bathLoc');
 
