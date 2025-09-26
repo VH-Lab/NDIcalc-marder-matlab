@@ -3,33 +3,33 @@ function editProbeTable(S)
     % This script allows users to edit a probe table through a text-based interface.
 
     % Get the directory from the session
-    if ~isfield(S, 'dirname') || isempty(S.dirname)
-        error('Session S must have a `dirname` field.');
+    if ~isfield(S, 'path') || isempty(S.path)
+        error('Session S must have a `path` field.');
     end
-    dirname = S.dirname;
+    sessionPath = S.path;
 
     % Construct the probe table file path
-    probeTableFile = fullfile(dirname, 'probeTable.csv');
+    probeTableFile = fullfile(sessionPath, 'probeTable.csv');
 
     if ~exist(probeTableFile, 'file')
-        error('probeTable.csv not found in %s. Please create it first.', dirname);
+        error('probeTable.csv not found in %s. Please create it first.', sessionPath);
     end
 
     % Read the probe table, specifying the delimiter
     probeTable = readtable(probeTableFile, 'Delimiter', ',');
 
     % Find and read all subject files (subject1.txt, subject2.txt, etc.)
-    subjectFiles = dir(fullfile(dirname, 'subject*.txt'));
+    subjectFiles = dir(fullfile(sessionPath, 'subject*.txt'));
     subjects = {};
     for i = 1:numel(subjectFiles)
-        subjects = [subjects; readlines(fullfile(dirname, subjectFiles(i).name))];
+        subjects = [subjects; readlines(fullfile(sessionPath, subjectFiles(i).name))];
     end
     % remove any empty lines and duplicates
     subjects = subjects(strlength(subjects) > 0);
     subjects = unique(subjects, 'stable');
 
     if isempty(subjects)
-        warning('No subjects found in subject*.txt files in %s.', dirname);
+        warning('No subjects found in subject*.txt files in %s.', sessionPath);
     end
 
 
