@@ -59,14 +59,15 @@ function S = presetup(dirname, n, options)
     if options.makeProbeTable
         disp('Generating probeTable.csv...');
         % Pass n==1 as the value for 'forceIgnore2' parameter
-        ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', n==1);
+        probetable = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', n==1);
         probeTablePath = fullfile(dirname, 'probeTable.csv');
+        writetable(probetable, probeTablePath);
         if exist(probeTablePath, 'file')
             disp(['Probe table created at: ' probeTablePath]);
             disp('Opening probeTable.csv for editing...');
             edit(probeTablePath);
         else
-            warning('ndi.setup.conv.marder.probeMap.abf2probetable did not seem to create probeTable.csv');
+            warning('Failed to write probeTable.csv');
         end
     else
         disp('Skipping probe table generation (makeProbeTable=false).');
