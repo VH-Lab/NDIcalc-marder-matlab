@@ -1,6 +1,6 @@
-% file: +ndi/+setup/+conv/+marder/SubjectInformationCreator.m
+% file: +ndi/+setup/+conv/+marder/+subject/SubjectInformationCreator.m
 classdef SubjectInformationCreator < ndi.setup.NDIMaker.SubjectInformationCreator
-    % MARDER.SUBJECTINFORMATIONCREATOR - Creates NDI subject information for the Marder Lab.
+    % NDI.SETUP.CONV.MARDER.SUBJECT.SUBJECTINFORMATIONCREATOR - Creates NDI subject information for the Marder Lab.
     %
     % This class implements the 'create' method to generate subject identifiers
     % and species/strain objects based on the specific subject naming convention used in the
@@ -17,7 +17,7 @@ classdef SubjectInformationCreator < ndi.setup.NDIMaker.SubjectInformationCreato
             %   read from the 'subject_id' column of the table row.
             %
             %   Inputs:
-            %       obj (ndi.setup.conv.marder.SubjectInformationCreator) - The instance of this creator class.
+            %       obj (ndi.setup.conv.marder.subject.SubjectInformationCreator) - The instance of this creator class.
             %       tableRow (table) - A single row from a MATLAB table. It must contain the column 'subject_id'.
             %
             %   Outputs:
