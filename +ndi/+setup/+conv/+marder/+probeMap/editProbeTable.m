@@ -2,10 +2,10 @@ function editProbeTable(S)
     % An interactive probe table editor for probe tables created by abf2probetable.m
     % This script allows users to edit a probe table through a text-based interface.
 
-    % Get the directory from the session
-    if ~isfield(S, 'path') || isempty(S.path)
-        error('Session S must have a `path` field.');
+    arguments
+        S (1,1) ndi.session
     end
+
     sessionPath = S.path;
 
     % Construct the probe table file path
@@ -35,8 +35,12 @@ function editProbeTable(S)
 
     % Main interactive loop
     while true
-        % Display the table
+        % Display the table with line numbers
         disp('Current Probe Table:');
+        % Create a sequence of numbers from 1 to the number of rows
+        rowNumbers = 1:height(probeTable);
+        % Convert numbers to a cell array of strings and assign as RowNames
+        probeTable.Properties.RowNames = cellstr(num2str(rowNumbers'));
         disp(probeTable);
 
         % Ask the user what to do
@@ -77,7 +81,7 @@ function probeTable = editLine(probeTable, subjects)
     end
 
     % Check if the probe is a stimulator
-    if strcmp(probeTable.probe_name{lineNum}, 'stimulator')
+    if strcmp(probeTable.probeName{lineNum}, 'stimulator')
         disp('Stimulator probes are not editable.');
         return;
     end
@@ -85,7 +89,9 @@ function probeTable = editLine(probeTable, subjects)
     % Loop for editing options
     while true
         fprintf('\nEditing line %d:\n', lineNum);
-        disp(probeTable(lineNum, :));
+        T_temp = probeTable(lineNum, :);
+        T_temp.Properties.RowNames = {num2str(lineNum)};
+        disp(T_temp);
         fprintf('  a) Set the subject\n');
         fprintf('  b) Set the probe name\n');
         fprintf('  c) Set the probe reference number\n');
@@ -141,7 +147,7 @@ function probeTable = setProbeName(probeTable, lineNum)
     nameChoice = str2double(nameChoiceStr);
 
     if ~isnan(nameChoice) && nameChoice >= 1 && nameChoice <= numel(probeNames)
-        probeTable.probe_name{lineNum} = probeNames{nameChoice};
+        probeTable.probeName{lineNum} = probeNames{nameChoice};
         disp('Probe name updated.');
     else
         disp('Invalid choice.');
@@ -153,7 +159,7 @@ function probeTable = setProbeRefNum(probeTable, lineNum)
     refNum = str2double(refNumStr);
 
     if ~isnan(refNum) && refNum > 0 && floor(refNum) == refNum
-        probeTable.probe_reference_number(lineNum) = refNum;
+        probeTable.probeRef(lineNum) = refNum;
         disp('Reference number updated.');
     else
         disp('Invalid reference number.');
@@ -170,7 +176,7 @@ function probeTable = setProbeType(probeTable, lineNum)
     typeChoice = str2double(typeChoiceStr);
 
     if ~isnan(typeChoice) && typeChoice >= 1 && typeChoice <= numel(probeTypes)
-        probeTable.probe_type{lineNum} = probeTypes{typeChoice};
+        probeTable.probeType{lineNum} = probeTypes{typeChoice};
         disp('Probe type updated.');
     else
         disp('Invalid choice.');
