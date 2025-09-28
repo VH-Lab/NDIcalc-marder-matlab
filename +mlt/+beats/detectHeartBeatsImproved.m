@@ -172,7 +172,11 @@ function [beats,options] = detectHeartBeatsImproved(t, d, options)
         beat_data = d(onset_index(i):offset_index(i));
         beat_max(i) = max(beat_data);
         beat_min(i) = min(beat_data);
-        prebeat_min(i) = min(d(last_off(i):onset_index(i)));
+        if last_off(i) > onset_index(i)
+            prebeat_min(i) = NaN;
+        else
+            prebeat_min(i) = min(d(last_off(i):onset_index(i)));
+        end
     end
     amplitude = beat_max - prebeat_min;
     amplitude_high = beat_max - MEAN_THRESHOLD;
