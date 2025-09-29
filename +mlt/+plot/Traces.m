@@ -33,9 +33,20 @@ end
 
 figure;
 
+% HORIZONTAL LAYOUT
 num_plots = size(time_intervals, 1);
 column_width = 0.81 / num_plots;
 column_spacing = 0.19 / (num_plots + 1);
+
+% VERTICAL LAYOUT
+top_margin = 0.10;
+bottom_margin = 0.05;
+spectrogram_height = 0.35;
+total_plot_height = 1 - top_margin - bottom_margin;
+other_plots_total_height = total_plot_height - spectrogram_height;
+spectrogram_y_pos = bottom_margin + other_plots_total_height;
+plot_height = other_plots_total_height / 4;
+plot_y_base = bottom_margin;
 
 all_ax_raw = cell(1, num_plots);
 all_ax_rate = cell(1, num_plots);
@@ -80,11 +91,24 @@ for i = 1:num_plots
     % Plotting
     left_pos = (i-1) * (column_width + column_spacing) + column_spacing;
 
-    % Spectrogram (top 40%)
-    ax_spec = axes('Position', [left_pos, 0.60, column_width, 0.35]);
+    % Spectrogram
+    ax_spec = axes('Position', [left_pos, spectrogram_y_pos, column_width, spectrogram_height]);
     spec_data = data_struct_found.SpectrogramData{idx_found};
-    time_mask = spec_data.ts >= t0 & spec_data.ts <= t1;
-    mlt.plot.Spectrogram(spec_data.spec(:, time_mask), spec_data.f, spec_data.ts(time_mask), 'drawLabels', false);
+
+    % Find indices that bracket the requested time interval to avoid whitespace
+    start_idx = find(spec_data.ts <= t0, 1, 'last');
+    if isempty(start_idx)
+        start_idx = 1;
+    end
+
+    end_idx = find(spec_data.ts >= t1, 1, 'first');
+    if isempty(end_idx)
+        end_idx = numel(spec_data.ts);
+    end
+
+    plot_indices = start_idx:end_idx;
+
+    mlt.plot.Spectrogram(spec_data.spec(:, plot_indices), spec_data.f, spec_data.ts(plot_indices), 'drawLabels', false);
     xlim([t0, t1]);
     if i == 1
         ylabel('Frequency (Hz)');
@@ -98,11 +122,8 @@ for i = 1:num_plots
     };
     title(ax_spec, title_lines, 'Interpreter', options.TitleInterpreter);
 
-    % Bottom 60% for other plots (4 plots)
-    plot_height = 0.55 / 4;
-
     % Raw Data
-    ax_raw = axes('Position', [left_pos, 0.05 + 3*plot_height, column_width, plot_height*0.9]);
+    ax_raw = axes('Position', [left_pos, plot_y_base + 3*plot_height, column_width, plot_height*0.9]);
     S_found = data_struct_found.session;
     [d, t_raw] = mlt.ppg.getRawData(S_found, data_struct_found.subject_local_identifier, data_struct_found.recordType);
     if isdatetime(t_raw)
@@ -120,8 +141,8 @@ for i = 1:num_plots
     all_ax_raw{i} = ax_raw;
 
     % Instantaneous Firing Rate & Amplitude
-    ax_rate = axes('Position', [left_pos, 0.05 + 2*plot_height, column_width, plot_height*0.9]);
-    ax_amp = axes('Position', [left_pos, 0.05 + 1*plot_height, column_width, plot_height*0.9]);
+    ax_rate = axes('Position', [left_pos, plot_y_base + 2*plot_height, column_width, plot_height*0.9]);
+    ax_amp = axes('Position', [left_pos, plot_y_base + 1*plot_height, column_width, plot_height*0.9]);
     hb_data = data_struct_found.HeartBeatData{idx_found};
     valid_beats = hb_data(logical([hb_data.valid]));
 
@@ -167,7 +188,7 @@ for i = 1:num_plots
 
 
     % Temperature (blank)
-    ax_temp = axes('Position', [left_pos, 0.05 + 0*plot_height, column_width, plot_height*0.9]);
+    ax_temp = axes('Position', [left_pos, plot_y_base + 0*plot_height, column_width, plot_height*0.9]);
     axis(ax_temp, 'off');
     text(ax_temp, 0.5, 0.5, 'Temperature (Future)', 'HorizontalAlignment', 'center');
 
