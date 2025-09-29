@@ -34,8 +34,12 @@ end
 figure;
 
 num_plots = size(time_intervals, 1);
-column_width = 0.9 / num_plots;
-column_spacing = 0.1 / (num_plots + 1);
+column_width = 0.81 / num_plots;
+column_spacing = 0.19 / (num_plots + 1);
+
+all_ax_raw = cell(1, num_plots);
+all_ax_rate = cell(1, num_plots);
+all_ax_amp = cell(1, num_plots);
 
 for i = 1:num_plots
     t0 = time_intervals(i, 1);
@@ -82,7 +86,11 @@ for i = 1:num_plots
     time_mask = spec_data.ts >= t0 & spec_data.ts <= t1;
     mlt.plot.Spectrogram(spec_data.spec(:, time_mask), spec_data.f, spec_data.ts(time_mask), 'drawLabels', false);
     xlim([t0, t1]);
-    ylabel('Frequency (Hz)');
+    if i == 1
+        ylabel('Frequency (Hz)');
+    else
+        set(ax_spec, 'yticklabel', []);
+    end
     set(ax_spec, 'xticklabel', []);
     title_lines = { ...
         data_struct_found.subject_local_identifier, ...
@@ -99,11 +107,17 @@ for i = 1:num_plots
     [d, t_raw] = mlt.ppg.getRawData(S_found, data_struct_found.subject_local_identifier, data_struct_found.recordType);
     if isdatetime(t_raw)
         raw_mask = t_raw >= t0 & t_raw <= t1;
-        plot_timeseries(ax_raw, t_raw(raw_mask), d(raw_mask), 'Raw Data', false);
+        plot_timeseries(ax_raw, t_raw(raw_mask), d(raw_mask), false);
         xlim(ax_raw, [t0, t1]);
+        if i == 1
+            ylabel(ax_raw, 'Raw Data');
+        else
+            set(ax_raw, 'yticklabel', []);
+        end
     else
         axis(ax_raw, 'off');
     end
+    all_ax_raw{i} = ax_raw;
 
     % Instantaneous Firing Rate & Amplitude
     ax_rate = axes('Position', [left_pos, 0.05 + 2*plot_height, column_width, plot_height*0.9]);
@@ -117,14 +131,24 @@ for i = 1:num_plots
         beats_in_interval = valid_beats(beat_mask);
 
         if ~isempty(beats_in_interval)
-            plot_timeseries(ax_rate, [beats_in_interval.onset], [beats_in_interval.instant_freq], 'Rate (Hz)', false, '.-');
+            plot_timeseries(ax_rate, [beats_in_interval.onset], [beats_in_interval.instant_freq], false, '.-');
             xlim(ax_rate, [t0, t1]);
+            if i == 1
+                ylabel(ax_rate, 'Rate (Hz)');
+            else
+                set(ax_rate, 'yticklabel', []);
+            end
             current_ylim = ylim(ax_rate);
             ylim(ax_rate, [0, current_ylim(2)]);
 
             if isfield(beats_in_interval, 'amplitude')
-                plot_timeseries(ax_amp, [beats_in_interval.onset], [beats_in_interval.amplitude], 'Amplitude', true, '.-');
+                plot_timeseries(ax_amp, [beats_in_interval.onset], [beats_in_interval.amplitude], true, '.-');
                 xlim(ax_amp, [t0, t1]);
+                 if i == 1
+                    ylabel(ax_amp, 'Amplitude');
+                else
+                    set(ax_amp, 'yticklabel', []);
+                end
                 current_ylim = ylim(ax_amp);
                 ylim(ax_amp, [0, current_ylim(2)]);
             else
@@ -138,6 +162,9 @@ for i = 1:num_plots
         axis(ax_rate, 'off');
         axis(ax_amp, 'off');
     end
+    all_ax_rate{i} = ax_rate;
+    all_ax_amp{i} = ax_amp;
+
 
     % Temperature (blank)
     ax_temp = axes('Position', [left_pos, 0.05 + 0*plot_height, column_width, plot_height*0.9]);
@@ -148,10 +175,15 @@ for i = 1:num_plots
     linkaxes(column_axes, 'x');
 end
 
+% Synchronize Y-axis limits
+sync_axes_ylim(all_ax_raw);
+sync_axes_ylim(all_ax_rate);
+sync_axes_ylim(all_ax_amp);
+
 end
 
-function plot_timeseries(ax, t, d, ylabel_str, show_xlabel, plot_style)
-    if nargin < 6
+function plot_timeseries(ax, t, d, show_xlabel, plot_style)
+    if nargin < 5
         plot_style = '-';
     end
     axes(ax);
@@ -165,12 +197,36 @@ function plot_timeseries(ax, t, d, ylabel_str, show_xlabel, plot_style)
     end
 
     plot(t_plot, d, plot_style);
-    ylabel(ylabel_str);
     box off;
 
     if show_xlabel
         xlabel(xlabel_str);
     else
         set(ax,'xticklabel',[]);
+    end
+end
+
+function sync_axes_ylim(axes_handles)
+    min_y = inf;
+    max_y = -inf;
+    is_valid_axis_found = false;
+
+    for i = 1:numel(axes_handles)
+        ax = axes_handles{i};
+        if isgraphics(ax, 'axes') && strcmp(get(ax, 'Visible'), 'on')
+            lims = ylim(ax);
+            min_y = min(min_y, lims(1));
+            max_y = max(max_y, lims(2));
+            is_valid_axis_found = true;
+        end
+    end
+
+    if is_valid_axis_found
+        for i = 1:numel(axes_handles)
+            ax = axes_handles{i};
+            if isgraphics(ax, 'axes') && strcmp(get(ax, 'Visible'), 'on')
+                ylim(ax, [min_y, max_y]);
+            end
+        end
     end
 end
