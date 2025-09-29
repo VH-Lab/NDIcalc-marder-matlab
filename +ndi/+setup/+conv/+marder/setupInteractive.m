@@ -82,7 +82,7 @@ function S = setupInteractive(dirname)
 
     if strcmpi(editChoice, 'y')
         disp('Opening probe table editor...');
-        probeTable = ndi.setup.conv.marder.probeMap.editProbeTable(probeTable, S);
+        ndi.setup.conv.marder.probeMap.editProbeTable(S);
         writetable(probeTable, probeTableFileName);
         disp('Probe table changes saved.');
     else

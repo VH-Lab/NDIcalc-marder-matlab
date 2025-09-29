@@ -125,12 +125,12 @@ function [beats,options] = detectHeartBeatsImproved(t, d, dRaw, options)
     % Calculate onset time and index from midpoint of threshold crossings
     onset_low = t(below_to_low_valid);
     onset_high = t(low_to_high_valid);
-    if onset_high(1)<onset_low(1), 
+    if onset_high(1)<onset_low(1) 
         onset_high = onset_high(2:end);
-    end;
-    if onset_low(end)>onset_high(end), 
+    end
+    if onset_low(end)>onset_high(end)
         onset_low(end) = [];
-    end;    
+    end
     onset = mean([onset_low,onset_high],2);
     onset_index = round(interp1(t,1:length(t),onset),TieBreaker='fromzero');
     % small rounding errors (+/- 1 integer) between interp1 and min 
@@ -152,6 +152,9 @@ function [beats,options] = detectHeartBeatsImproved(t, d, dRaw, options)
     % offset was not observed, set to final timepoint
     offset_high = t(high_to_low_valid);
     offset_low = t(low_to_below_valid);
+    size(offset_low)
+    size(offset_high)
+    size(onset)
     if length(offset_high) < length(onset)
         offset_high = [offset_high;t(end)];
         offset_low = [offset_low;t(end)];
