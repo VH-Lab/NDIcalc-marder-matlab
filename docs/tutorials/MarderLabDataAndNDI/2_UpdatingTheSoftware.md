@@ -1,6 +1,6 @@
 # Tutorial 1 Marder Lab data and NDI
 
-## 1.4 Updating the software
+## 1.2 Updating the software
 
 ### Updating the software
 
