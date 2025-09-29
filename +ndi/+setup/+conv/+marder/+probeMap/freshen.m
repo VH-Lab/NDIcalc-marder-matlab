@@ -15,8 +15,8 @@ function probeTableExisting = freshen(probeTableExisting, probeTableNew)
     % tables are not identical.
     %
 
-    channels_existing = probeTableExisting.channel;
-    channels_new = probeTableNew.channel;
+    channels_existing = probeTableExisting.channelName;
+    channels_new = probeTableNew.channelName;
 
     if numel(channels_existing) ~= numel(channels_new) || ~isempty(setxor(channels_existing, channels_new))
         error('The channel lists in the existing and new probe tables do not match. Cannot freshen.');
