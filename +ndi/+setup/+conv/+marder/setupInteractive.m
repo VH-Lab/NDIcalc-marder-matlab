@@ -33,23 +33,61 @@ function S = setupInteractive(dirname)
     % Step 3: Leave space for NDI subjectMaker
     % TODO: Add NDI subjectMaker here
 
-    % Step 4: Create the probeTable
-    disp('Now, let''s create the probe table.');
-    disp('Generating probeTable.csv...');
-    probeTable = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', true,'defaultProbeType','ppg');
+    % Step 4: Create or update the probeTable
+    disp('Now, let''s create or update the probe table.');
     probeTableFileName = fullfile(dirname, 'probeTable.csv');
-    writetable(probeTable,probeTableFileName);
+
     if exist(probeTableFileName, 'file')
-        disp(['Probe table created at: ' probeTableFileName]);
+        disp('An existing probeTable.csv file was found:');
+        probeTableExisting = readtable(probeTableFileName);
+        disp(probeTableExisting);
+
+        choice = '';
+        while ~any(strcmpi(choice,{'a','b','c'}))
+            choice = input('Choose an option: (a) keep it, (b) re-do from scratch, or (c) freshen: ', 's');
+        end
+
+        switch lower(choice)
+            case 'a'
+                disp('Keeping the existing probe table.');
+                probeTable = probeTableExisting;
+            case 'b'
+                disp('Re-doing the probe table from scratch...');
+                probeTable = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', true,'defaultProbeType','ppg');
+                writetable(probeTable, probeTableFileName);
+                disp('New probe table file written.');
+            case 'c'
+                disp('Freshening the probe table...');
+                probeTableNew = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', true,'defaultProbeType','ppg');
+                probeTable = ndi.setup.conv.marder.probeMap.freshen(probeTableExisting, probeTableNew);
+                writetable(probeTable, probeTableFileName);
+                disp('Freshened probe table file written.');
+        end
     else
-        warning('ndi.setup.conv.marder.probeMap.abf2probetable did not seem to create probeTable.csv');
+        disp('No existing probeTable.csv found. Generating a new one...');
+        probeTable = ndi.setup.conv.marder.probeMap.abf2probetable(S,'forceIgnore2', true,'defaultProbeType','ppg');
+        writetable(probeTable, probeTableFileName);
+        if exist(probeTableFileName, 'file')
+            disp(['New probe table created at: ' probeTableFileName]);
+        else
+            warning('ndi.setup.conv.marder.probeMap.abf2probetable did not seem to create probeTable.csv');
+        end
     end
 
-    % Step 5: Leave space for an interactive editor for the probe table
-    % TODO: Add interactive probe table editor here
+    % Step 5: Optionally edit the probe table
+    editChoice = '';
+    while ~any(strcmpi(editChoice,{'y','n'}))
+        editChoice = input('Would you like to edit the probe table now? (y/n): ', 's');
+    end
 
-    disp('Opening probeTable.csv for editing...');
-    edit(probeTableFileName);
+    if strcmpi(editChoice, 'y')
+        disp('Opening probe table editor...');
+        probeTable = ndi.setup.conv.marder.probeMap.editProbeTable(probeTable, S);
+        writetable(probeTable, probeTableFileName);
+        disp('Probe table changes saved.');
+    else
+        disp('Skipping probe table editing.');
+    end
 
     % Step 6: exit
     disp('Interactive setup finished.');
