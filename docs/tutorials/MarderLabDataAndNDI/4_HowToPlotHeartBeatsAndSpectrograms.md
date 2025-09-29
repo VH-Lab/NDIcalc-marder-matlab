@@ -1,12 +1,12 @@
 # Tutorial 1 Marder Lab data and NDI
 
-## 1.3 Plotting Heart Beats and Spectrograms for PPG data
+## 1.4 Plotting Heart Beats and Spectrograms for PPG data
 
-### 1.3.1 Open an example session
+### 1.4.1 Open an example session
 
 Let's open an example session. Let's use our 994_13 example from before.
 
-#### Code block 1.3.1:
+#### Code block 1.4.1:
 
 ```matlab
 myDataPath = '/Users/vanhoosr/data/grace';
@@ -16,7 +16,7 @@ S = ndi.session.dir(mySessionPath);
 
 Now let's list all of the subjects
 
-#### Code block 1.3.2:
+#### Code block 1.4.2:
 
 ```matlab
 sT = ndi.fun.docTable.subject(S)
@@ -24,7 +24,7 @@ sT = ndi.fun.docTable.subject(S)
 
 For me, this returns:
 
-#### Code block 1.3.3 (output only, don't type in)
+#### Code block 1.4.3 (output only, don't type in)
 
 ```matlab
 sT = 
@@ -41,22 +41,22 @@ sT =
 
 ```
 
-### 1.3.2 Plot a summary of a whole PPG session
+### 1.4.2 Plot a summary of a whole PPG session
 
 We can plot a summary of the whole session with the following code:
 
-#### Code block 1.3.4:
+#### Code block 1.4.4:
 
 ```matlab
 mlt.plot.HeartBeatsFromDocs(S)
 mlt.plot.SpectrogramsFromDocs(S)
 ```
 
-### 1.3.3 Get the heart beat data for a subject and sensor location
+### 1.4.3 Get the heart beat data for a subject and sensor location
 
 Use the `mlt.doc.*` functions. You can see the documentation for the heart beat fields by typing `help mlt.beats.beatdocs2struct`.
 
-#### Code block 1.3.5
+#### Code block 1.4.5
 
 ```matlab
 [heartBeatDocs,HeartBeatData] = mlt.doc.getHeartBeats(S,'gdy_0013@marderlab.brandeis.edu','heart');
@@ -69,9 +69,9 @@ xlabel('Time (UTC)');
 ylabel('Instantaneous frequency')
 ```
 
-### 1.3.4 Get the spectrogram data for a subject and sensor location
+### 1.4.4 Get the spectrogram data for a subject and sensor location
 
-#### Code block 1.3.5
+#### Code block 1.4.5
 
 ```matlab
 [SpectrogramDocs,SpectrogramData] = mlt.doc.getSpectograms(S,'gdy_0013@marderlab.brandeis.edu','heart');
@@ -80,18 +80,17 @@ SpectrogramData{1}, % display the first structure
 mlt.plot.Spectrogram(SpectrogramData{1}.spec,SpectrogramData{1}.f,SpectrogramData{1}.ts);
 ```
 
-### 1.3.5 Get the heart and spectrogram data all together!
+### 1.4.5 Get the heart and spectrogram data all together!
 
 ```matlab
 mySubjectData = mlt.doc.getHeartBeatAndSpectrogram(S,'gdy_0013@marderlab.brandeis.edu','heart');
 mlt.plot.Traces(S,mySubjectData,1)
 ```
 
-### 1.3.6 Notes:
+### 1.4.6 Notes:
 
 The functions that read from local files where we initially stored the heart beat and spectrogram information are not recommended anymore. We will eventually remove them. These were quick and dirty treatments to get started looking at the data:
 
 - `mlt.plot.HeartBeatsFromFiles` - Not recommended
 - `mlt.plot.SpectrogramsFromFiles` - Not recommended
 - `SpectrogramsBeatsOverlayFromFiles` - Not recommended
-
