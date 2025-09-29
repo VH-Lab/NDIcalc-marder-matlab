@@ -30,7 +30,7 @@ function [beats,options] = detectHeartBeatsImproved(t, d, dRaw, options)
 %               period: Time between consecutive beats (double in seconds).
 %               instant_freq: Instantaneous heart rate (double in beats per second).
 %               amplitude: Peak-to-peak amplitude (double).
-%               amplitude_high: Amplitude above THRESHOL_HIGH (double).
+%               amplitude_high: Amplitude above THRESHOLD_HIGH (double).
 %               amplitude_low: Amplitude below THRESHOLD_LOW (double).
 %               valid: Boolean indicating if the beat meets validity criteria.
 %               up_duration: Duration of the upward slope of the beat (double in seconds).
