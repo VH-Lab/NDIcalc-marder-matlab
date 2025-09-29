@@ -1,7 +1,7 @@
-function Traces(data, time_intervals)
+function Traces(data, time_intervals, options)
 % MLT.PLOT.TRACES - Plot heart beat and spectrogram data traces for specific time intervals.
 %
-%   MLT.PLOT.TRACES(DATA, TIME_INTERVALS)
+%   MLT.PLOT.TRACES(DATA, TIME_INTERVALS, Name, Value)
 %
 %   Plots spectrogram, raw data, instantaneous firing rate, and amplitude for
 %   specified time intervals. The function searches through an array of data
@@ -20,10 +20,15 @@ function Traces(data, time_intervals)
 %      TIME_INTERVALS - An Nx2 matrix of datetime objects, where each row
 %          represents a [t0, t1] interval to be plotted.
 %
+%   Name-Value Pairs:
+%      'TitleInterpreter' - The interpreter for the plot titles ('none', 'tex', 'latex').
+%                           Default is 'none'.
+%
 
 arguments
     data (1,:) struct
     time_intervals (:,2) datetime
+    options.TitleInterpreter (1,:) char {mustBeMember(options.TitleInterpreter, {'none', 'tex', 'latex'})} = 'none'
 end
 
 figure;
@@ -81,7 +86,7 @@ for i = 1:num_plots
     set(ax_spec, 'xticklabel', []);
     title_str = sprintf('Subject: %s, Record: %s, Interval %d', ...
         data_struct_found.subject_local_identifier, data_struct_found.recordType, i);
-    title(ax_spec, title_str);
+    title(ax_spec, title_str, 'Interpreter', options.TitleInterpreter);
 
     % Bottom 60% for other plots (4 plots)
     plot_height = 0.55 / 4;
