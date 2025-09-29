@@ -36,37 +36,37 @@ for i = 1:num_plots
     t0 = time_intervals(i, 1);
     t1 = time_intervals(i, 2);
 
-    found_interval = false;
-    data_struct_found = [];
-    idx_found = -1;
-
-    % Search for the data entry that contains the time interval
+    % Search for data records that overlap with the time interval
+    overlapping_records = {};
     for data_idx = 1:numel(data)
         current_data = data(data_idx);
         for spec_idx = 1:numel(current_data.SpectrogramData)
             spec_data = current_data.SpectrogramData{spec_idx};
 
-            % Assuming spec_data.ts are datetime objects for comparison
             if isdatetime(spec_data.ts) && ~isempty(spec_data.ts)
                 interval_start = spec_data.ts(1);
                 interval_end = spec_data.ts(end);
 
-                if t0 >= interval_start && t1 <= interval_end
-                    found_interval = true;
-                    data_struct_found = current_data;
-                    idx_found = spec_idx;
-                    break;
+                % Check for overlap
+                if t0 <= interval_end && t1 >= interval_start
+                    overlapping_records{end+1} = {current_data, spec_idx};
                 end
             end
         end
-        if found_interval
-            break;
-        end
     end
 
-    if ~found_interval
+    % Check the number of overlapping records found
+    if isempty(overlapping_records)
         error('Could not find any data record containing the time interval [%s, %s].', string(t0), string(t1));
+    elseif numel(overlapping_records) > 1
+        error('The time interval [%s, %s] is ambiguous because it overlaps with %d data records.', ...
+            string(t0), string(t1), numel(overlapping_records));
     end
+
+    % Exactly one record found, proceed
+    found_record = overlapping_records{1};
+    data_struct_found = found_record{1};
+    idx_found = found_record{2};
 
     % Plotting
     left_pos = (i-1) * (column_width + column_spacing) + column_spacing;
