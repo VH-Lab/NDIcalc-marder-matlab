@@ -84,9 +84,11 @@ for i = 1:num_plots
     xlim([t0, t1]);
     ylabel('Frequency (Hz)');
     set(ax_spec, 'xticklabel', []);
-    title_str = sprintf('Subject: %s, Record: %s, Interval %d', ...
-        data_struct_found.subject_local_identifier, data_struct_found.recordType, i);
-    title(ax_spec, title_str, 'Interpreter', options.TitleInterpreter);
+    title_lines = { ...
+        data_struct_found.subject_local_identifier, ...
+        sprintf('Record: %s', data_struct_found.recordType) ...
+    };
+    title(ax_spec, title_lines, 'Interpreter', options.TitleInterpreter);
 
     % Bottom 60% for other plots (4 plots)
     plot_height = 0.55 / 4;
