@@ -46,6 +46,7 @@ wb = waitbar(0,"Working on whole day heart beat");
 
 % Get time series
 [d,t] = e.readtimeseries(1,-Inf,Inf);
+dRaw = d;
 
 % Z-Score data
 if options.zscoreWindowTime == 0
@@ -57,7 +58,7 @@ end
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
 % Detect beats
-[beats,detection_parameters] = mlt.beats.detectHeartBeatsImproved(t,d);
+[beats,detection_parameters] = mlt.beats.detectHeartBeatsImproved(t,d,dRaw);
 
 % Collect metadata
 beats_fields = strjoin(fieldnames(beats),',');
