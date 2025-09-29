@@ -112,10 +112,14 @@ for i = 1:num_plots
         if ~isempty(beats_in_interval)
             plot_timeseries(ax_rate, [beats_in_interval.onset], [beats_in_interval.instant_freq], 'Rate (Hz)', false, '.-');
             xlim(ax_rate, [t0, t1]);
+            current_ylim = ylim(ax_rate);
+            ylim(ax_rate, [0, current_ylim(2)]);
 
             if isfield(beats_in_interval, 'amplitude')
                 plot_timeseries(ax_amp, [beats_in_interval.onset], [beats_in_interval.amplitude], 'Amplitude', true, '.-');
                 xlim(ax_amp, [t0, t1]);
+                current_ylim = ylim(ax_amp);
+                ylim(ax_amp, [0, current_ylim(2)]);
             else
                 axis(ax_amp, 'off');
             end
