@@ -1,7 +1,7 @@
-function [beats,options] = detectHeartBeatsImproved(t, d, options)
+function [beats,options] = detectHeartBeatsImproved(t, d, dRaw, options)
 %DETECTHEARTBEATSIMPROVED Detect heartbeats in a pulsatile signal.
 %
-%   BEATS = DETECTHEARTBEATSIMPROVED(T, D, OPTIONS) detects heartbeats in a 
+%   BEATS = DETECTHEARTBEATSIMPROVED(T, D, DRAW, OPTIONS) detects heartbeats in a
 %   pulsatile signal, such as a photoplethysmography (PPG) signal. 
 %   The function uses a threshold-based approach to identify 
 %   individual beats and their characteristics.
@@ -11,6 +11,7 @@ function [beats,options] = detectHeartBeatsImproved(t, d, options)
 %           - Numeric vector in seconds.
 %           - Datetime vector.
 %       D: A vector of signal values (e.g., PPG signal).
+%       DRAW: The raw data signal.
 %       OPTIONS: (Optional) A structure specifying detection parameters:
 %           threshold_high: Upper threshold for beat detection (default: 0.75).
 %           threshold_low: Lower threshold for beat detection (default: -0.75).
@@ -29,7 +30,7 @@ function [beats,options] = detectHeartBeatsImproved(t, d, options)
 %               period: Time between consecutive beats (double in seconds).
 %               instant_freq: Instantaneous heart rate (double in beats per second).
 %               amplitude: Peak-to-peak amplitude (double).
-%               amplitude_high: Amplitude above THRESHOLD_HIGH (double).
+%               amplitude_high: Amplitude above THRESHOL_HIGH (double).
 %               amplitude_low: Amplitude below THRESHOLD_LOW (double).
 %               valid: Boolean indicating if the beat meets validity criteria.
 %               up_duration: Duration of the upward slope of the beat (double in seconds).
@@ -56,6 +57,7 @@ function [beats,options] = detectHeartBeatsImproved(t, d, options)
     arguments
         t (:,1) {mustBeA(t,{'double','datetime'})}
         d (:,1) double {mustBeReal, mustBeFinite, mustBeSameLength(t,d)}
+        dRaw (:,1) double {mustBeReal, mustBeFinite, mustBeSameLength(t,dRaw)}
         options.threshold_high (1,1) double {mustBeReal} = 0.75
         options.threshold_low (1,1) double {mustBeReal} = -0.75
         options.refactory_period (1,1) double {mustBePositive, mustBeReal} = 0.2
@@ -169,13 +171,13 @@ function [beats,options] = detectHeartBeatsImproved(t, d, options)
     beat_max = nan(size(onset)); beat_min = nan(size(onset));
     prebeat_min = nan(size(onset)); last_off = [1;offset_index(1:end-1)];
     for i = 1:length(onset)
-        beat_data = d(onset_index(i):offset_index(i));
+        beat_data = dRaw(onset_index(i):offset_index(i));
         beat_max(i) = max(beat_data);
         beat_min(i) = min(beat_data);
         if last_off(i) > onset_index(i)
             prebeat_min(i) = NaN;
         else
-            prebeat_min(i) = min(d(last_off(i):onset_index(i)));
+            prebeat_min(i) = min(dRaw(last_off(i):onset_index(i)));
         end
     end
     amplitude = beat_max - prebeat_min;

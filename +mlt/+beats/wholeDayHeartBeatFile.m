@@ -46,8 +46,10 @@ wb = waitbar(0,"Working on whole day heart beat");
 idx = cellfun(@(x) eq(x,ndi.time.clocktype('exp_global_time')),et(1).epoch_clock);
 
 if isempty(idx) % No global time, process epochs individually
+    dRaw = [];
     for i=1:numel(et)
         [d_here,t_here] = e.readtimeseries(et(i).epoch_id,-inf,inf);
+        dRaw = cat(1,dRaw,d_here);
         d = cat(1,d,zscore(d_here));
         t = cat(1,t,nextTime+t_here(:));
         nextTime = max(t) + (t_here(2)-t_here(1)); % Update nextTime based on concatenated t
@@ -56,6 +58,7 @@ else % 'exp_global_time' exists, read a single epoch
     t0t1 = et(1).t0_t1{idx};
     tr = ndi.time.timereference(e,ndi.time.clocktype('exp_global_time'),[],0);
     [d,t] = e.readtimeseries(tr,t0t1(1),t0t1(2));
+    dRaw = d;
     t = datetime(t,'convertFrom','datenum');
     if options.zscoreWindowTime == 0
         d = zscore(d);
@@ -66,7 +69,7 @@ end
 
 waitbar(1,wb,"Now will detect heart beats across the day (hang on...)");
 
-beats = mlt.beats.detectHeartBeatsImproved(t,d);
+beats = mlt.beats.detectHeartBeatsImproved(t,d,dRaw);
 
 close(wb);
 
