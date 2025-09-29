@@ -19,6 +19,11 @@ function probeTableExisting = freshen(probeTableExisting, probeTableNew)
     channels_new = probeTableNew.channelName;
 
     if numel(channels_existing) ~= numel(channels_new) || ~isempty(setxor(channels_existing, channels_new))
+        disp('The channel lists do not match. Cannot freshen. Displaying tables for comparison:');
+        disp('Existing probe table:');
+        disp(probeTableExisting);
+        disp('New probe table:');
+        disp(probeTableNew);
         error('The channel lists in the existing and new probe tables do not match. Cannot freshen.');
     end
 
