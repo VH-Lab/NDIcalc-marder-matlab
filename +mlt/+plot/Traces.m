@@ -23,20 +23,24 @@ function Traces(data, time_intervals, options)
 %   Name-Value Pairs:
 %      'TitleInterpreter' - The interpreter for the plot titles ('none', 'tex', 'latex').
 %                           Default is 'none'.
+%      'timePrePostWindow' - The time in seconds to extend the data window
+%                            before and after the specified interval.
+%                            Default is 180 seconds.
 %
 
 arguments
     data (1,:) struct
     time_intervals (:,2) datetime
     options.TitleInterpreter (1,:) char {mustBeMember(options.TitleInterpreter, {'none', 'tex', 'latex'})} = 'none'
+    options.timePrePostWindow (1,1) double = 180
 end
 
 figure;
 
 % HORIZONTAL LAYOUT
 num_plots = size(time_intervals, 1);
-column_width = 0.81 / num_plots;
-column_spacing = 0.19 / (num_plots + 1);
+column_width = 0.75 / num_plots;
+column_spacing = 0.25 / (num_plots + 1);
 
 % VERTICAL LAYOUT
 top_margin = 0.10;
@@ -56,6 +60,9 @@ for i = 1:num_plots
     t0 = time_intervals(i, 1);
     t1 = time_intervals(i, 2);
 
+    t0_window = t0 - seconds(options.timePrePostWindow);
+    t1_window = t1 + seconds(options.timePrePostWindow);
+
     % Search for data records that overlap with the time interval
     overlapping_records = {};
     for data_idx = 1:numel(data)
@@ -68,7 +75,7 @@ for i = 1:num_plots
                 interval_end = spec_data.ts(end);
 
                 % Check for overlap
-                if t0 <= interval_end && t1 >= interval_start
+                if t0_window <= interval_end && t1_window >= interval_start
                     overlapping_records{end+1} = {current_data, spec_idx};
                 end
             end
@@ -96,12 +103,12 @@ for i = 1:num_plots
     spec_data = data_struct_found.SpectrogramData{idx_found};
 
     % Find indices that bracket the requested time interval to avoid whitespace
-    start_idx = find(spec_data.ts <= t0, 1, 'last');
+    start_idx = find(spec_data.ts <= t0_window, 1, 'last');
     if isempty(start_idx)
         start_idx = 1;
     end
 
-    end_idx = find(spec_data.ts >= t1, 1, 'first');
+    end_idx = find(spec_data.ts >= t1_window, 1, 'first');
     if isempty(end_idx)
         end_idx = numel(spec_data.ts);
     end
@@ -112,22 +119,22 @@ for i = 1:num_plots
     xlim([t0, t1]);
     if i == 1
         ylabel('Frequency (Hz)');
+        title_lines = { ...
+            data_struct_found.subject_local_identifier, ...
+            sprintf('Record: %s', data_struct_found.recordType) ...
+        };
+        title(ax_spec, title_lines, 'Interpreter', options.TitleInterpreter);
     else
         set(ax_spec, 'yticklabel', []);
     end
     set(ax_spec, 'xticklabel', []);
-    title_lines = { ...
-        data_struct_found.subject_local_identifier, ...
-        sprintf('Record: %s', data_struct_found.recordType) ...
-    };
-    title(ax_spec, title_lines, 'Interpreter', options.TitleInterpreter);
 
     % Raw Data
     ax_raw = axes('Position', [left_pos, plot_y_base + 3*plot_height, column_width, plot_height*0.9]);
     S_found = data_struct_found.session;
     [d, t_raw] = mlt.ppg.getRawData(S_found, data_struct_found.subject_local_identifier, data_struct_found.recordType);
     if isdatetime(t_raw)
-        raw_mask = t_raw >= t0 & t_raw <= t1;
+        raw_mask = t_raw >= t0_window & t_raw <= t1_window;
         plot_timeseries(ax_raw, t_raw(raw_mask), d(raw_mask), false);
         xlim(ax_raw, [t0, t1]);
         if i == 1
@@ -148,7 +155,7 @@ for i = 1:num_plots
 
     if ~isempty(valid_beats) && isdatetime([valid_beats.onset])
         beat_onsets = [valid_beats.onset];
-        beat_mask = beat_onsets >= t0 & beat_onsets <= t1;
+        beat_mask = beat_onsets >= t0_window & beat_onsets <= t1_window;
         beats_in_interval = valid_beats(beat_mask);
 
         if ~isempty(beats_in_interval)
@@ -194,6 +201,13 @@ for i = 1:num_plots
 
     column_axes = [ax_spec, ax_raw, ax_rate, ax_amp];
     linkaxes(column_axes, 'x');
+
+    % Generate and apply regular ticks across the entire data window
+    if isgraphics(ax_amp, 'axes') && strcmp(get(ax_amp, 'Visible'), 'on')
+        tick_values = linspace(t0_window, t1_window, 8);
+        set(ax_amp, 'XTick', tick_values);
+        datetick(ax_amp, 'x', 'HH:MM:SS', 'keeplimits');
+    end
 end
 
 % Synchronize Y-axis limits
