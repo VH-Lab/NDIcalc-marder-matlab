@@ -116,7 +116,6 @@ for i = 1:num_plots
     plot_indices = start_idx:end_idx;
 
     mlt.plot.Spectrogram(spec_data.spec(:, plot_indices), spec_data.f, spec_data.ts(plot_indices), 'drawLabels', false);
-    xlim([t0, t1]);
     if i == 1
         ylabel('Frequency (Hz)');
         title_lines = { ...
@@ -136,7 +135,6 @@ for i = 1:num_plots
     if isdatetime(t_raw)
         raw_mask = t_raw >= t0_window & t_raw <= t1_window;
         plot_timeseries(ax_raw, t_raw(raw_mask), d(raw_mask), false);
-        xlim(ax_raw, [t0, t1]);
         if i == 1
             ylabel(ax_raw, 'Raw Data');
         else
@@ -160,7 +158,6 @@ for i = 1:num_plots
 
         if ~isempty(beats_in_interval)
             plot_timeseries(ax_rate, [beats_in_interval.onset], [beats_in_interval.instant_freq], false, '.-');
-            xlim(ax_rate, [t0, t1]);
             if i == 1
                 ylabel(ax_rate, 'Rate (Hz)');
             else
@@ -171,7 +168,6 @@ for i = 1:num_plots
 
             if isfield(beats_in_interval, 'amplitude')
                 plot_timeseries(ax_amp, [beats_in_interval.onset], [beats_in_interval.amplitude], true, '.-');
-                xlim(ax_amp, [t0, t1]);
                  if i == 1
                     ylabel(ax_amp, 'Amplitude');
                 else
@@ -202,11 +198,12 @@ for i = 1:num_plots
     column_axes = [ax_spec, ax_raw, ax_rate, ax_amp];
     linkaxes(column_axes, 'x');
 
-    % Generate and apply regular ticks across the entire data window
+    % Generate and apply regular ticks across the entire data window, then zoom
     if isgraphics(ax_amp, 'axes') && strcmp(get(ax_amp, 'Visible'), 'on')
         tick_values = linspace(t0_window, t1_window, 8);
         set(ax_amp, 'XTick', tick_values);
-        datetick(ax_amp, 'x', 'HH:MM:SS', 'keeplimits');
+        datetick(ax_amp, 'x', 'mm/dd/yy\nHH:MM:SS', 'keepticks');
+        xlim(ax_amp, [t0, t1]); % Zoom after setting ticks
     end
 end
 
