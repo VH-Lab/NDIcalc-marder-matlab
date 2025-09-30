@@ -197,7 +197,7 @@ for i = 1:num_plots
     % Temperature (blank)
     ax_temp = axes('Position', [left_pos, plot_y_base + 0*plot_height, column_width, plot_height*0.9]);
     axis(ax_temp, 'off');
-    text(ax_temp, 0.5, 0.5, 'Temperature (Future)', 'HorizontalAlignment', 'center');
+    text(ax_temp, 0.5, 0.3, 'Temperature (Future)', 'HorizontalAlignment', 'center');
 
     column_axes = [ax_spec, ax_raw, ax_rate, ax_amp];
     linkaxes(column_axes, 'x');
@@ -210,10 +210,15 @@ for i = 1:num_plots
     end
 end
 
-% Synchronize Y-axis limits
-sync_axes_ylim(all_ax_raw);
-sync_axes_ylim(all_ax_rate);
-sync_axes_ylim(all_ax_amp);
+% Link Y-axis limits across columns for each data type
+valid_raw_axes = [all_ax_raw{:}];
+if numel(valid_raw_axes) > 1, linkaxes(valid_raw_axes, 'y'); end
+
+valid_rate_axes = [all_ax_rate{:}];
+if numel(valid_rate_axes) > 1, linkaxes(valid_rate_axes, 'y'); end
+
+valid_amp_axes = [all_ax_amp{:}];
+if numel(valid_amp_axes) > 1, linkaxes(valid_amp_axes, 'y'); end
 
 end
 
@@ -238,30 +243,5 @@ function plot_timeseries(ax, t, d, show_xlabel, plot_style)
         xlabel(xlabel_str);
     else
         set(ax,'xticklabel',[]);
-    end
-end
-
-function sync_axes_ylim(axes_handles)
-    min_y = inf;
-    max_y = -inf;
-    is_valid_axis_found = false;
-
-    for i = 1:numel(axes_handles)
-        ax = axes_handles{i};
-        if isgraphics(ax, 'axes') && strcmp(get(ax, 'Visible'), 'on')
-            lims = ylim(ax);
-            min_y = min(min_y, lims(1));
-            max_y = max(max_y, lims(2));
-            is_valid_axis_found = true;
-        end
-    end
-
-    if is_valid_axis_found
-        for i = 1:numel(axes_handles)
-            ax = axes_handles{i};
-            if isgraphics(ax, 'axes') && strcmp(get(ax, 'Visible'), 'on')
-                ylim(ax, [min_y, max_y]);
-            end
-        end
     end
 end
