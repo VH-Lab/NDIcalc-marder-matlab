@@ -200,9 +200,19 @@ for i = 1:num_plots
 
     % Generate and apply regular ticks across the entire data window, then zoom
     if isgraphics(ax_amp, 'axes') && strcmp(get(ax_amp, 'Visible'), 'on')
-        tick_values = linspace(t0_window, t1_window, 8);
-        set(ax_amp, 'XTick', tick_values);
-        datetick(ax_amp, 'x', 'mm/dd/yy\nHH:MM:SS', 'keepticks');
+        % Ticks every 10 seconds
+        tick_times = t0_window:seconds(10):t1_window;
+
+        % Labels every 20 seconds (every other tick)
+        tick_labels = cell(size(tick_times));
+        [tick_labels{:}] = deal(''); % Fill with empty strings
+        for k = 1:2:numel(tick_times) % Label every second tick
+            tick_labels{k} = datestr(tick_times(k), 'mm/dd/yy\nHH:MM:SS');
+        end
+
+        set(ax_amp, 'XTick', tick_times);
+        set(ax_amp, 'XTickLabel', tick_labels);
+
         xlim(ax_amp, [t0, t1]); % Zoom after setting ticks
     end
 end
