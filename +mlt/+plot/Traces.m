@@ -49,7 +49,7 @@ spectrogram_height = 0.35;
 total_plot_height = 1 - top_margin - bottom_margin;
 other_plots_total_height = total_plot_height - spectrogram_height;
 spectrogram_y_pos = bottom_margin + other_plots_total_height;
-plot_height = other_plots_total_height / 3;
+plot_height = other_plots_total_height / 4;
 plot_y_base = bottom_margin;
 
 all_ax_raw = cell(1, num_plots);
@@ -192,6 +192,10 @@ for i = 1:num_plots
     all_ax_amp{i} = ax_amp;
 
 
+    % Temperature (blank)
+    ax_temp = axes('Position', [left_pos, plot_y_base + 0*plot_height, column_width, plot_height*0.9]);
+    axis(ax_temp, 'off');
+
     column_axes = [ax_spec, ax_raw, ax_rate, ax_amp];
     linkaxes(column_axes, 'x');
 
@@ -210,7 +214,10 @@ for i = 1:num_plots
         set(ax_amp, 'XTick', tick_times);
         set(ax_amp, 'XTickLabel', tick_labels);
 
-        xlim(ax_amp, [t0, t1]); % Zoom after setting ticks
+        % Explicitly set xlim on all axes in the column to ensure zoom
+        for ax = column_axes
+            xlim(ax, [t0, t1]);
+        end
     end
 end
 
