@@ -23,20 +23,24 @@ function Traces(data, time_intervals, options)
 %   Name-Value Pairs:
 %      'TitleInterpreter' - The interpreter for the plot titles ('none', 'tex', 'latex').
 %                           Default is 'none'.
+%      'timePrePostWindow' - The time in seconds to extend the data window
+%                            before and after the specified interval.
+%                            Default is 180 seconds.
 %
 
 arguments
     data (1,:) struct
     time_intervals (:,2) datetime
     options.TitleInterpreter (1,:) char {mustBeMember(options.TitleInterpreter, {'none', 'tex', 'latex'})} = 'none'
+    options.timePrePostWindow (1,1) double = 180
 end
 
 figure;
 
 % HORIZONTAL LAYOUT
 num_plots = size(time_intervals, 1);
-column_width = 0.81 / num_plots;
-column_spacing = 0.19 / (num_plots + 1);
+column_width = 0.75 / num_plots;
+column_spacing = 0.25 / (num_plots + 1);
 
 % VERTICAL LAYOUT
 top_margin = 0.10;
@@ -56,6 +60,9 @@ for i = 1:num_plots
     t0 = time_intervals(i, 1);
     t1 = time_intervals(i, 2);
 
+    t0_window = t0 - seconds(options.timePrePostWindow);
+    t1_window = t1 + seconds(options.timePrePostWindow);
+
     % Search for data records that overlap with the time interval
     overlapping_records = {};
     for data_idx = 1:numel(data)
@@ -68,7 +75,7 @@ for i = 1:num_plots
                 interval_end = spec_data.ts(end);
 
                 % Check for overlap
-                if t0 <= interval_end && t1 >= interval_start
+                if t0_window <= interval_end && t1_window >= interval_start
                     overlapping_records{end+1} = {current_data, spec_idx};
                 end
             end
@@ -96,12 +103,12 @@ for i = 1:num_plots
     spec_data = data_struct_found.SpectrogramData{idx_found};
 
     % Find indices that bracket the requested time interval to avoid whitespace
-    start_idx = find(spec_data.ts <= t0, 1, 'last');
+    start_idx = find(spec_data.ts <= t0_window, 1, 'last');
     if isempty(start_idx)
         start_idx = 1;
     end
 
-    end_idx = find(spec_data.ts >= t1, 1, 'first');
+    end_idx = find(spec_data.ts >= t1_window, 1, 'first');
     if isempty(end_idx)
         end_idx = numel(spec_data.ts);
     end
@@ -109,32 +116,32 @@ for i = 1:num_plots
     plot_indices = start_idx:end_idx;
 
     mlt.plot.Spectrogram(spec_data.spec(:, plot_indices), spec_data.f, spec_data.ts(plot_indices), 'drawLabels', false);
-    xlim([t0, t1]);
     if i == 1
         ylabel('Frequency (Hz)');
+        title_lines = { ...
+            data_struct_found.subject_local_identifier, ...
+            sprintf('Record: %s', data_struct_found.recordType) ...
+        };
+        title(ax_spec, title_lines, 'Interpreter', options.TitleInterpreter);
     else
         set(ax_spec, 'yticklabel', []);
     end
     set(ax_spec, 'xticklabel', []);
-    title_lines = { ...
-        data_struct_found.subject_local_identifier, ...
-        sprintf('Record: %s', data_struct_found.recordType) ...
-    };
-    title(ax_spec, title_lines, 'Interpreter', options.TitleInterpreter);
 
     % Raw Data
     ax_raw = axes('Position', [left_pos, plot_y_base + 3*plot_height, column_width, plot_height*0.9]);
     S_found = data_struct_found.session;
     [d, t_raw] = mlt.ppg.getRawData(S_found, data_struct_found.subject_local_identifier, data_struct_found.recordType);
     if isdatetime(t_raw)
-        raw_mask = t_raw >= t0 & t_raw <= t1;
+        raw_mask = t_raw >= t0_window & t_raw <= t1_window;
         plot_timeseries(ax_raw, t_raw(raw_mask), d(raw_mask), false);
-        xlim(ax_raw, [t0, t1]);
         if i == 1
             ylabel(ax_raw, 'Raw Data');
         else
             set(ax_raw, 'yticklabel', []);
         end
+        current_ylim = ylim(ax_raw);
+        ylim(ax_raw, [0, current_ylim(2)]);
     else
         axis(ax_raw, 'off');
     end
@@ -148,12 +155,11 @@ for i = 1:num_plots
 
     if ~isempty(valid_beats) && isdatetime([valid_beats.onset])
         beat_onsets = [valid_beats.onset];
-        beat_mask = beat_onsets >= t0 & beat_onsets <= t1;
+        beat_mask = beat_onsets >= t0_window & beat_onsets <= t1_window;
         beats_in_interval = valid_beats(beat_mask);
 
         if ~isempty(beats_in_interval)
             plot_timeseries(ax_rate, [beats_in_interval.onset], [beats_in_interval.instant_freq], false, '.-');
-            xlim(ax_rate, [t0, t1]);
             if i == 1
                 ylabel(ax_rate, 'Rate (Hz)');
             else
@@ -164,7 +170,6 @@ for i = 1:num_plots
 
             if isfield(beats_in_interval, 'amplitude')
                 plot_timeseries(ax_amp, [beats_in_interval.onset], [beats_in_interval.amplitude], true, '.-');
-                xlim(ax_amp, [t0, t1]);
                  if i == 1
                     ylabel(ax_amp, 'Amplitude');
                 else
@@ -190,16 +195,41 @@ for i = 1:num_plots
     % Temperature (blank)
     ax_temp = axes('Position', [left_pos, plot_y_base + 0*plot_height, column_width, plot_height*0.9]);
     axis(ax_temp, 'off');
-    text(ax_temp, 0.5, 0.5, 'Temperature (Future)', 'HorizontalAlignment', 'center');
 
     column_axes = [ax_spec, ax_raw, ax_rate, ax_amp];
     linkaxes(column_axes, 'x');
+
+    % Generate and apply regular ticks across the entire data window, then zoom
+    if isgraphics(ax_amp, 'axes') && strcmp(get(ax_amp, 'Visible'), 'on')
+        % Ticks every 10 seconds
+        tick_times = t0_window:seconds(10):t1_window;
+
+        % Labels every 20 seconds (every other tick)
+        tick_labels = cell(size(tick_times));
+        [tick_labels{:}] = deal(''); % Fill with empty strings
+        for k = 1:2:numel(tick_times) % Label every second tick
+            tick_labels{k} = datestr(tick_times(k), 'mm/dd/yy\nHH:MM:SS');
+        end
+
+        set(ax_amp, 'XTick', tick_times);
+        set(ax_amp, 'XTickLabel', tick_labels);
+
+        % Explicitly set xlim on all axes in the column to ensure zoom
+        for ax = column_axes
+            xlim(ax, [t0, t1]);
+        end
+    end
 end
 
-% Synchronize Y-axis limits
-sync_axes_ylim(all_ax_raw);
-sync_axes_ylim(all_ax_rate);
-sync_axes_ylim(all_ax_amp);
+% Link Y-axis limits across columns for each data type
+valid_raw_axes = [all_ax_raw{:}];
+if numel(valid_raw_axes) > 1, linkaxes(valid_raw_axes, 'y'); end
+
+valid_rate_axes = [all_ax_rate{:}];
+if numel(valid_rate_axes) > 1, linkaxes(valid_rate_axes, 'y'); end
+
+valid_amp_axes = [all_ax_amp{:}];
+if numel(valid_amp_axes) > 1, linkaxes(valid_amp_axes, 'y'); end
 
 end
 
@@ -224,30 +254,5 @@ function plot_timeseries(ax, t, d, show_xlabel, plot_style)
         xlabel(xlabel_str);
     else
         set(ax,'xticklabel',[]);
-    end
-end
-
-function sync_axes_ylim(axes_handles)
-    min_y = inf;
-    max_y = -inf;
-    is_valid_axis_found = false;
-
-    for i = 1:numel(axes_handles)
-        ax = axes_handles{i};
-        if isgraphics(ax, 'axes') && strcmp(get(ax, 'Visible'), 'on')
-            lims = ylim(ax);
-            min_y = min(min_y, lims(1));
-            max_y = max(max_y, lims(2));
-            is_valid_axis_found = true;
-        end
-    end
-
-    if is_valid_axis_found
-        for i = 1:numel(axes_handles)
-            ax = axes_handles{i};
-            if isgraphics(ax, 'axes') && strcmp(get(ax, 'Visible'), 'on')
-                ylim(ax, [min_y, max_y]);
-            end
-        end
     end
 end
