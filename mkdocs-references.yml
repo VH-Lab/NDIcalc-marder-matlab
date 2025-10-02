@@ -31,6 +31,11 @@
         - mlt.inhibitoryBouts.findInhibitoryBouts: 'reference/+mlt/+inhibitoryBouts/findInhibitoryBouts.m.md'
         - mlt.inhibitoryBouts.spectrogramInhibBoutAnalysis: 'reference/+mlt/+inhibitoryBouts/spectrogramInhibBoutAnalysis.m.md'
         - mlt.inhibitoryBouts.spectrogramInhibitoryBoutOnsetOffsetAnalysis: 'reference/+mlt/+inhibitoryBouts/spectrogramInhibitoryBoutOnsetOffsetAnalysis.m.md'
+      - jacquerie PACKAGE:
+        - mlt.jacquerie.kathleenTime1: 'reference/+mlt/+jacquerie/kathleenTime1.m.md'
+        - mlt.jacquerie.kathleenTime2: 'reference/+mlt/+jacquerie/kathleenTime2.m.md'
+        - mlt.jacquerie.makeFigure1: 'reference/+mlt/+jacquerie/makeFigure1.m.md'
+        - mlt.jacquerie.makeFigure2: 'reference/+mlt/+jacquerie/makeFigure2.m.md'
       - ndi PACKAGE:
         - mlt.ndi.getElement: 'reference/+mlt/+ndi/getElement.m.md'
       - plot PACKAGE:
@@ -64,26 +69,35 @@
         - mlt.util.makeSpectrogram: 'reference/+mlt/+util/makeSpectrogram.m.md'
         - mlt.util.movzscore: 'reference/+mlt/+util/movzscore.m.md'
         - mlt.util.mscohere: 'reference/+mlt/+util/mscohere.m.md'
+        - mlt.util.toolboxdir: 'reference/+mlt/+util/toolboxdir.m.md'
     - ndi PACKAGE:
       - setup PACKAGE:
         - conv PACKAGE:
           - marder PACKAGE:
-            - ndi.setup.conv.marder.abf2probetable: 'reference/+ndi/+setup/+conv/+marder/abf2probetable.m.md'
-            - ndi.setup.conv.marder.abfepochprobemap: 'reference/+ndi/+setup/+conv/+marder/abfepochprobemap.m.md'
-            - ndi.setup.conv.marder.abfprobetable2probemap: 'reference/+ndi/+setup/+conv/+marder/abfprobetable2probemap.m.md'
-            - ndi.setup.conv.marder.channelname2probename: 'reference/+ndi/+setup/+conv/+marder/channelname2probename.m.md'
-            - ndi.setup.conv.marder.channelnames2daqsystemstrings: 'reference/+ndi/+setup/+conv/+marder/channelnames2daqsystemstrings.m.md'
-            - ndi.setup.conv.marder.channelnametable2probename: 'reference/+ndi/+setup/+conv/+marder/channelnametable2probename.m.md'
             - ndi.setup.conv.marder.demo: 'reference/+ndi/+setup/+conv/+marder/demo.m.md'
-            - ndi.setup.conv.marder.makeVoltageOffsets: 'reference/+ndi/+setup/+conv/+marder/makeVoltageOffsets.m.md'
-            - ndi.setup.conv.marder.makesubjects: 'reference/+ndi/+setup/+conv/+marder/makesubjects.m.md'
-            - ndi.setup.conv.marder.marderbath: 'reference/+ndi/+setup/+conv/+marder/marderbath.m.md'
-            - ndi.setup.conv.marder.marderprobe2uberon: 'reference/+ndi/+setup/+conv/+marder/marderprobe2uberon.m.md'
-            - ndi.setup.conv.marder.mixtureStr2mixtureTable: 'reference/+ndi/+setup/+conv/+marder/mixtureStr2mixtureTable.m.md'
             - ndi.setup.conv.marder.plot_epoch: 'reference/+ndi/+setup/+conv/+marder/plot_epoch.m.md'
-            - ndi.setup.conv.marder.postsetup: 'reference/+ndi/+setup/+conv/+marder/postsetup.m.md'
-            - ndi.setup.conv.marder.preptemp: 'reference/+ndi/+setup/+conv/+marder/preptemp.m.md'
-            - ndi.setup.conv.marder.preptemptable: 'reference/+ndi/+setup/+conv/+marder/preptemptable.m.md'
+            - ndi.setup.conv.marder.postsetup2: 'reference/+ndi/+setup/+conv/+marder/postsetup2.m.md'
             - ndi.setup.conv.marder.presetup: 'reference/+ndi/+setup/+conv/+marder/presetup.m.md'
-            - ndi.setup.conv.marder.smrepochprobemap: 'reference/+ndi/+setup/+conv/+marder/smrepochprobemap.m.md'
-            - ndi.setup.conv.marder.temptable2stimulusparameters: 'reference/+ndi/+setup/+conv/+marder/temptable2stimulusparameters.m.md'
+            - ndi.setup.conv.marder.setupInteractive: 'reference/+ndi/+setup/+conv/+marder/setupInteractive.m.md'
+            - bath PACKAGE:
+              - ndi.setup.conv.marder.bath.marderbath: 'reference/+ndi/+setup/+conv/+marder/+bath/marderbath.m.md'
+              - ndi.setup.conv.marder.bath.mixtureStr2mixtureTable: 'reference/+ndi/+setup/+conv/+marder/+bath/mixtureStr2mixtureTable.m.md'
+              - ndi.setup.conv.marder.bath.preptemp: 'reference/+ndi/+setup/+conv/+marder/+bath/preptemp.m.md'
+              - ndi.setup.conv.marder.bath.preptemptable: 'reference/+ndi/+setup/+conv/+marder/+bath/preptemptable.m.md'
+              - ndi.setup.conv.marder.bath.temptable2stimulusparameters: 'reference/+ndi/+setup/+conv/+marder/+bath/temptable2stimulusparameters.m.md'
+            - probeMap PACKAGE:
+              - ndi.setup.conv.marder.probeMap.abf2probetable: 'reference/+ndi/+setup/+conv/+marder/+probeMap/abf2probetable.m.md'
+              - ndi.setup.conv.marder.probeMap.abfepochprobemap: 'reference/+ndi/+setup/+conv/+marder/+probeMap/abfepochprobemap.m.md'
+              - ndi.setup.conv.marder.probeMap.abfprobetable2probemap: 'reference/+ndi/+setup/+conv/+marder/+probeMap/abfprobetable2probemap.m.md'
+              - ndi.setup.conv.marder.probeMap.channelname2probename: 'reference/+ndi/+setup/+conv/+marder/+probeMap/channelname2probename.m.md'
+              - ndi.setup.conv.marder.probeMap.channelnames2daqsystemstrings: 'reference/+ndi/+setup/+conv/+marder/+probeMap/channelnames2daqsystemstrings.m.md'
+              - ndi.setup.conv.marder.probeMap.channelnametable2probename: 'reference/+ndi/+setup/+conv/+marder/+probeMap/channelnametable2probename.m.md'
+              - ndi.setup.conv.marder.probeMap.editProbeTable: 'reference/+ndi/+setup/+conv/+marder/+probeMap/editProbeTable.m.md'
+              - ndi.setup.conv.marder.probeMap.freshen: 'reference/+ndi/+setup/+conv/+marder/+probeMap/freshen.m.md'
+              - ndi.setup.conv.marder.probeMap.makeVoltageOffsets: 'reference/+ndi/+setup/+conv/+marder/+probeMap/makeVoltageOffsets.m.md'
+              - ndi.setup.conv.marder.probeMap.marderprobe2uberon: 'reference/+ndi/+setup/+conv/+marder/+probeMap/marderprobe2uberon.m.md'
+              - ndi.setup.conv.marder.probeMap.smrepochprobemap: 'reference/+ndi/+setup/+conv/+marder/+probeMap/smrepochprobemap.m.md'
+            - subject PACKAGE:
+              - ndi.setup.conv.marder.subject.SubjectInformationCreator: 'reference/+ndi/+setup/+conv/+marder/+subject/SubjectInformationCreator.m.md'
+              - ndi.setup.conv.marder.subject.makesubjects: 'reference/+ndi/+setup/+conv/+marder/+subject/makesubjects.m.md'
+              - ndi.setup.conv.marder.subject.subjectSetup: 'reference/+ndi/+setup/+conv/+marder/+subject/subjectSetup.m.md'
