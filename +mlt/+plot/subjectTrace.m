@@ -47,6 +47,7 @@ arguments
     options.colorbar (1,1) logical = false
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula'
+    options.ylimSpectrogram (1,2) double = [0 5];
 end
 
 % --- Step 1: Find the element ---
@@ -111,7 +112,8 @@ ax.Spectrogram = subplot(6,1,1:3);
 mlt.plot.Spectrogram(spec, f, ts_spec, ...
     'colorbar', options.colorbar, ...
     'maxColorPercentile', options.maxColorPercentile, ...
-    'colormapName', options.colormapName);
+    'colormapName', options.colormapName, ...
+    'ylim', options.ylimSpectrogram);
 hold on;
 % % Use plot3 to overlay the frequency trace on top of the 2D image
 % z_level = (max(spec(:))) * ones(size(onset_times)); % Ensure it's on top

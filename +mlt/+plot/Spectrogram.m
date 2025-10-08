@@ -35,6 +35,7 @@ arguments
     options.colorbar (1,1) logical = false;
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99;
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula';
+    options.ylim (1,2) double = [0 5];
 end
 
 % Apply dB/linear conversions
@@ -68,6 +69,8 @@ caxis([min(plottedSpec(:)), max_color_value]);
 
 % --- Apply the specified colormap ---
 colormap(options.colormapName);
+
+ylim(options.ylim);
 
 % Add labels if requested
 if options.drawLabels

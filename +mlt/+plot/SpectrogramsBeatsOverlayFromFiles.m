@@ -46,6 +46,7 @@ arguments
     options.maxColorPercentile (1,1) double {mustBeInRange(options.maxColorPercentile, 0, 100)} = 99
     options.colormapName (1,:) char {mustBeMember(options.colormapName,{'parula', 'jet', 'hsv', 'hot', 'cool', 'spring', 'summer', 'autumn', 'winter', 'gray', 'bone', 'copper', 'pink'})} = 'parula'
     options.numSubplots (1,1) double = 10
+    options.ylimSpectrogram (1,2) double = [0 5];
 end
 
 p = S.getprobes('type','ppg');
@@ -92,7 +93,8 @@ for i=1:numel(p)
     mlt.plot.Spectrogram(sg_data.spec, sg_data.f, sg_data.ts, ...
         'colorbar', options.colorbar, ...
         'maxColorPercentile', options.maxColorPercentile, ...
-        'colormapName', options.colormapName);
+        'colormapName', options.colormapName, ...
+        'ylim', options.ylimSpectrogram);
     hold on;
     
     % Overlay the instantaneous beat frequency
