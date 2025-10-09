@@ -33,6 +33,7 @@ arguments
     time_intervals (:,2) datetime
     options.TitleInterpreter (1,:) char {mustBeMember(options.TitleInterpreter, {'none', 'tex', 'latex'})} = 'none'
     options.timePrePostWindow (1,1) double = 180
+    options.ylimSpectrogram (1,2) double = [0 5];
 end
 
 figure;
@@ -115,7 +116,7 @@ for i = 1:num_plots
 
     plot_indices = start_idx:end_idx;
 
-    mlt.plot.Spectrogram(spec_data.spec(:, plot_indices), spec_data.f, spec_data.ts(plot_indices), 'drawLabels', false);
+    mlt.plot.Spectrogram(spec_data.spec(:, plot_indices), spec_data.f, spec_data.ts(plot_indices), 'drawLabels', false, 'ylim', options.ylimSpectrogram);
     if i == 1
         ylabel('Frequency (Hz)');
         title_lines = { ...
