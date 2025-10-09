@@ -109,14 +109,14 @@ disp('Generating plots...');
 figure('Position', [100 100 1200 900]); % Create a larger figure window
 
 % Using a 8-row grid for 5 plots
-% - Spectrogram: 1-4
-% - Raw Data: 5
-% - Beat Freq: 6
-% - Amplitude: 7
-% - Duty Cycle: 8
+ax.Spectrogram = subplot(8,1,1:4);
+ax.RawData = subplot(8,1,5);
+ax.BeatInstFreq = subplot(8,1,6);
+ax.Amplitude = subplot(8,1,7);
+ax.DutyCycle = subplot(8,1,8);
 
 % PLOT 1: Spectrogram
-ax.Spectrogram = subplot(8,1,1:4);
+subplot(ax.Spectrogram);
 mlt.plot.Spectrogram(spec, f, ts_spec, ...
     'colorbar', options.colorbar, ...
     'maxColorPercentile', options.maxColorPercentile, ...
@@ -127,43 +127,57 @@ title(title_str, 'Interpreter', 'none');
 grid on;
 
 % PLOT 2: Raw Data
-ax.RawData = subplot(8,1,5);
+subplot(ax.RawData);
 plot(raw_time, raw_data, 'k-', 'LineWidth', 1);
 ylabel('Raw Data');
 grid on;
 
-% PLOT 3: Beat Inst Freq
-ax.BeatInstFreq = subplot(8,1,6);
-plot(onset_times, [beats_valid.instant_freq], 'r-', 'LineWidth', options.Linewidth);
-ylabel({'Beat Inst Freq', '(Hz)'});
-grid on;
+% PLOT 3-5: Beat-related data
+if ~isempty(onset_times)
+    subplot(ax.BeatInstFreq);
+    plot(onset_times, [beats_valid.instant_freq], 'r-', 'LineWidth', options.Linewidth);
+    ylabel({'Beat Inst Freq', '(Hz)'});
+    grid on;
 
-% PLOT 4: Beat Amplitude
-ax.Amplitude = subplot(8,1,7);
-plot(onset_times, [beats_valid.amplitude], 'b-', 'LineWidth', options.Linewidth);
-ylabel('Amplitude');
-grid on;
+    subplot(ax.Amplitude);
+    plot(onset_times, [beats_valid.amplitude], 'b-', 'LineWidth', options.Linewidth);
+    ylabel('Amplitude');
+    grid on;
 
-% PLOT 5: Duty Cycle
-ax.DutyCycle = subplot(8,1,8);
-plot(onset_times, [beats_valid.duty_cycle], 'g-', 'LineWidth', options.Linewidth);
-ylabel('Duty Cycle');
-grid on;
+    subplot(ax.DutyCycle);
+    plot(onset_times, [beats_valid.duty_cycle], 'g-', 'LineWidth', options.Linewidth);
+    ylabel('Duty Cycle');
+    grid on;
+end
 
 xlabel('Time');
 grid on;
 
-% Link all axes horizontally
-linkaxes([ax.Spectrogram, ax.RawData, ax.BeatInstFreq, ax.Amplitude, ax.DutyCycle], 'x');
-
-% Set a reasonable x-limit to start, using datetime
-if ~isempty(onset_times)
-    xlim(ax.Spectrogram, [onset_times(1), onset_times(end)]);
-else
-    if ~isempty(ts_spec)
-        xlim(ax.Spectrogram, [ts_spec(1), ts_spec(end)]);
-    end
+% --- Step 6: Finalize Axes ---
+% Determine a master time range to ensure all axes have datetime limits
+master_xlim = [min(raw_time) max(raw_time)];
+if ~isempty(ts_spec)
+    master_xlim(1) = min(master_xlim(1), min(ts_spec));
+    master_xlim(2) = max(master_xlim(2), max(ts_spec));
 end
+
+all_axes = [ax.Spectrogram, ax.RawData, ax.BeatInstFreq, ax.Amplitude, ax.DutyCycle];
+
+% Set all axes to the same datetime limits BEFORE linking
+for i = 1:numel(all_axes)
+    xlim(all_axes(i), master_xlim);
+end
+
+% Link all axes horizontally
+linkaxes(all_axes, 'x');
+
+% Now set a reasonable view limit
+view_xlim = master_xlim;
+if ~isempty(onset_times)
+    view_xlim = [onset_times(1), onset_times(end)];
+end
+xlim(ax.Spectrogram, view_xlim);
+
 disp('Plot generation complete.');
 
 end
