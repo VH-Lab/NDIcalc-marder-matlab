@@ -183,8 +183,8 @@ end
 if options.markBeats
     % Store data for callbacks
     beat_marking_data.beats = beats_valid;
-    beat_marking_data.markedBad = [];
-    beat_marking_data.markedMissing = [];
+    beat_marking_data.markedBad = datetime.empty(0,1);
+    beat_marking_data.markedMissing = datetime.empty(0,1);
     beat_marking_data.axNorm = ax.NormalizedData;
     beat_marking_data.axRaw = ax.RawData;
     beat_marking_data.normalized_data = normalized_data;
