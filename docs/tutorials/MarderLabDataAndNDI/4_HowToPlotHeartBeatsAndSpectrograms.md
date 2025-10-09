@@ -94,3 +94,33 @@ The functions that read from local files where we initially stored the heart bea
 - `mlt.plot.HeartBeatsFromFiles` - Not recommended
 - `mlt.plot.SpectrogramsFromFiles` - Not recommended
 - `SpectrogramsBeatsOverlayFromFiles` - Not recommended
+
+### 1.4.7 A comprehensive subject trace view
+
+A single function, `mlt.plot.subjectTrace`, provides a comprehensive multi-panel plot that is ideal for detailed inspection of a recording. It combines the spectrogram, raw data trace, normalized data trace, and beat metrics into a single, time-linked figure.
+
+#### Viewing a subject trace
+
+You can generate a detailed trace for any subject and record type. For example, to view the 'heart' record for subject 'gdy_0014@marderlab.brandeis.edu', you can use the following command. The `showBeats` option is useful for visually correlating the detected beat onsets and offsets with the raw and normalized data traces.
+
+```matlab
+[ax,data]=mlt.plot.subjectTrace(S,'gdy_0014@marderlab.brandeis.edu','heart','showBeats',true)
+```
+
+This will produce a 6-panel plot that includes the spectrogram, the raw data, a z-scored normalized version of the raw data, and plots of the instantaneous beat frequency, amplitude, and duty cycle.
+
+#### Interactive beat marking and curation
+
+The `mlt.plot.subjectTrace` function also includes a powerful interactive mode for curating the beat data. This is essential for correcting errors in the automated beat detection process.
+
+To activate the interactive mode, set the `markBeats` option to `true`:
+
+```matlab
+[ax,data]=mlt.plot.subjectTrace(S,'gdy_0014@marderlab.brandeis.edu','heart','showBeats',true,'markBeats',true)
+```
+
+When this mode is active, three buttons will appear below the normalized data plot:
+
+*   **Bad**: Click this button to mark detected beats that are incorrect. A dialog will appear instructing you to click on the normalized data plot near the beats you want to remove. Each click will mark the nearest detected beat with a large gray 'X'. Press `Enter` when you are finished.
+*   **Missing**: Click this button to add beats that the automated detection missed. A dialog will appear instructing you to click on the normalized data plot where a beat should have occurred. Each click will add a new "missing" beat, marked with a large green '+'. Press `Enter` when you are finished.
+*   **Save**: Click this button to save your work. A file dialog will appear, allowing you to save the curated beat list to a `.mat` file. The saved file will contain a table with all beats and a 'Status' column indicating whether each beat was 'detected', 'marked bad', or 'marked missing'.

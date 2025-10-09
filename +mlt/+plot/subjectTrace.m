@@ -35,7 +35,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %           - Bad: Click near detected beats to mark them as bad (gray 'X').
 %           - Missing: Click to add new, missing beats (green '+').
 %           - Save: Saves the curated beat list to a .mat file.
-%           A dialog will appear with instructions. Press Enter after you are done clicking.
+%           A dialog will appear with instructions. Press Enter when you are done clicking.
 %       Linewidth (1,1) double = 1.5
 %           Line width for the time-series plots.
 %       colorbar (1,1) logical = false
@@ -186,7 +186,9 @@ if options.markBeats
     beat_marking_data.markedBad = [];
     beat_marking_data.markedMissing = [];
     beat_marking_data.axNorm = ax.NormalizedData;
+    beat_marking_data.axRaw = ax.RawData;
     beat_marking_data.normalized_data = normalized_data;
+    beat_marking_data.raw_data = raw_data;
     beat_marking_data.raw_time = raw_time;
     set(fig, 'UserData', beat_marking_data);
 
@@ -239,23 +241,36 @@ function markBadCallback(hObject, ~)
     data = get(fig, 'UserData');
 
     msgbox('Click near bad beats. Press Enter when done.', 'Mark Bad Beats', 'modal');
-    figure(fig); % Bring figure to front
-    axes(data.axNorm); % Set axes as current
-    [x, ~] = ginput;
-    if isempty(x), return; end
 
-    clicked_times = datetime(x, 'ConvertFrom', 'datenum');
-    hold(data.axNorm, 'on');
-    for i = 1:numel(clicked_times)
-        [~, idx] = min(abs(data.beats.onset - clicked_times(i)));
+    while true
+        figure(fig);
+        axes(data.axNorm);
+        [x, ~, button] = ginput(1);
+        if isempty(x) || isempty(button)
+            break;
+        end
+
+        clicked_time = datetime(x, 'ConvertFrom', 'datenum');
+        [~, idx] = min(abs(data.beats.onset - clicked_time));
         marked_time = data.beats.onset(idx);
-        data.markedBad(end+1) = marked_time;
-        y_val = interp1(data.raw_time, data.normalized_data, marked_time);
-        plot(data.axNorm, marked_time, y_val, 'X', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+
+        if ~ismember(marked_time, data.markedBad)
+            data.markedBad(end+1) = marked_time;
+
+            y_norm = interp1(data.raw_time, data.normalized_data, marked_time);
+            hold(data.axNorm, 'on');
+            plot(data.axNorm, marked_time, y_norm, 'X', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+            hold(data.axNorm, 'off');
+
+            y_raw = interp1(data.raw_time, data.raw_data, marked_time);
+            hold(data.axRaw, 'on');
+            plot(data.axRaw, marked_time, y_raw, 'X', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+            hold(data.axRaw, 'off');
+        end
     end
-    hold(data.axNorm, 'off');
+
     set(fig, 'UserData', data);
-    disp([num2str(numel(x)) ' bad beats marked.']);
+    disp('Finished marking bad beats.');
 end
 
 function markMissingCallback(hObject, ~)
@@ -263,20 +278,30 @@ function markMissingCallback(hObject, ~)
     data = get(fig, 'UserData');
 
     msgbox('Click to add missing beats. Press Enter when done.', 'Mark Missing Beats', 'modal');
-    figure(fig); % Bring figure to front
-    axes(data.axNorm); % Set axes as current
-    [x, y] = ginput;
-    if isempty(x), return; end
 
-    clicked_times = datetime(x, 'ConvertFrom', 'datenum');
-    data.markedMissing = [data.markedMissing; clicked_times(:)];
+    while true
+        figure(fig);
+        axes(data.axNorm);
+        [x, y, button] = ginput(1);
+        if isempty(x) || isempty(button)
+            break;
+        end
 
-    hold(data.axNorm, 'on');
-    plot(data.axNorm, clicked_times, y, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
-    hold(data.axNorm, 'off');
+        clicked_time = datetime(x, 'ConvertFrom', 'datenum');
+        data.markedMissing(end+1) = clicked_time;
+
+        hold(data.axNorm, 'on');
+        plot(data.axNorm, clicked_time, y, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
+        hold(data.axNorm, 'off');
+
+        y_raw = interp1(data.raw_time, data.raw_data, clicked_time);
+        hold(data.axRaw, 'on');
+        plot(data.axRaw, clicked_time, y_raw, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
+        hold(data.axRaw, 'off');
+    end
 
     set(fig, 'UserData', data);
-    disp([num2str(numel(x)) ' missing beats marked.']);
+    disp('Finished marking missing beats.');
 end
 
 function saveCallback(hObject, ~)
