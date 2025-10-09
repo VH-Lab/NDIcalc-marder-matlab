@@ -41,7 +41,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %       % Plot a summary for Subject A's heart recording
 %       [ax, data] = mlt.plot.subjectTrace(mySession, 'SubjectA', 'heart');
 %
-%   See also mlt.doc.getHeartBeatAndSpectrogram, mlt.plot.Spectrogram
+%   See also mlt.doc.getHeartBeatAndSpectrogram, mlt.ppg.getRawData, mlt.plot.Spectrogram
 
 arguments
     S (1,1) {mustBeA(S,{'ndi.session','ndi.dataset'})}
@@ -66,44 +66,20 @@ end
 
 S = data.session; % Use the session from the data struct for consistency
 
-% --- Step 2: Get Epoch Information for Time Conversion ---
-disp('Finding element for epoch information...');
-e = mlt.ndi.getElement(S, subject_name, record_type, 'lp_whole');
-if isempty(e)
-    error('Could not find a unique element for subject "%s" and record type "%s".', subject_name, record_type);
-end
-et = e.epochtable();
-if isempty(et)
-    error('Element %s has no epoch table.', e.elementstring);
-end
-epoch_id = et(1).epoch_id;
-t0_utc = et(1).t0_t1{1};
+% --- Step 2: Load Raw Data ---
+disp('Loading raw data...');
+[raw_data, raw_time] = mlt.ppg.getRawData(S, subject_name, record_type);
 
-% --- Step 3: Load Raw Data and Prepare All Time Axes ---
-disp('Loading raw data and preparing time axes...');
-
-% Load raw data
-[raw_data, raw_time] = e.readtimeseries(epoch_id, -Inf, Inf);
-if ~isdatetime(raw_time)
-    raw_time = t0_utc + seconds(raw_time); % Convert from numeric seconds
-end
-
-% Prepare spectrogram time
+% --- Step 3: Prepare Data for Plotting ---
+disp('Preparing data for plotting...');
 spec_data = data.SpectrogramData{1};
 spec = spec_data.spec;
 f = spec_data.f;
 ts_spec = spec_data.ts;
-if ~isdatetime(ts_spec)
-    ts_spec = t0_utc + ts_spec; % Convert from duration or numeric
-end
 
-% Prepare beats time
 beats = data.HeartBeatData{1};
 beats_valid = beats(logical([beats.valid]));
 onset_times = [beats_valid.onset];
-if ~isempty(onset_times) && ~isdatetime(onset_times)
-    onset_times = t0_utc + onset_times; % Convert from duration or numeric
-end
 
 % --- Step 4: Create Plots ---
 disp('Generating plots...');
@@ -117,23 +93,25 @@ ax.DutyCycle = subplot(8,1,8);
 
 % PLOT 1: Spectrogram
 subplot(ax.Spectrogram);
-mlt.plot.Spectrogram(spec, f, ts_spec, ...
-    'colorbar', options.colorbar, ...
-    'maxColorPercentile', options.maxColorPercentile, ...
-    'colormapName', options.colormapName, ...
-    'ylim', options.ylimSpectrogram);
-title_str = sprintf('Subject: %s, Record: %s', data.subject_local_identifier, data.recordType);
-title(title_str, 'Interpreter', 'none');
-grid on;
+if isdatetime(ts_spec)
+    mlt.plot.Spectrogram(spec, f, ts_spec, ...
+        'colorbar', options.colorbar, 'maxColorPercentile', options.maxColorPercentile, ...
+        'colormapName', options.colormapName, 'ylim', options.ylimSpectrogram);
+    title_str = sprintf('Subject: %s, Record: %s', data.subject_local_identifier, data.recordType);
+    title(title_str, 'Interpreter', 'none');
+    grid on;
+end
 
 % PLOT 2: Raw Data
 subplot(ax.RawData);
-plot(raw_time, raw_data, 'k-', 'LineWidth', 1);
-ylabel('Raw Data');
-grid on;
+if isdatetime(raw_time)
+    plot(raw_time, raw_data, 'k-', 'LineWidth', 1);
+    ylabel('Raw Data');
+    grid on;
+end
 
 % PLOT 3-5: Beat-related data
-if ~isempty(onset_times)
+if ~isempty(onset_times) && isdatetime(onset_times)
     subplot(ax.BeatInstFreq);
     plot(onset_times, [beats_valid.instant_freq], 'r-', 'LineWidth', options.Linewidth);
     ylabel({'Beat Inst Freq', '(Hz)'});
@@ -156,8 +134,8 @@ grid on;
 % --- Step 5: Finalize Axes ---
 all_axes = [ax.Spectrogram, ax.RawData, ax.BeatInstFreq, ax.Amplitude, ax.DutyCycle];
 all_times_cell = {};
-if ~isempty(raw_time) && isdatetime(raw_time), all_times_cell{end+1} = raw_time(:); end
-if ~isempty(ts_spec) && isdatetime(ts_spec), all_times_cell{end+1} = ts_spec(:); end
+if isdatetime(raw_time) && ~isempty(raw_time), all_times_cell{end+1} = raw_time(:); end
+if isdatetime(ts_spec) && ~isempty(ts_spec), all_times_cell{end+1} = ts_spec(:); end
 
 master_xlim = [];
 if ~isempty(all_times_cell)
@@ -180,7 +158,6 @@ end
 
 linkaxes(all_axes, 'x');
 
-% Set a reasonable initial view
 if ~isempty(master_xlim)
     xlim(ax.Spectrogram, master_xlim);
 end
