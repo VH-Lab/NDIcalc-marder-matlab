@@ -155,14 +155,16 @@ grid on;
 
 % --- Step 5: Finalize Axes ---
 all_axes = [ax.Spectrogram, ax.RawData, ax.BeatInstFreq, ax.Amplitude, ax.DutyCycle];
-all_times = [];
-
-if ~isempty(raw_time), all_times = [all_times; raw_time(:)]; end
-if ~isempty(ts_spec), all_times = [all_times; ts_spec(:)]; end
+all_times_cell = {};
+if ~isempty(raw_time) && isdatetime(raw_time), all_times_cell{end+1} = raw_time(:); end
+if ~isempty(ts_spec) && isdatetime(ts_spec), all_times_cell{end+1} = ts_spec(:); end
 
 master_xlim = [];
-if ~isempty(all_times)
-    master_xlim = [min(all_times) max(all_times)];
+if ~isempty(all_times_cell)
+    all_times = vertcat(all_times_cell{:});
+    if ~isempty(all_times)
+        master_xlim = [min(all_times) max(all_times)];
+    end
 end
 
 if ~isempty(master_xlim)
