@@ -163,7 +163,12 @@ master_xlim = [];
 if ~isempty(all_times_cell)
     all_times = vertcat(all_times_cell{:});
     if ~isempty(all_times)
-        master_xlim = [min(all_times) max(all_times)];
+        min_t = min(all_times);
+        max_t = max(all_times);
+        if min_t == max_t
+            max_t = min_t + seconds(1); % Add 1 second if there's only one point
+        end
+        master_xlim = [min_t max_t];
     end
 end
 
