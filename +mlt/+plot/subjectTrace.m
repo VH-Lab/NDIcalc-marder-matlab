@@ -90,9 +90,9 @@ disp('Preparing data for plotting...');
 
 % Extract from data structure
 spec_data = data.SpectrogramData{1};
-spec = spec_data.spectrogram;
+spec = spec_data.spec;
 f = spec_data.f;
-ts_spec = t0_utc + seconds(spec_data.t); % Convert to datetime
+ts_spec = t0_utc + seconds(spec_data.ts); % Convert to datetime
 
 beats = data.HeartBeatData{1};
 beats_valid = beats(logical([beats.valid]));
