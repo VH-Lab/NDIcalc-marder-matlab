@@ -190,6 +190,18 @@ if options.markBeats
     beat_marking_data.normalized_data = normalized_data;
     beat_marking_data.raw_data = raw_data;
     beat_marking_data.raw_time = raw_time;
+
+    % Pre-plot empty marker series and store handles
+    hold(ax.RawData, 'on');
+    beat_marking_data.h_bad_raw = plot(ax.RawData, NaT, [], 'x', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+    beat_marking_data.h_missing_raw = plot(ax.RawData, NaT, [], '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
+    hold(ax.RawData, 'off');
+
+    hold(ax.NormalizedData, 'on');
+    beat_marking_data.h_bad_norm = plot(ax.NormalizedData, NaT, [], 'x', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+    beat_marking_data.h_missing_norm = plot(ax.NormalizedData, NaT, [], '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
+    hold(ax.NormalizedData, 'off');
+
     set(fig, 'UserData', beat_marking_data);
 
     % Create buttons
@@ -257,16 +269,13 @@ function markBadCallback(hObject, ~)
         if ~ismember(marked_time, data.markedBad)
             data.markedBad = [data.markedBad; marked_time];
 
+            % Update normalized plot
             y_norm = interp1(data.raw_time, data.normalized_data, marked_time);
-            hold(data.axNorm, 'on');
-            plot(data.axNorm, marked_time, y_norm, 'X', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
-            hold(data.axNorm, 'off');
+            set(data.h_bad_norm, 'XData', [get(data.h_bad_norm, 'XData') marked_time], 'YData', [get(data.h_bad_norm, 'YData') y_norm]);
 
+            % Update raw plot
             y_raw = interp1(data.raw_time, data.raw_data, marked_time);
-            hold(data.axRaw, 'on');
-            plot(data.axRaw, marked_time, y_raw, 'X', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
-            hold(data.axRaw, 'off');
-            drawnow;
+            set(data.h_bad_raw, 'XData', [get(data.h_bad_raw, 'XData') marked_time], 'YData', [get(data.h_bad_raw, 'YData') y_raw]);
         end
     end
 
@@ -291,15 +300,12 @@ function markMissingCallback(hObject, ~)
         clicked_time = datetime(x, 'ConvertFrom', 'datenum');
         data.markedMissing = [data.markedMissing; clicked_time];
 
-        hold(data.axNorm, 'on');
-        plot(data.axNorm, clicked_time, y, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
-        hold(data.axNorm, 'off');
+        % Update normalized plot
+        set(data.h_missing_norm, 'XData', [get(data.h_missing_norm, 'XData') clicked_time], 'YData', [get(data.h_missing_norm, 'YData') y]);
 
+        % Update raw plot
         y_raw = interp1(data.raw_time, data.raw_data, clicked_time);
-        hold(data.axRaw, 'on');
-        plot(data.axRaw, clicked_time, y_raw, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
-        hold(data.axRaw, 'off');
-        drawnow;
+        set(data.h_missing_raw, 'XData', [get(data.h_missing_raw, 'XData') clicked_time], 'YData', [get(data.h_missing_raw, 'YData') y_raw]);
     end
 
     set(fig, 'UserData', data);
