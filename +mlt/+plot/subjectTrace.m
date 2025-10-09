@@ -18,7 +18,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %   Inputs:
 %       S             - An ndi.session or ndi.dataset object.
 %       subject_name  - The name of the subject (e.g., 'SubjectA').
-%       record_type   - The type of record ('heart', 'gastric', 'pylorus').
+%       record_type   - The type of record ('heart', 'gastric', or 'pylorus').
 %
 %   Optional Name-Value Pair Arguments:
 %       data (1,1) struct = struct()
@@ -239,6 +239,8 @@ function markBadCallback(hObject, ~)
     data = get(fig, 'UserData');
 
     msgbox('Click near bad beats. Press Enter when done.', 'Mark Bad Beats', 'modal');
+    figure(fig); % Bring figure to front
+    axes(data.axNorm); % Set axes as current
     [x, ~] = ginput;
     if isempty(x), return; end
 
@@ -261,6 +263,8 @@ function markMissingCallback(hObject, ~)
     data = get(fig, 'UserData');
 
     msgbox('Click to add missing beats. Press Enter when done.', 'Mark Missing Beats', 'modal');
+    figure(fig); % Bring figure to front
+    axes(data.axNorm); % Set axes as current
     [x, y] = ginput;
     if isempty(x), return; end
 
