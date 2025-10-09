@@ -92,11 +92,17 @@ disp('Preparing data for plotting...');
 spec_data = data.SpectrogramData{1};
 spec = spec_data.spec;
 f = spec_data.f;
-ts_spec = spec_data.ts; % Already a datetime array
+ts_spec = spec_data.ts;
+if ~isdatetime(ts_spec)
+    ts_spec = t0_utc + seconds(ts_spec); % Convert to datetime if it's numeric
+end
 
 beats = data.HeartBeatData{1};
 beats_valid = beats(logical([beats.valid]));
-onset_times = t0_utc + seconds([beats_valid.onset]); % Convert to datetime
+onset_times = [beats_valid.onset];
+if ~isempty(onset_times) && ~isdatetime(onset_times)
+    onset_times = t0_utc + seconds(onset_times); % Convert to datetime if it's numeric
+end
 
 % --- Step 5: Create Plots ---
 disp('Generating plots...');
