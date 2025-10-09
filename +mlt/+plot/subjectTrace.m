@@ -92,7 +92,7 @@ disp('Preparing data for plotting...');
 spec_data = data.SpectrogramData{1};
 spec = spec_data.spec;
 f = spec_data.f;
-ts_spec = t0_utc + seconds(spec_data.ts); % Convert to datetime
+ts_spec = spec_data.ts; % Already a datetime array
 
 beats = data.HeartBeatData{1};
 beats_valid = beats(logical([beats.valid]));
