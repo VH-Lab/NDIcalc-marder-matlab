@@ -18,7 +18,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %   Inputs:
 %       S             - An ndi.session or ndi.dataset object.
 %       subject_name  - The name of the subject (e.g., 'SubjectA').
-%       record_type   - The type of record ('heart', 'gastric', or 'pylorus').
+%       record_type   - The type of record ('heart', 'gastric', 'pylorus').
 %
 %   Optional Name-Value Pair Arguments:
 %       data (1,1) struct = struct()
@@ -35,7 +35,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %           - Bad: Click near detected beats to mark them as bad (gray 'X').
 %           - Missing: Click to add new, missing beats (green '+').
 %           - Save: Saves the curated beat list to a .mat file.
-%           Press Enter in the pop-up window after you are done clicking.
+%           A dialog will appear with instructions. Press Enter after you are done clicking.
 %       Linewidth (1,1) double = 1.5
 %           Line width for the time-series plots.
 %       colorbar (1,1) logical = false
@@ -237,7 +237,8 @@ end
 function markBadCallback(hObject, ~)
     fig = ancestor(hObject, 'figure');
     data = get(fig, 'UserData');
-    msgbox('Click near bad beats. Press Enter when done.', 'Mark Bad Beats');
+
+    msgbox('Click near bad beats. Press Enter when done.', 'Mark Bad Beats', 'modal');
     [x, ~] = ginput;
     if isempty(x), return; end
 
@@ -258,7 +259,8 @@ end
 function markMissingCallback(hObject, ~)
     fig = ancestor(hObject, 'figure');
     data = get(fig, 'UserData');
-    msgbox('Click to add missing beats. Press Enter when done.', 'Mark Missing Beats');
+
+    msgbox('Click to add missing beats. Press Enter when done.', 'Mark Missing Beats', 'modal');
     [x, y] = ginput;
     if isempty(x), return; end
 
@@ -281,9 +283,11 @@ function saveCallback(hObject, ~)
     all_onsets = [data.beats.onset]';
     status = repmat({'detected'}, numel(all_onsets), 1);
 
-    [~, bad_indices] = ismember(data.markedBad, all_onsets);
-    bad_indices(bad_indices==0) = []; % remove not found
-    status(bad_indices) = {'marked bad'};
+    if ~isempty(data.markedBad)
+        [~, bad_indices] = ismember(data.markedBad, all_onsets);
+        bad_indices(bad_indices==0) = []; % remove not found
+        status(bad_indices) = {'marked bad'};
+    end
 
     T = table(all_onsets, status, 'VariableNames', {'Time', 'Status'});
 
