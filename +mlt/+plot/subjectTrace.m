@@ -193,13 +193,13 @@ if options.markBeats
 
     % Pre-plot empty marker series and store handles
     hold(ax.RawData, 'on');
-    beat_marking_data.h_bad_raw = plot(ax.RawData, NaT, [], 'x', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
-    beat_marking_data.h_missing_raw = plot(ax.RawData, NaT, [], '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
+    beat_marking_data.h_bad_raw = plot(ax.RawData, NaT, NaN, 'x', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+    beat_marking_data.h_missing_raw = plot(ax.RawData, NaT, NaN, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
     hold(ax.RawData, 'off');
 
     hold(ax.NormalizedData, 'on');
-    beat_marking_data.h_bad_norm = plot(ax.NormalizedData, NaT, [], 'x', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
-    beat_marking_data.h_missing_norm = plot(ax.NormalizedData, NaT, [], '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
+    beat_marking_data.h_bad_norm = plot(ax.NormalizedData, NaT, NaN, 'x', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
+    beat_marking_data.h_missing_norm = plot(ax.NormalizedData, NaT, NaN, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
     hold(ax.NormalizedData, 'off');
 
     set(fig, 'UserData', beat_marking_data);
