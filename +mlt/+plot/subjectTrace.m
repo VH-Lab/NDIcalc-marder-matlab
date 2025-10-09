@@ -35,7 +35,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %           - Bad: Click near detected beats to mark them as bad (gray 'X').
 %           - Missing: Click to add new, missing beats (green '+').
 %           - Save: Saves the curated beat list to a .mat file.
-%           A dialog will appear with instructions. Press Enter when you are done clicking.
+%           A dialog will appear with instructions. Press Enter after you are done clicking.
 %       Linewidth (1,1) double = 1.5
 %           Line width for the time-series plots.
 %       colorbar (1,1) logical = false
@@ -255,7 +255,7 @@ function markBadCallback(hObject, ~)
         marked_time = data.beats.onset(idx);
 
         if ~ismember(marked_time, data.markedBad)
-            data.markedBad(end+1) = marked_time;
+            data.markedBad = [data.markedBad; marked_time];
 
             y_norm = interp1(data.raw_time, data.normalized_data, marked_time);
             hold(data.axNorm, 'on');
@@ -266,6 +266,7 @@ function markBadCallback(hObject, ~)
             hold(data.axRaw, 'on');
             plot(data.axRaw, marked_time, y_raw, 'X', 'MarkerSize', 15, 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 2);
             hold(data.axRaw, 'off');
+            drawnow;
         end
     end
 
@@ -288,7 +289,7 @@ function markMissingCallback(hObject, ~)
         end
 
         clicked_time = datetime(x, 'ConvertFrom', 'datenum');
-        data.markedMissing(end+1) = clicked_time;
+        data.markedMissing = [data.markedMissing; clicked_time];
 
         hold(data.axNorm, 'on');
         plot(data.axNorm, clicked_time, y, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
@@ -298,6 +299,7 @@ function markMissingCallback(hObject, ~)
         hold(data.axRaw, 'on');
         plot(data.axRaw, clicked_time, y_raw, '+', 'MarkerSize', 15, 'MarkerEdgeColor', 'g', 'LineWidth', 2);
         hold(data.axRaw, 'off');
+        drawnow;
     end
 
     set(fig, 'UserData', data);
@@ -321,7 +323,9 @@ function saveCallback(hObject, ~)
     T = table(all_onsets, status, 'VariableNames', {'Time', 'Status'});
 
     if ~isempty(data.markedMissing)
-        missing_table = table(data.markedMissing, repmat({'marked missing'}, numel(data.markedMissing), 1), 'VariableNames', {'Time', 'Status'});
+        missing_times = data.markedMissing(:); % Ensure column vector
+        missing_status = repmat({'marked missing'}, numel(missing_times), 1);
+        missing_table = table(missing_times, missing_status, 'VariableNames', {'Time', 'Status'});
         T = [T; missing_table];
     end
 
