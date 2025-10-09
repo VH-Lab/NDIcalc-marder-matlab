@@ -57,7 +57,7 @@ end
 
 % --- Step 1: Load or Fetch Data ---
 if isempty(fieldnames(options.data))
-    disp('Fetching data using getHeartBeatAndSpectrogram...');
+    disp('Fetching HeartBeat and Spectrogram data...');
     data = mlt.doc.getHeartBeatAndSpectrogram(S, subject_name, record_type);
 else
     disp('Using pre-fetched data structure.');
@@ -66,13 +66,12 @@ end
 
 S = data.session; % Use the session from the data struct for consistency
 
-% --- Step 2: Find the element for raw data ---
-disp('Finding element for raw data...');
-e = mlt.ndi.getElement(S, data.subject_local_identifier, data.recordType,'lp_whole');
+% --- Step 2: Get Epoch Information for Time Conversion ---
+disp('Finding element for epoch information...');
+e = mlt.ndi.getElement(S, subject_name, record_type, 'lp_whole');
 if isempty(e)
-    error('Could not find a unique element for subject "%s" and record type "%s".', data.subject_local_identifier, data.recordType);
+    error('Could not find a unique element for subject "%s" and record type "%s".', subject_name, record_type);
 end
-
 et = e.epochtable();
 if isempty(et)
     error('Element %s has no epoch table.', e.elementstring);
@@ -80,35 +79,36 @@ end
 epoch_id = et(1).epoch_id;
 t0_utc = et(1).t0_t1{1};
 
-% --- Step 3: Load Raw Data ---
-disp('Loading raw data...');
+% --- Step 3: Load Raw Data and Prepare All Time Axes ---
+disp('Loading raw data and preparing time axes...');
+
+% Load raw data
 [raw_data, raw_time] = e.readtimeseries(epoch_id, -Inf, Inf);
-raw_time = t0_utc + seconds(raw_time); % Convert to datetime
+if ~isdatetime(raw_time)
+    raw_time = t0_utc + seconds(raw_time); % Convert from numeric seconds
+end
 
-% --- Step 4: Prepare Data for Plotting ---
-disp('Preparing data for plotting...');
-
-% Extract from data structure
+% Prepare spectrogram time
 spec_data = data.SpectrogramData{1};
 spec = spec_data.spec;
 f = spec_data.f;
 ts_spec = spec_data.ts;
 if ~isdatetime(ts_spec)
-    ts_spec = t0_utc + seconds(ts_spec); % Convert to datetime if it's numeric
+    ts_spec = t0_utc + ts_spec; % Convert from duration or numeric
 end
 
+% Prepare beats time
 beats = data.HeartBeatData{1};
 beats_valid = beats(logical([beats.valid]));
 onset_times = [beats_valid.onset];
 if ~isempty(onset_times) && ~isdatetime(onset_times)
-    onset_times = t0_utc + seconds(onset_times); % Convert to datetime if it's numeric
+    onset_times = t0_utc + onset_times; % Convert from duration or numeric
 end
 
-% --- Step 5: Create Plots ---
+% --- Step 4: Create Plots ---
 disp('Generating plots...');
-figure('Position', [100 100 1200 900]); % Create a larger figure window
+figure('Position', [100 100 1200 900]);
 
-% Using a 8-row grid for 5 plots
 ax.Spectrogram = subplot(8,1,1:4);
 ax.RawData = subplot(8,1,5);
 ax.BeatInstFreq = subplot(8,1,6);
@@ -153,30 +153,30 @@ end
 xlabel('Time');
 grid on;
 
-% --- Step 6: Finalize Axes ---
-% Determine a master time range to ensure all axes have datetime limits
-master_xlim = [min(raw_time) max(raw_time)];
-if ~isempty(ts_spec)
-    master_xlim(1) = min(master_xlim(1), min(ts_spec));
-    master_xlim(2) = max(master_xlim(2), max(ts_spec));
-end
-
+% --- Step 5: Finalize Axes ---
 all_axes = [ax.Spectrogram, ax.RawData, ax.BeatInstFreq, ax.Amplitude, ax.DutyCycle];
+all_times = [];
 
-% Set all axes to the same datetime limits BEFORE linking
-for i = 1:numel(all_axes)
-    xlim(all_axes(i), master_xlim);
+if ~isempty(raw_time), all_times = [all_times; raw_time(:)]; end
+if ~isempty(ts_spec), all_times = [all_times; ts_spec(:)]; end
+
+master_xlim = [];
+if ~isempty(all_times)
+    master_xlim = [min(all_times) max(all_times)];
 end
 
-% Link all axes horizontally
+if ~isempty(master_xlim)
+    for i = 1:numel(all_axes)
+        xlim(all_axes(i), master_xlim);
+    end
+end
+
 linkaxes(all_axes, 'x');
 
-% Now set a reasonable view limit
-view_xlim = master_xlim;
-if ~isempty(onset_times)
-    view_xlim = [onset_times(1), onset_times(end)];
+% Set a reasonable initial view
+if ~isempty(master_xlim)
+    xlim(ax.Spectrogram, master_xlim);
 end
-xlim(ax.Spectrogram, view_xlim);
 
 disp('Plot generation complete.');
 
