@@ -78,7 +78,7 @@ if isempty(et)
     error('Element %s has no epoch table.', e.elementstring);
 end
 epoch_id = et(1).epoch_id;
-t0_utc = et(1).t0_t1(1);
+t0_utc = et(1).t0_t1{1};
 
 % --- Step 3: Load Raw Data ---
 disp('Loading raw data...');
