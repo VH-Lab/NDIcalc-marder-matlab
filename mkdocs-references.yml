@@ -36,6 +36,7 @@
         - mlt.jacquerie.kathleenTime2: 'reference/+mlt/+jacquerie/kathleenTime2.m.md'
         - mlt.jacquerie.makeFigure1: 'reference/+mlt/+jacquerie/makeFigure1.m.md'
         - mlt.jacquerie.makeFigure2: 'reference/+mlt/+jacquerie/makeFigure2.m.md'
+        - mlt.jacquerie.makeFigure3: 'reference/+mlt/+jacquerie/makeFigure3.m.md'
       - ndi PACKAGE:
         - mlt.ndi.getElement: 'reference/+mlt/+ndi/getElement.m.md'
       - plot PACKAGE:
