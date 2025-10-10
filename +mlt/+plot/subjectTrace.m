@@ -263,9 +263,13 @@ function markBadCallback(hObject, ~)
             break;
         end
 
-        % Convert x to a full datetime by finding the nearest time in the axis
-        [~, time_idx] = min(abs(datenum(data.raw_time) - x));
-        clicked_time = data.raw_time(time_idx);
+        % Robustly find clicked time by searching within visible axis range
+        current_xlim = xlim(data.axNorm);
+        visible_indices = data.raw_time >= current_xlim(1) & data.raw_time <= current_xlim(2);
+        visible_times = data.raw_time(visible_indices);
+        [~, time_idx] = min(abs(datenum(visible_times) - x));
+        clicked_time = visible_times(time_idx);
+        disp(['Clicked time interpreted as: ' datestr(clicked_time)]);
 
         [~, beat_idx] = min(abs(data.beats.onset - clicked_time));
         marked_time = data.beats.onset(beat_idx);
@@ -278,8 +282,6 @@ function markBadCallback(hObject, ~)
 
             y_raw = interp1(data.raw_time, data.raw_data, marked_time, 'nearest', 'extrap');
             set(data.h_bad_raw, 'XData', [get(data.h_bad_raw, 'XData') marked_time], 'YData', [get(data.h_bad_raw, 'YData') y_raw]);
-
-            disp(['Marked bad beat at: ' datestr(marked_time)]);
             drawnow;
         end
     end
@@ -303,9 +305,13 @@ function markMissingCallback(hObject, ~)
             break;
         end
 
-        % Convert x to a full datetime by finding the nearest time in the axis
-        [~, time_idx] = min(abs(datenum(data.raw_time) - x));
-        clicked_time = data.raw_time(time_idx);
+        % Robustly find clicked time by searching within visible axis range
+        current_xlim = xlim(data.axNorm);
+        visible_indices = data.raw_time >= current_xlim(1) & data.raw_time <= current_xlim(2);
+        visible_times = data.raw_time(visible_indices);
+        [~, time_idx] = min(abs(datenum(visible_times) - x));
+        clicked_time = visible_times(time_idx);
+        disp(['Clicked time interpreted as: ' datestr(clicked_time)]);
 
         data.markedMissing = [data.markedMissing; clicked_time];
 
@@ -314,8 +320,6 @@ function markMissingCallback(hObject, ~)
 
         y_raw = interp1(data.raw_time, data.raw_data, clicked_time, 'nearest', 'extrap');
         set(data.h_missing_raw, 'XData', [get(data.h_missing_raw, 'XData') clicked_time], 'YData', [get(data.h_missing_raw, 'YData') y_raw]);
-
-        disp(['Marked missing beat at: ' datestr(clicked_time)]);
         drawnow;
     end
 
