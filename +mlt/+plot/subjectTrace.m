@@ -257,7 +257,7 @@ function markBadCallback(hObject, ~)
     while true
         figure(fig);
         axes(data.axNorm);
-        [x, ~, button] = ginput(1);
+        [x, ~, button] = ginput(1); % Changed from [x, y, ~]
         if isempty(x) || isempty(button)
             break;
         end
@@ -269,13 +269,14 @@ function markBadCallback(hObject, ~)
         if ~ismember(marked_time, data.markedBad)
             data.markedBad = [data.markedBad; marked_time];
 
-            % Update normalized plot
             y_norm = interp1(data.raw_time, data.normalized_data, marked_time);
             set(data.h_bad_norm, 'XData', [get(data.h_bad_norm, 'XData') marked_time], 'YData', [get(data.h_bad_norm, 'YData') y_norm]);
 
-            % Update raw plot
             y_raw = interp1(data.raw_time, data.raw_data, marked_time);
             set(data.h_bad_raw, 'XData', [get(data.h_bad_raw, 'XData') marked_time], 'YData', [get(data.h_bad_raw, 'YData') y_raw]);
+
+            disp(['Marked bad beat at ' datestr(marked_time) '. Y-norm: ' num2str(y_norm)]);
+            drawnow;
         end
     end
 
@@ -292,7 +293,7 @@ function markMissingCallback(hObject, ~)
     while true
         figure(fig);
         axes(data.axNorm);
-        [x, y, button] = ginput(1);
+        [x, ~, button] = ginput(1);
         if isempty(x) || isempty(button)
             break;
         end
@@ -300,12 +301,18 @@ function markMissingCallback(hObject, ~)
         clicked_time = datetime(x, 'ConvertFrom', 'datenum');
         data.markedMissing = [data.markedMissing; clicked_time];
 
+        % Interpolate y-value for both plots
+        y_norm = interp1(data.raw_time, data.normalized_data, clicked_time);
+        y_raw = interp1(data.raw_time, data.raw_data, clicked_time);
+
         % Update normalized plot
-        set(data.h_missing_norm, 'XData', [get(data.h_missing_norm, 'XData') clicked_time], 'YData', [get(data.h_missing_norm, 'YData') y]);
+        set(data.h_missing_norm, 'XData', [get(data.h_missing_norm, 'XData') clicked_time], 'YData', [get(data.h_missing_norm, 'YData') y_norm]);
 
         % Update raw plot
-        y_raw = interp1(data.raw_time, data.raw_data, clicked_time);
         set(data.h_missing_raw, 'XData', [get(data.h_missing_raw, 'XData') clicked_time], 'YData', [get(data.h_missing_raw, 'YData') y_raw]);
+
+        disp(['Marked missing beat at ' datestr(clicked_time) '. Y-norm: ' num2str(y_norm)]);
+        drawnow;
     end
 
     set(fig, 'UserData', data);
