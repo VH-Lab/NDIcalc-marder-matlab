@@ -263,13 +263,7 @@ function markBadCallback(hObject, ~)
             break;
         end
 
-        % Robustly find clicked time by searching within visible axis range
-        current_xlim = xlim(data.axNorm);
-        visible_indices = data.raw_time >= current_xlim(1) & data.raw_time <= current_xlim(2);
-        visible_times = data.raw_time(visible_indices);
-        [~, time_idx] = min(abs(datenum(visible_times) - x));
-        clicked_time = visible_times(time_idx);
-        disp(['Clicked time interpreted as: ' datestr(clicked_time)]);
+        clicked_time = num2ruler(x, data.axNorm.XAxis);
 
         [~, beat_idx] = min(abs(data.beats.onset - clicked_time));
         marked_time = data.beats.onset(beat_idx);
@@ -305,13 +299,7 @@ function markMissingCallback(hObject, ~)
             break;
         end
 
-        % Robustly find clicked time by searching within visible axis range
-        current_xlim = xlim(data.axNorm);
-        visible_indices = data.raw_time >= current_xlim(1) & data.raw_time <= current_xlim(2);
-        visible_times = data.raw_time(visible_indices);
-        [~, time_idx] = min(abs(datenum(visible_times) - x));
-        clicked_time = visible_times(time_idx);
-        disp(['Clicked time interpreted as: ' datestr(clicked_time)]);
+        clicked_time = num2ruler(x, data.axNorm.XAxis);
 
         data.markedMissing = [data.markedMissing; clicked_time];
 
