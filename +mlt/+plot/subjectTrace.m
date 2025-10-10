@@ -18,7 +18,7 @@ function [ax, data] = subjectTrace(S, subject_name, record_type, options)
 %   Inputs:
 %       S             - An ndi.session or ndi.dataset object.
 %       subject_name  - The name of the subject (e.g., 'SubjectA').
-%       record_type   - The type of record ('heart', 'gastric', 'pylorus').
+%       record_type   - The type of record ('heart', 'gastric', or 'pylorus').
 %
 %   Optional Name-Value Pair Arguments:
 %       data (1,1) struct = struct()
@@ -163,10 +163,10 @@ xlabel('Time');
 if options.showBeats && ~isempty(onset_times) && isdatetime(onset_times)
     beat_onsets = [beats_valid.onset];
     beat_offsets = [beats_valid.offset];
-    y_onsets_raw = interp1(raw_time, raw_data, beat_onsets, 'linear', 'extrap');
-    y_offsets_raw = interp1(raw_time, raw_data, beat_offsets, 'linear', 'extrap');
-    y_onsets_norm = interp1(raw_time, normalized_data, beat_onsets, 'linear', 'extrap');
-    y_offsets_norm = interp1(raw_time, normalized_data, beat_offsets, 'linear', 'extrap');
+    y_onsets_raw = interp1(raw_time, raw_data, beat_onsets, 'nearest', 'extrap');
+    y_offsets_raw = interp1(raw_time, raw_data, beat_offsets, 'nearest', 'extrap');
+    y_onsets_norm = interp1(raw_time, normalized_data, beat_onsets, 'nearest', 'extrap');
+    y_offsets_norm = interp1(raw_time, normalized_data, beat_offsets, 'nearest', 'extrap');
 
     hold(ax.RawData, 'on');
     plot(ax.RawData, beat_onsets, y_onsets_raw, 'bo', 'MarkerFaceColor', 'b', 'MarkerSize', 5);
@@ -270,10 +270,10 @@ function markBadCallback(hObject, ~)
         if ~ismember(marked_time, data.markedBad)
             data.markedBad = [data.markedBad; marked_time];
 
-            y_norm = interp1(data.raw_time, data.normalized_data, marked_time);
+            y_norm = interp1(data.raw_time, data.normalized_data, marked_time, 'nearest', 'extrap');
             set(data.h_bad_norm, 'XData', [get(data.h_bad_norm, 'XData') marked_time], 'YData', [get(data.h_bad_norm, 'YData') y_norm]);
 
-            y_raw = interp1(data.raw_time, data.raw_data, marked_time);
+            y_raw = interp1(data.raw_time, data.raw_data, marked_time, 'nearest', 'extrap');
             set(data.h_bad_raw, 'XData', [get(data.h_bad_raw, 'XData') marked_time], 'YData', [get(data.h_bad_raw, 'YData') y_raw]);
             drawnow;
         end
@@ -301,10 +301,10 @@ function markMissingCallback(hObject, ~)
         clicked_time = datetime(x, 'ConvertFrom', 'datenum');
         data.markedMissing = [data.markedMissing; clicked_time];
 
-        y_norm = interp1(data.raw_time, data.normalized_data, clicked_time);
+        y_norm = interp1(data.raw_time, data.normalized_data, clicked_time, 'nearest', 'extrap');
         set(data.h_missing_norm, 'XData', [get(data.h_missing_norm, 'XData') clicked_time], 'YData', [get(data.h_missing_norm, 'YData') y_norm]);
 
-        y_raw = interp1(data.raw_time, data.raw_data, clicked_time);
+        y_raw = interp1(data.raw_time, data.raw_data, clicked_time, 'nearest', 'extrap');
         set(data.h_missing_raw, 'XData', [get(data.h_missing_raw, 'XData') clicked_time], 'YData', [get(data.h_missing_raw, 'YData') y_raw]);
         drawnow;
     end
